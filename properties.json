@@ -1,0 +1,198 @@
+{
+    "root_path": "C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022",
+
+    "sensors":
+        {
+            "VIS1":
+                {
+                    "threshold": 0.1,
+                    "x_lim_plot": [0.008, 0.015],
+                    "color": "red"
+                },
+            "IR1": 
+                {
+                    "threshold": 0.5,
+                    "x_lim_plot": [0.008, 0.03],
+                    "color": "blue"
+                },
+            "VIS2":
+                {
+                    "threshold": 0.1,
+                    "x_lim_plot": [0.008, 0.015],
+                    "color": "orangered"
+                },
+            "IR2":
+                {
+                    "threshold": 0.5,
+                    "x_lim_plot": [0.008, 0.03],
+                    "color": "royalblue"
+                },
+                "Mikro1":
+                {
+                    "threshold": 0.025,
+                    "x_lim_plot": [0.008, 0.1],
+                    "color": "orange"
+                },
+                "Piezo1":
+                {
+                    "threshold": 0.005,
+                    "x_lim_plot": [0.008, 0.1],
+                    "color": "green"
+                },
+                "Mikro1_nm":
+                {
+                    "threshold": 0.025,
+                    "x_lim_plot": [0.008, 0.1],
+                    "color": "darkorange"
+                },
+                "Piezo1_nm":
+                {
+                    "threshold": 0.05,
+                    "x_lim_plot": [0.008, 0.1],
+                    "color": "darkgreen"
+                },
+                "Mikro2":
+                    {
+                        "threshold": 0.025,
+                        "x_lim_plot": [0.008, 0.1],
+                        "color": "orange"
+                    },
+                "Piezo2":
+                    {
+                        "threshold": 0.005,
+                        "x_lim_plot": [0.008, 0.1],
+                        "color": "green"
+                    },
+                "Mikro2_nm":
+                    {
+                        "threshold": 0.025,
+                        "x_lim_plot": [0.008, 0.1],
+                        "color": "darkorange"
+                    },
+                "Piezo2_nm":
+                    {
+                        "threshold": 0.05,
+                        "x_lim_plot": [0.008, 0.1],
+                        "color": "darkgreen"
+                    },
+                "Spectrometer":
+                {
+                    "threshold": 0.05,
+                    "color": "darkviolet"
+                }
+
+        },
+
+    "colors_samples": 
+        {
+            "Blank": "cornflowerblue",
+            "Sugar": "red",
+            "Tetrazene": "yellowgreen",
+            "Silverazide": "mediumslateblue",
+            "Leadazide": "orange",
+            "Leadstyphnate": "darkturquoise",
+            "TNT": "darkgreen",
+            "HMTD": "darkblue",
+            "TATP": "yellow",
+            "Blackpowder": "grey"
+        },
+
+    "sensor_to_cut":
+            "Piezo1",
+
+    "sensors_norm":
+        [
+            "Mikro1",
+            "Mikro1",
+            "Piezo2",
+            "Piezo2"
+        ],
+    
+        "plot_properties":
+        {   
+            "measurement_plot":
+                {
+                    "dpi": 100,
+                    "size": [10,7],
+                    "font_size": 10,
+                    "label_size": 12
+                },
+            "loadings_plot":
+                {
+                    "dpi": 100,
+                    "size": [9,7],
+                    "font_size": 20,
+                    "label_size": 20,
+                    "legend_size": 20
+                },
+            "components_plot_2D":
+                {
+                    "dpi": 200,
+                    "size": [10,10],
+                    "font_size": 10,
+                    "label_size": 10,
+                    "legend_size": 10,
+                    "dot": 50
+                },
+            "components_plot_3D":
+                {
+                    "dpi": 200,
+                    "size": [10,10],
+                    "font_size": 10,
+                    "label_size": 10,
+                    "legend_size": 8,
+                    "dot": 50
+                },
+            "components_plot_html":
+                {
+                    "font_size": 15,
+                    "legend_size": 30
+                },
+            "param_plot":
+                {
+                    "dpi": 100,
+                    "size": [8,10],
+                    "font_size": 10,
+                    "label_size": 10
+                },
+            "compare_plots":
+                {
+                    "dpi": 100,
+                    "size": [10,10],
+                    "font_size": 10,
+                    "label_size": 15
+                },
+            "confusion_matrix":
+                {
+                    "dpi": 100,
+                    "size": [10,10],
+                    "font_size": 20,
+                    "label_size": 30,
+                    "count_size": 20
+                },
+            "roc_plot":
+                {
+                    "dpi": 100,
+                    "size": [10,10],
+                    "font_size": 20,
+                    "label_size": 30,
+                    "legend_size": 20
+                },
+            "exemplary_plot":
+                {
+                    "dpi": 100,
+                    "size": [10,10],
+                    "font_size": 20,
+                    "label_size": 30,
+                    "legend_size": 20
+                },
+            "Spectrometer_plot":
+                {
+                    "dpi": 100,
+                    "size": [10,10],
+                    "font_size": 20,
+                    "label_size": 30,
+                    "legend_size": 20
+                }
+        }
+}
