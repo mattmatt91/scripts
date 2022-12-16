@@ -1,12 +1,12 @@
-from read_files import scan_folder, extract_properties
+from read_files import scan_folder
+from helpers import read_json
 # from do_statistics import calculate
 # from compare_measurements import compare
 # from plot_feauters import  plot_features
 
 if __name__ == '__main__':
-
-    properties = extract_properties()
-    root_path = properties['root_path']
+    root_path = 'data\\22.09.2022'
+    properties = read_json('', 'properties.json')
 
     scan_folder(root_path, properties) # reading raw data
     exit()

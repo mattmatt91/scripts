@@ -35,13 +35,6 @@ class Sensor:
 
 
     def save_items(self, path): # save one file for every sensor with all measurements
-        """This function saves all DataFrames contained in the sensor object, one file 
-        is saved per sensor. A folder "results" is created in the root folder where 
-        the files are stored.
-
-        Args:
-            path (string): Path to the folder in which the measurement folders are stored
-        """
         for sensor in self.df_dict:
             name = sensor + '_gesamt'
             save_df(self.df_dict[sensor], path, name)
@@ -53,9 +46,6 @@ class Plot:
 
 
     def __init__(self,name, size, properties):
-        """
-        constructor method
-        """
         self.plot_properties = properties['plot_properties']['measurement_plot']
         self.properties = properties
         self.fig, self.axs = plt.subplots(size, sharex=True, dpi=self.plot_properties['dpi'], figsize=self.plot_properties['size'])
@@ -64,16 +54,6 @@ class Plot:
 
 
     def add_subplot(self, sensor, df_corr, peak_properties, results_half, results_full, peaks):
-        """This function assigns a subplot for the corresponding sensor to the plot object.
-
-        Args:
-            sensor (string): Name of the sensor
-            df_corr (pandas.DataFrame): Dataframe with prepared data from measurement
-            peak_properties (dictionary): peak_properties is a dictionary with data about extracted peaks
-            results_half (numpy.array): Array with from measurement extracted feauters for the half peak
-            results_full (numpy.array): Array with from measurement extracted feauters for the full peak
-            peaks (numpy.array): Array with from measurement extracted feauters for detected peaks
-        """
         self.axs[self.i].plot(df_corr[sensor], color=self.properties['sensors'][sensor]['color'])
         ## print peaks in plot
         if peaks.size != 0:
@@ -100,11 +80,6 @@ class Plot:
         self.i = self.i +1
 
     def show_fig(self, path):
-        """This function saves the created plot object in the folder "results\\plots\\single_measurements".
-
-        Args:
-            path (string): Path to the folder in which the measurement folders are stored
-        """
         self.axs[-1].set_xlabel("time [s]" , fontsize = self.plot_properties['label_size'])
         plt.xticks(fontsize=self.plot_properties['font_size'])
         self.axs[-1].get_shared_x_axes().join(*self.axs)
@@ -120,15 +95,6 @@ class Plot:
 
 
 def width_clip(x, threshold):
-    """This function extracts the feauter "width clip", which calculates the length at which a signal is too large for the measuring range.
-        
-        Args:
-            x (list): Time series from which the feature is to be extracted
-            threshold (float): Value from which an exceeding of the measuring range is 
-
-        Return:
-            width clip (float): Returns the length in which the signal is greater than the measuring range. 
-        """
     x = x.tolist()
     flag = False
     list_peaks = []
@@ -149,28 +115,11 @@ def width_clip(x, threshold):
 
 
 def running_mean(x):
-    """This function calculates a moving average of a time series of data. Here N is the sample interval over which the smoothing takes place.
-        
-        Args:
-            x (list): Time series to be smoothed
-
-        Returns:
-            smoothed data (list): Returns the smoothed data
-        """
     N = 20 # über wie viele Werte wird geglättet
     return np.convolve(x, np.ones((N,))/N)[(N-1):]
 
 
 def get_slope(x,t):
-    """This function calculates the slope of a peak from exceeding the threshold to the maximum.
-
-        Args:
-            x (list): x Values from which the slope is to be determined
-            t (list): time section from which the slope is to be determined
-
-        Returns:
-            slope (float): slope of the section
-        """
     end = 0
     flag = False
     for i in range(len(x)-1):
@@ -185,20 +134,6 @@ def get_slope(x,t):
 
 
 def evaluate_sensor(df, sensor, threshold):
-    """This function calculates the slope of a peak from exceeding the threshold to the maximum.
-
-        Args:
-            df (pandas.DataFrame): DateFrame with all sensors from one measurement
-            sensor (string): sensor to evaluate
-            threshold (float): Value from which an exceeding of the measuring range is determined
-
-        Return:
-            peaks (numpy.array): extracted peaks
-            properties (dictionary): properties of measurement
-            results_half (numpy.array): extracted feauters from peak half
-            results_full (numpy.array): extracted feauters from peak full
-            result_dict (dictionary): dictionary with extracted feauters
-        """
     peaks, peak_properties = find_peaks(df[sensor], prominence=0, width=1, distance=20000, height=threshold)
     results_half = peak_widths(df[sensor], peaks, rel_height=0.5)
     results_full = peak_widths(df[sensor], peaks, rel_height=0.99)
@@ -297,21 +232,6 @@ def save_df(df, path, name):
     df.to_csv(path, sep=';', decimal=',', index = True)
 
 def read_file(path,decimal,name, path_out, object_raw, properties):
-    """This function reads files of the raw data. The data is evaluated
-    and features are extracted. A plot is created for each file.
-    The function returns a dict with all extracted features
-
-    Args:
-        path (string): path to measurements file
-        decimal (string): decimal of stored data
-        name (string): name of the measurement
-        path_out (string): path to save the figures
-        object_raw (object): figure object for plotting measurement
-        properties (dictionary):  properties from properties json
-
-    Returns:
-        dict_result (dictionary): dictionary with all extracted feauters for a measurement
-    """
     sensors = properties['sensors']
     path = path + path[path.rfind('\\'):] + '.txt'
     dict_result = {}
@@ -320,8 +240,6 @@ def read_file(path,decimal,name, path_out, object_raw, properties):
     object_raw.add_item(df_corr, name) # adding data from measurement to df for each sensor including all measurements
     fig = Plot(name,len(df_corr.columns), properties)
     df_corr = df_corr.reindex(sorted(df_corr.columns), axis=1)
-    print(df_corr.columns)
-    exit()
     for this_sensor in df_corr.columns:
         peaks, peak_properties, results_half, results_full, this_dict_result = evaluate_sensor(df_corr, this_sensor, sensors[this_sensor]['threshold'])
         dict_result.update(this_dict_result)
@@ -330,4 +248,4 @@ def read_file(path,decimal,name, path_out, object_raw, properties):
     return dict_result
 
 
-
+# pass
