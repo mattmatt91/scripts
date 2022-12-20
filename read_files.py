@@ -16,7 +16,7 @@ def init_data(properties):
 def scan_folder(path, properties):
     subfolders = get_subfolders(path)
     data = init_data(properties)
-
+    results = []
     for folder in subfolders:
         if folder.find('\\Results') < 0 and folder.find('\\Bilder', ) < 0 and folder.find('\\results') < 0:
             info_measurement = clean_info_meaurement(
@@ -26,18 +26,26 @@ def scan_folder(path, properties):
         
             data_measurement = pd.read_csv(path_data, decimal='.', sep='\t')
             data_measurement, features = evaluate_measurement(data_measurement, properties, info_measurement)
+            results.append(features)
             for sensor in data:
                 if sensor == 'name':
                     data[sensor].append(name)
                 elif sensor == 'time':
-                    data[sensor].append(data_measurement['time [s]'])
+                    data[sensor].append(data_measurement.index)
                 else:
                     if sensor in data_measurement.columns:
                         data[sensor].append(data_measurement[sensor])
                     else:
                         print(f'{sensor} not in measurement {name}')
-            merge_measurements(data, path)
+    merge_measurements(data, path)
+    merge_results(results, path)
 
+def merge_results(result, folder):
+    df_result = pd.DataFrame(result)
+    print(df_result)
+    path_result = mkdir_ifnotexits(join(folder, 'results'))
+    path_to_save = join(path_result, 'results.txt')
+    df_result.to_csv(path_to_save, decimal='.', sep='\t')
 
 def merge_measurements(data, folder):
     data_sensors = {}
