@@ -33,6 +33,13 @@ def get_path_data(path):
     for file in files:
         if file.find('txt')>0:
             return join(path,file)
+
+# returns path to json with info
+def get_path_info(path):
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+    for file in files:
+        if file.find('json')>0:
+            return join(path,file)
         
 # mkdir if not exists
 def mkdir_ifnotexits(path):

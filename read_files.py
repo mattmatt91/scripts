@@ -1,7 +1,9 @@
-from helpers import read_json, get_name_from_info, get_subfolders, clean_info_meaurement, get_path_data, mkdir_ifnotexits
+from helpers import read_json, get_name_from_info, get_subfolders, clean_info_meaurement, get_path_data, mkdir_ifnotexits , get_path_info
 import pandas as pd
 from os.path import join
-
+from eval_measurement import evaluate_measurement
+import warnings
+warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
 def init_data(properties):
     data = {'name': [], 'time': []}
@@ -21,18 +23,20 @@ def scan_folder(path, properties):
                 read_json(folder, 'info.json'))
             name = get_name_from_info(info_measurement)
             path_data = get_path_data(folder)
+        
             data_measurement = pd.read_csv(path_data, decimal='.', sep='\t')
+            data_measurement, features = evaluate_measurement(data_measurement, properties, info_measurement)
             for sensor in data:
                 if sensor == 'name':
                     data[sensor].append(name)
                 elif sensor == 'time':
-                    data[sensor].append(data_measurement.index)
+                    data[sensor].append(data_measurement['time [s]'])
                 else:
                     if sensor in data_measurement.columns:
                         data[sensor].append(data_measurement[sensor])
                     else:
                         print(f'{sensor} not in measurement {name}')
-    merge_measurements(data, path)
+            merge_measurements(data, path)
 
 
 def merge_measurements(data, folder):
@@ -42,11 +46,9 @@ def merge_measurements(data, folder):
             df = pd.DataFrame(data[sensor], index=data['name']).T
             df['time'] = data['time'][0]
             df.set_index('time', inplace=True)
-            print(df)
             path_result = mkdir_ifnotexits(
                 join(folder, 'results', 'merged_sensors'))
             path_to_save = join(path_result, f'{sensor}.txt')
-            print(path_to_save)
             df.to_csv(path_to_save, decimal='.', sep='\t')
             data_sensors[sensor] = df
     return data_sensors

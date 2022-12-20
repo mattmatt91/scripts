@@ -1,5 +1,8 @@
 {
     "root_path": "C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022",
+    "cut_before_signal":100,
+    "cut_after_signal":1000,
+    "sensor_to_cut": "Piezo1",
     "sensors": {
         "VIS1": {
             "threshold": 0.1,
@@ -7,7 +10,8 @@
                 0.008,
                 0.015
             ],
-            "color": "red"
+            "color": "red",
+            "norm": false
         },
         "IR1": {
             "threshold": 0.5,
@@ -15,6 +19,7 @@
                 0.008,
                 0.03
             ],
+            "norm": false,
             "color": "blue"
         },
         "VIS2": {
@@ -23,6 +28,7 @@
                 0.008,
                 0.015
             ],
+            "norm": false,
             "color": "orangered"
         },
         "IR2": {
@@ -31,6 +37,7 @@
                 0.008,
                 0.03
             ],
+            "norm": false,
             "color": "royalblue"
         },
         "Mikro1": {
@@ -39,14 +46,16 @@
                 0.008,
                 0.1
             ],
+            "norm": true,
             "color": "orange"
         },
         "Piezo1": {
-            "threshold": 0.005,
+            "threshold": 1,
             "x_lim_plot": [
                 0.008,
                 0.1
             ],
+            "norm": true,
             "color": "green"
         },
         "Mikro2": {
@@ -55,6 +64,7 @@
                 0.008,
                 0.1
             ],
+            "norm": true,
             "color": "orange"
         },
         "Piezo2": {
@@ -63,6 +73,7 @@
                 0.008,
                 0.1
             ],
+            "norm": true,
             "color": "green"
         }
     },
@@ -76,15 +87,10 @@
         "TNT": "darkgreen",
         "HMTD": "darkblue",
         "TATP": "yellow",
-        "Blackpowder": "grey"
+        "Blackpowder": "grey",
+        "Knallplaettchen": "orange"
     },
-    "sensor_to_cut": "Piezo1",
-    "sensors_norm": [
-        "Mikro1",
-        "Mikro1",
-        "Piezo2",
-        "Piezo2"
-    ],
+
     "plot_properties": {
         "measurement_plot": {
             "dpi": 100,
