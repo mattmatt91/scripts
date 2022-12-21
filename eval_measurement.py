@@ -97,41 +97,41 @@ def evaluate_sensor(data, sensor, threshold):
 
     
     return peak_info
-    def get_peak():
-        return data.index[int(peaks[0])]
+def get_peak():
+    return data.index[int(peaks[0])]
 
-    def get_start():
-        return data.index[int(results_full[2])]
+def get_start():
+    return data.index[int(results_full[2])]
 
-    def get_stop():
-        return data.index[int(results_full[3])]
+def get_stop():
+    return data.index[int(results_full[3])]
 
-    def get_width():
-        return data.index[int(results_full[3])] - data.index[int(results_full[2])]
+def get_width():
+    return data.index[int(results_full[3])] - data.index[int(results_full[2])]
 
-    def get_width_half():
-        return data.index[int(results_half[3])] - data.index[int(results_half[2])]
+def get_width_half():
+    return data.index[int(results_half[3])] - data.index[int(results_half[2])]
 
-    def get_height():
-        return data[data.index[int(peaks[0])]]
+def get_height():
+    return data[data.index[int(peaks[0])]]
 
-    def get_integral():
-        return np.trapz(df_peak[sensor], x=df_peak.index)
+def get_integral():
+    return np.trapz(df_peak[sensor], x=df_peak.index)
 
-    def get_slope():
-        x = df_peak.values
-        t = df_peak.index
-        end = 0
-        flag = False
-        for i in range(len(x)-1):
-            if flag == False:
-                if x[i+1] > x[i]:
-                    pass
-                else:
-                    end = i
-                    flag = True
-        slope = (x[end]-x[0])/(t[end]-t[0])
-        return slope
+def get_slope():
+    x = df_peak.values
+    t = df_peak.index
+    end = 0
+    flag = False
+    for i in range(len(x)-1):
+        if flag == False:
+            if x[i+1] > x[i]:
+                pass
+            else:
+                end = i
+                flag = True
+    slope = (x[end]-x[0])/(t[end]-t[0])
+    return slope
 
-    def get_width_heigth():
-        return (data.index[int(results_full[3])] - data.index[int(results_full[2])])/(data[data.index[int(peaks[0])]])
+def get_width_heigth():
+    return (data.index[int(results_full[3])] - data.index[int(results_full[2])])/(data[data.index[int(peaks[0])]])
