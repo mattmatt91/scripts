@@ -7,7 +7,7 @@ from do_statistics import calculate
 if __name__ == '__main__':
     
     # root_path = 'data\\22.09.2022'
-    root_path = 'C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022_test'
+    root_path = 'C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022'
     properties = read_json('', 'properties.json')
     
     scan_folder(root_path, properties)

@@ -18,9 +18,7 @@ def plot_measurement(df, peak_data, properties, name, path):
         fig.data[i].line.color = color
         if len(peak_data[sensor]['peaks']) > 0:
             fig = draw_peak(fig, df, peak_data, sensor, color)
-            # width
-    fig.show()
-    exit()
+    # fig.show()
     
     path=f"{path}\\results\\plots\\measurements\\combined"
     mkdir_ifnotexits(path)
@@ -30,8 +28,8 @@ def plot_measurement(df, peak_data, properties, name, path):
 
 def draw_peak(fig, df, peak_data, sensor, color):
     fig = draw_v(fig, df, peak_data, sensor, color)
-    fig = draw_h(fig, df, peak_data, sensor, color)
-    # fig = draw_half(fig, df, peak_data, sensor, color)
+    # fig = draw_h(fig, df, peak_data, sensor, color)
+    fig = draw_half(fig, df, peak_data, sensor, color)
     fig = draw_full(fig, df, peak_data, sensor, color)
     return fig
 
@@ -53,16 +51,30 @@ def draw_h(fig, df, peak_data, sensor, color):
     return fig
 
 def draw_full(fig, df, peak_data, sensor, color):
-    results_full = np.array(peak_data[sensor]['results_full'])
-    
-    print(results_full)
-    #x0 = df.index[peak_data[sensor]['peak_properties']['left_bases'][0]]
-    #x1 = df.index[peak_data[sensor]['peak_properties']['right_bases'][0]]
-    #y0 = 
-    #y1 = 
-    #fig = draw_line(fig, x0, x1, y0, y1, color)
+    keys = "widths heigth left_ips right_ips".split()
+    values = [i[0] for i in np.array(peak_data[sensor]['results_full'])]
+    results_full = {}
+    for key, val in zip(keys, values):
+        results_full[key] = val
+    x0 =  df.index[int(results_full['left_ips'])]
+    x1 =  df.index[int(results_full['right_ips'])]
+    y0 = results_full['heigth']
+    y1 = results_full['heigth']
+    fig = draw_line(fig, x0, x1, y0, y1, color)
     return fig
 
+def draw_half(fig, df, peak_data, sensor, color):
+    keys = "widths heigth left_ips right_ips".split()
+    values = [i[0] for i in np.array(peak_data[sensor]['results_half'])]
+    results_half = {}
+    for key, val in zip(keys, values):
+        results_half[key] = val
+    x0 =  df.index[int(results_half['left_ips'])]
+    x1 =  df.index[int(results_half['right_ips'])]
+    y0 = results_half['heigth']
+    y1 = results_half['heigth']
+    fig = draw_line(fig, x0, x1, y0, y1, color)
+    return fig
 
 def draw_line(fig, x0, x1, y0, y1, color):
     fig.add_shape(type="line",

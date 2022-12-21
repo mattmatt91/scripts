@@ -42,8 +42,7 @@ def clean_data(data, properties, info):
     data.set_index('time [s]', inplace=True)
     for sensor in properties['sensors']:
         if properties['sensors'][sensor]['norm']:
-            pass
-            # data[sensor] = floating_mean(data[sensor])
+            data[sensor] = floating_mean(data[sensor])
     return data
 
 
@@ -60,7 +59,16 @@ def evaluate_sensor(data, sensor, threshold):
         data, prominence=0, width=1, distance=20000, height=threshold)
     results_half = peak_widths(data, peaks, rel_height=0.5)
     results_full = peak_widths(data, peaks, rel_height=0.99)
-
+    peak_info = {}
+    peak_info["peak_x"] = peaks[0]
+    peak_info["peak_time"] = data.index[peaks[0]]
+    keys = "widths heigth left_ips right_ips".split()
+    values_full = [i[0] for i in np.array(results_full)]
+    values_half = [i[0] for i in np.array(results_half)]
+    for key, val in zip(keys, values_full):
+        peak_info[f"{key}_full"] = val
+    for key, val in zip(keys, values_half):
+        peak_info[f"{key}_half"] = val
     if len(peaks) > 0:
         val1 = int(results_full[2][0])
         val2 = int(results_full[3][0])
@@ -69,6 +77,26 @@ def evaluate_sensor(data, sensor, threshold):
         df_peak=pd.DataFrame()
     # functions for feature extraction
 
+
+    values = [get_peak, get_start, get_stop, get_width, get_width_half,
+              get_height, get_integral, get_slope,  get_width_heigth]
+    features = "peak[s] start[s] stop[s] width[s] width_half[s] height intetegral[Vs] slope[V/s] width_heigth[s/V]".split()
+
+    # build the json result for this measurement
+    result_dict = {}
+    for feature, value in zip(features, values):
+        if len(peaks)>0:
+            result_dict[f"{sensor}_{feature}"] = value()
+        else:
+            result_dict[f"{sensor}_{feature}"] = False
+    peak_info = {'peaks':peaks,
+                "peak_properties":peak_properties, 
+                "results_full":results_full,
+                "results_half":results_half,
+                "result_dict":result_dict}
+
+    
+    return peak_info
     def get_peak():
         return data.index[int(peaks[0])]
 
@@ -107,23 +135,3 @@ def evaluate_sensor(data, sensor, threshold):
 
     def get_width_heigth():
         return (data.index[int(results_full[3])] - data.index[int(results_full[2])])/(data[data.index[int(peaks[0])]])
-
-    values = [get_peak, get_start, get_stop, get_width, get_width_half,
-              get_height, get_integral, get_slope,  get_width_heigth]
-    features = "peak[s] start[s] stop[s] width[s] width_half[s] height intetegral[Vs] slope[V/s] width_heigth[s/V]".split()
-
-    # build the json result for this measurement
-    result_dict = {}
-    for feature, value in zip(features, values):
-        if len(peaks)>0:
-            result_dict[f"{sensor}_{feature}"] = value()
-        else:
-            result_dict[f"{sensor}_{feature}"] = False
-    peak_info = {'peaks':peaks,
-                "peak_properties":peak_properties, 
-                "results_full":results_full,
-                "results_half":results_half,
-                "result_dict":result_dict}
-
-    
-    return peak_info
