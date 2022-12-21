@@ -25,7 +25,7 @@ def scan_folder(path, properties):
             path_data = get_path_data(folder)
         
             data_measurement = pd.read_csv(path_data, decimal='.', sep='\t')
-            data_measurement, features = evaluate_measurement(data_measurement, properties, info_measurement)
+            data_measurement, features = evaluate_measurement(data_measurement, properties, info_measurement, name, path)
             results.append(features)
             for sensor in data:
                 if sensor == 'name':
@@ -42,10 +42,9 @@ def scan_folder(path, properties):
 
 def merge_results(result, folder):
     df_result = pd.DataFrame(result)
-    print(df_result)
     path_result = mkdir_ifnotexits(join(folder, 'results'))
     path_to_save = join(path_result, 'results.txt')
-    df_result.to_csv(path_to_save, decimal='.', sep='\t')
+    df_result.to_csv(path_to_save, decimal='.', sep='\t', index=False)
 
 def merge_measurements(data, folder):
     data_sensors = {}

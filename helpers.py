@@ -45,3 +45,8 @@ def get_path_info(path):
 def mkdir_ifnotexits(path):
     Path(path).mkdir(parents=True, exist_ok=True)
     return path
+
+def save_df(df, path, name):
+    Path(path).mkdir(parents=True, exist_ok=True)
+    path = join(path, f'{name}.txt')
+    df.to_csv(path, sep=';', decimal='.', index=True)

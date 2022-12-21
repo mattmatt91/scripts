@@ -13,7 +13,7 @@ A PCA and an LDA are performed. Corresponding plots are created for this.
 :copyright: (c) 2022 by Matthias Muhr, Hochschule-Bonn-Rhein-Sieg
 :license: see LICENSE for more details.
 """
-from os import name
+from os.path import join
 from tkinter import font
 import pandas as pd
 import seaborn as sns
@@ -34,6 +34,7 @@ from sklearn.model_selection import LeaveOneOut
 from sklearn import metrics
 from roc import get_roc
 import matplotlib
+from helpers import save_df
 
 
 def create_droplist(keywords, cols):
@@ -52,18 +53,7 @@ def create_droplist(keywords, cols):
     return drops
 
 
-def save_df(df, path, name):
-    """
-    This function saves a DataFrame to csv in the results folder.
 
-    Param:
-        df (pandas.DataFrame): DataFrame to save
-        path (string): path to root directory of data
-        name (string): Name under which the file is to be saved
-    """
-    Path(path).mkdir(parents=True, exist_ok=True)
-    path = path + '\\' + name + '.csv'
-    df.to_csv(path, sep=';', decimal='.', index=True)
 
 
 def save_html(html_object, path, name):
@@ -98,18 +88,12 @@ def save_jpeg(jpeg_object, path, name):
 
 
 def get_statistics(df, path):
-    """
-    This function calculates statistical characteristics of the data.
-
-    Param:
-        df (pandas.DataFrame): DataFrame with data form result.csv
-        path (string): root path to data
-    """
     print('processing statistics...')
-    samples = df.index.unique().tolist()
+    samples = df['sample'].unique().tolist()
     statistics_list = {}
     df_mean = pd.DataFrame()
     df_std = pd.DataFrame()
+    path = join(path, 'results', 'statistics')
     for sample in samples:
         df_stat = df[df.index == sample].describe()
         save_df(df_stat, path, sample)
@@ -121,26 +105,11 @@ def get_statistics(df, path):
 
 
 def create_sample_list(df, properties):
-    """
-    This function return a list with a with all occurring 
-    samples and one with the corresponding plot colours.
-
-    Param:
-        df (pandas.DataFrame): DataFrame with data form result.csv
-        properties (dictionary): properties is a dictionary with all parameters for evaluating the data
-
-    Returns:
-        color_list (list): list with sample corresponding plot colours
-        sample_list (list): list with occuring samples
-    """
     colors = properties['colors_samples']
     samples = df.index.unique().tolist()
     sample_list = []
     color_list = []
     for sample in samples:
-        # remove this for new data
-        if sample == ' TNT':
-            sample = 'TNT'
         sample_list.append(sample)
         color_list.append(colors[sample])
     return color_list, sample_list
@@ -171,25 +140,27 @@ def calc_pca(df, path, df_names, properties, browser=True, dimension=True, drop_
     pca.fit(scaled_data)
     x_pca = pca.transform(scaled_data)
     # create df for plotting with PCs and samples as index
-    df_x_pca = pd.DataFrame(x_pca, index=df.index, columns='PC1 PC2 PC3'.split())
-    components = pd.DataFrame(pca.components_, columns=df.columns, index='PC1 PC2 PC3'.split())
+    df_x_pca = pd.DataFrame(x_pca, index=df.index,
+                            columns='PC1 PC2 PC3'.split())
+    components = pd.DataFrame(
+        pca.components_, columns=df.columns, index='PC1 PC2 PC3'.split())
     # plot pca
     axis_label = 'PC'
-    additive_labels = [round(pca.explained_variance_ratio_[i], 2) for i in range(3)]
-    plot_components(color_list, df_x_pca, sample_list, df_names, path, properties, name='PCA', browser=browser, dimension=dimension, axis_label=axis_label, additiv_labels=additive_labels)
+    additive_labels = [round(pca.explained_variance_ratio_[i], 2)
+                       for i in range(3)]
+    plot_components(color_list, df_x_pca, sample_list, df_names, path, properties, name='PCA',
+                    browser=browser, dimension=dimension, axis_label=axis_label, additiv_labels=additive_labels)
     save_df(components, path, 'PCA_components')
     # Loadings
     process_loadings(components, path, properties)
 
 
-
-
-
-def process_loadings(df, path, properties): # creates a df with the loadings and a column for sensor and feature
+# creates a df with the loadings and a column for sensor and feature
+def process_loadings(df, path, properties):
     """
     This function calculates the loadings of the PCA with the transferred components and creates a heat plot. 
     The loadings are stored in //results//.
-    
+
     Args:
         df (pandas.DataFrame): DataFrame with Components of PCA
         path (string): root path to data
@@ -239,10 +210,14 @@ def plot_loadings_heat(df, path, properties):
 
     # creating plot 1: total variance of the sensors per principal component
     sns.set_style("whitegrid")
-    fig, ax = plt.subplots(figsize=plot_properties['size'], dpi=plot_properties['dpi'])  # Sample figsize in inches
-    ax.set_ylabel('total variance of the sensors per principal component', fontsize=plot_properties['font_size'])
-    ax.set_xlabel('PC', fontsize = plot_properties['font_size'])
-    sns.barplot(x="PC", y="value", data=df, ax=ax, hue='sensor', ci=None, estimator=sum, palette=colors) 
+    # Sample figsize in inches
+    fig, ax = plt.subplots(
+        figsize=plot_properties['size'], dpi=plot_properties['dpi'])
+    ax.set_ylabel('total variance of the sensors per principal component',
+                  fontsize=plot_properties['font_size'])
+    ax.set_xlabel('PC', fontsize=plot_properties['font_size'])
+    sns.barplot(x="PC", y="value", data=df, ax=ax, hue='sensor',
+                ci=None, estimator=sum, palette=colors)
     ax.tick_params(labelsize=plot_properties['label_size'])
     ax.legend(frameon=True, fontsize=plot_properties['legend_size'])
     name = 'sensor' + '_loadings'
@@ -251,15 +226,17 @@ def plot_loadings_heat(df, path, properties):
     plt.close()
 
     # creating plot 2: total variance for each sensor
-    fig, ax = plt.subplots(figsize=plot_properties['size'], dpi=plot_properties['dpi'])
-    sns.barplot(x="sensor", y="value_abs", data=df, ax=ax, ci=None, estimator=sum, palette=colors)
-    ax.set_ylabel('total variance for each sensor', fontsize =plot_properties['font_size'])
-    ax.set_xlabel('sensor', fontsize =plot_properties['font_size'])
+    fig, ax = plt.subplots(
+        figsize=plot_properties['size'], dpi=plot_properties['dpi'])
+    sns.barplot(x="sensor", y="value_abs", data=df, ax=ax,
+                ci=None, estimator=sum, palette=colors)
+    ax.set_ylabel('total variance for each sensor',
+                  fontsize=plot_properties['font_size'])
+    ax.set_xlabel('sensor', fontsize=plot_properties['font_size'])
     name = 'sensor' + '_loadings_simple'
     save_jpeg(fig, path, name)
     # plt.show()
     plt.close()
-    
 
 
 def convert_df_pd(df):
@@ -278,7 +255,8 @@ def convert_df_pd(df):
     df_converted = pd.DataFrame()
     for i, m, k in zip(df['sensors'], df['features'], range(len(df['features']))):
         for n in pcs:
-            df_converted = df_converted.append({'sensor': i, 'feature': m, 'PC': n, 'value': df.iloc[k][n]}, ignore_index=True)
+            df_converted = df_converted.append(
+                {'sensor': i, 'feature': m, 'PC': n, 'value': df.iloc[k][n]}, ignore_index=True)
     return df_converted
 
 
@@ -322,7 +300,8 @@ def calc_lda(df, path, df_names, properties, browser=True, dimension=True, drop_
     df_x_lda = pd.DataFrame(x_lda, index=df.index, columns='C1 C2 C3'.split())
 
     axis_label = 'C'
-    plot_components(color_list, df_x_lda, sample_list, df_names, path, properties, name='LDA', browser=browser, dimension=dimension, axis_label=axis_label)
+    plot_components(color_list, df_x_lda, sample_list, df_names, path, properties,
+                    name='LDA', browser=browser, dimension=dimension, axis_label=axis_label)
     cross_validate(lda, scaled_data, df.index, path, properties)
 
 
@@ -349,23 +328,27 @@ def cross_validate(function, x, y, path, properties):
         result = pd.DataFrame({'true': y_test, 'predict': predictions})
         result['value'] = result['predict'] == result['true']
         df_result = df_result.append(result, ignore_index=True)
-    print('error rate: ' + str((df_result[df_result['value'] == False]['value'].count()/len(df_result))*100) + '%')
+    print('error rate: ' + str((df_result[df_result['value']
+          == False]['value'].count()/len(df_result))*100) + '%')
 
     df_conf = create_confusion(df_result)
-    fig, ax = plt.subplots(figsize=plot_properties['size'], dpi=plot_properties['dpi'])
+    fig, ax = plt.subplots(
+        figsize=plot_properties['size'], dpi=plot_properties['dpi'])
     count_size = plot_properties['count_size']
-    sns.heatmap(df_conf.fillna(0), linewidths=.5, annot=True, fmt='g', cbar=False, cmap="viridis", ax=ax, annot_kws={"size": count_size})
-    ax.set_ylabel('true', fontsize = plot_properties['label_size'])
-    ax.set_xlabel('predicted', fontsize = plot_properties['label_size'])
+    sns.heatmap(df_conf.fillna(0), linewidths=.5, annot=True, fmt='g',
+                cbar=False, cmap="viridis", ax=ax, annot_kws={"size": count_size})
+    ax.set_ylabel('true', fontsize=plot_properties['label_size'])
+    ax.set_xlabel('predicted', fontsize=plot_properties['label_size'])
     plt.yticks(size=plot_properties['font_size'], rotation=30)
     plt.xticks(size=plot_properties['font_size'], rotation=30)
     plt.tight_layout()
     save_jpeg(fig, path, 'heatmap_crossvalidation_LDA')
     # plt.show()
     plt.close()
-    
+
     # computing cor curve
     get_roc(df_result, path, properties)
+
 
 def create_confusion(df):
     """
@@ -381,7 +364,8 @@ def create_confusion(df):
     df_conf = pd.DataFrame(columns=labels, index=labels)
     for i in df['true'].unique():
         for n in df['true'].unique():
-            value = df[(df['true'] == i) & (df['predict'] == n)]['true'].count()
+            value = df[(df['true'] == i) & (
+                df['predict'] == n)]['true'].count()
             df_conf.loc[i, n] = value  # zeilen sind true spalten predict
     return df_conf
 
@@ -402,68 +386,80 @@ def plot_components(colors, x_r, samples, df_names, path, properties, name=None,
         browser (bool): With **True** the plot is created as *html* (Plottly), with **False** as *jpeg* (matplotlib)
         dimension (bool): If **True**, a *3D* plot is created, if **False**, a *2D* plot is created.
         additiv_labels (list): list with additiv labels for each axis, , default is empty
-    """ 
+    """
     if not browser:
         if dimension:
-            plot_properties = properties['plot_properties'][ "components_plot_3D"]
+            plot_properties = properties['plot_properties']["components_plot_3D"]
             matplotlib.rcParams['legend.fontsize'] = plot_properties['legend_size']
-            fig = plt.figure(figsize=plot_properties['size'], dpi=plot_properties['dpi'])   
+            fig = plt.figure(
+                figsize=plot_properties['size'], dpi=plot_properties['dpi'])
             threedee = fig.add_subplot(111, projection='3d')
             for color, target_name in zip(colors, samples):
                 threedee.scatter(x_r[x_r.index.get_level_values('sample') == target_name][axis_label + str(1)],
-                                 x_r[x_r.index.get_level_values('sample') == target_name][axis_label + str(2)],
-                                 x_r.loc[x_r.index.get_level_values('sample') == target_name][axis_label + str(3)],
-                                 s= plot_properties['dot'], color=color, alpha=.8, label=target_name)
+                                 x_r[x_r.index.get_level_values(
+                                     'sample') == target_name][axis_label + str(2)],
+                                 x_r.loc[x_r.index.get_level_values(
+                                     'sample') == target_name][axis_label + str(3)],
+                                 s=plot_properties['dot'], color=color, alpha=.8, label=target_name)
 
-            threedee.tick_params(axis='both', labelsize=plot_properties['font_size'])
+            threedee.tick_params(
+                axis='both', labelsize=plot_properties['font_size'])
             threedee.legend(loc='best', shadow=False, scatterpoints=1)
-            threedee.set_xlabel('{0}{1} {2} %'.format(axis_label, 1, additiv_labels[0]),fontsize=plot_properties['label_size'])
-            threedee.set_ylabel('{0}{1} {2} %'.format(axis_label, 2, additiv_labels[1]),fontsize=plot_properties['label_size'])
-            threedee.set_zlabel('{0}{1} {2} %'.format(axis_label, 3, additiv_labels[2]),fontsize=plot_properties['label_size'])
+            threedee.set_xlabel('{0}{1} {2} %'.format(
+                axis_label, 1, additiv_labels[0]), fontsize=plot_properties['label_size'])
+            threedee.set_ylabel('{0}{1} {2} %'.format(
+                axis_label, 2, additiv_labels[1]), fontsize=plot_properties['label_size'])
+            threedee.set_zlabel('{0}{1} {2} %'.format(
+                axis_label, 3, additiv_labels[2]), fontsize=plot_properties['label_size'])
             save_jpeg(fig, path, name+'_3D')
 
         # 2D-Plot
         if not dimension:
-            plot_properties = properties['plot_properties'][ "components_plot_2D"]
+            plot_properties = properties['plot_properties']["components_plot_2D"]
             matplotlib.rcParams['legend.fontsize'] = plot_properties['legend_size']
-            fig = plt.figure(figsize=plot_properties['size'], dpi=plot_properties['dpi'])
+            fig = plt.figure(
+                figsize=plot_properties['size'], dpi=plot_properties['dpi'])
             twodee = fig.add_subplot()
             for color, i, target_name in zip(colors, np.arange(len(colors)), samples):
                 twodee.scatter(x_r[x_r.index.get_level_values('sample') == target_name][axis_label + str(1)],
-                               x_r[x_r.index.get_level_values('sample') == target_name][axis_label + str(2)],
+                               x_r[x_r.index.get_level_values(
+                                   'sample') == target_name][axis_label + str(2)],
                                s=plot_properties['dot'], color=color, alpha=.8, label=target_name)
 
-            twodee.tick_params(axis='both', labelsize=plot_properties['font_size'])
-            twodee.legend(loc='best', shadow=False, scatterpoints=1) 
-            twodee.set_xlabel('{0}{1} {2} %'.format(axis_label, 1, additiv_labels[0]),fontsize=plot_properties['label_size'])
-            twodee.set_ylabel('{0}{1} {2} %'.format(axis_label, 2, additiv_labels[1]),fontsize=plot_properties['label_size'])
+            twodee.tick_params(
+                axis='both', labelsize=plot_properties['font_size'])
+            twodee.legend(loc='best', shadow=False, scatterpoints=1)
+            twodee.set_xlabel('{0}{1} {2} %'.format(
+                axis_label, 1, additiv_labels[0]), fontsize=plot_properties['label_size'])
+            twodee.set_ylabel('{0}{1} {2} %'.format(
+                axis_label, 2, additiv_labels[1]), fontsize=plot_properties['label_size'])
             save_jpeg(fig, path, name+'_2D')
-            
-        # plt.show()  
-        
+
+        # plt.show()
+
     if browser:
-        plot_properties = properties['plot_properties'][ "components_plot_html"]
-        axis_names = [axis_label+ str(i+1) for i in range(3)]
+        plot_properties = properties['plot_properties']["components_plot_html"]
+        axis_names = [axis_label + str(i+1) for i in range(3)]
 
         colors_dict = {}
         for i in x_r.index.unique():
-            colors_dict[i]=properties['colors_samples'][i]
+            colors_dict[i] = properties['colors_samples'][i]
         fig = px.scatter_3d(
-                x_r,
-                x=axis_names[0],
-                y=axis_names[1],
-                z=axis_names[2],
-                color_discrete_map=colors_dict,
-                color=x_r.index,
-                hover_data={'name': df_names.tolist()}
-                )
+            x_r,
+            x=axis_names[0],
+            y=axis_names[1],
+            z=axis_names[2],
+            color_discrete_map=colors_dict,
+            color=x_r.index,
+            hover_data={'name': df_names.tolist()}
+        )
 
         # setting plot parameters
         fig.update_layout(
             legend_title_font_size=plot_properties['legend_size'],
             legend_font_size=plot_properties['legend_size']/1.2,
             font_size=plot_properties['font_size']
-            )
+        )
 
         # saving plot
         save_html(fig, path, name)
@@ -472,34 +468,21 @@ def plot_components(colors, x_r, samples, df_names, path, properties, name=None,
 
 
 def calculate(path, properties, statistic=True, pca=True, lda=True, browser=False, dimension=False):
-    """
-    This is the main function of this module. It calculates some statistics, LDA and PCA. Plots are created 
-
-    Args:
-        path (string): root path to data
-        properties (dictionary): properties is a dictionary with all parameters for evaluating the data
-        pca (bool): If True, PCA is executed (*default*)
-        lda (bool): If True, LDA is executed (*default*)
-        browser (bool): With **True** the plot is created as *html* (Plottly), with **False** as *jpeg* (matplotlib)
-        dimension (bool): If **True**, a *3D* plot is created, if **False**, a *2D* plot is created.
-    """
     # preparing result.csv for statistics
-    path = path + '\\Results'
-    path_results = path+ '\\Result.csv'
-    df = pd.read_csv(path_results, delimiter=';', decimal=',')
-    df_names = df['name']
-    df.drop(['rate', 'duration', 'sensors', 'path', 'droptime', 'height',
-       'sample_number', 'info', 'datetime', 'name'], axis=1, inplace=True)# select sensors to drop for statisctics e.g. name
-    df.set_index(['sample'], inplace=True)
-
+    df = pd.read_csv(join(path,'results','results.txt'), delimiter='\t', decimal='.')
+    # select sensors to drop for statisctics e.g. name
+    df.drop(['datetime', 'height', 'path', 'number'], axis=1, inplace=True)
+    df.set_index(['name'], inplace=True)
     # do statistics
     if statistic:
         get_statistics(df, path)
+    exit()
     if pca:
-        calc_pca(df, path, df_names, properties, browser=browser, dimension=dimension, drop_keywords=[])
+        calc_pca(df, path, df_names, properties, browser=browser,
+                 dimension=dimension, drop_keywords=[])
     if lda:
-        calc_lda(df, path, df_names, properties, browser=browser, dimension=dimension, drop_keywords=[])
-    
+        calc_lda(df, path, df_names, properties, browser=browser,
+                 dimension=dimension, drop_keywords=[])
 
 
 if __name__ == '__main__':

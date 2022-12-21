@@ -1,16 +1,18 @@
 import pandas as pd
 import numpy as np
 from scipy.signal import chirp, find_peaks, peak_widths
-from plot_measurement import plot_measurement
+from plot_measurement import plot_measurement, plot_measurement_stacked
 
-def evaluate_measurement(data, properties, info):
+def evaluate_measurement(data, properties, info, name, folder):
     features = info
+    features['name'] = name
     data = clean_data(data, properties, info)
-    
+    evaluation_data = {}
     for sensor in data.columns:
-        result, peaks, peak_properties, results_half, results_full =  evaluate_sensor(data, sensor, properties['sensors'][sensor]['threshold'])
-        features = features | result
-    plot_measurement(info, data, peak_properties, results_half, results_full, peaks)
+        evaluation_data[sensor] =  evaluate_sensor(data[sensor], sensor, properties['sensors'][sensor]['threshold'])
+        features = features | evaluation_data[sensor]['result_dict']
+    plot_measurement(data,evaluation_data, properties, name, folder)
+    plot_measurement_stacked(data,evaluation_data, properties, name, folder)
     return data, features
 
 
@@ -54,16 +56,11 @@ def floating_mean(data):
 
 
 def evaluate_sensor(data, sensor, threshold):
-    peaks, peak_properties, results_half, results_full, result_dict = analyse(
-        data[sensor], sensor, threshold)
-    return result_dict, peaks, peak_properties, results_half, results_full
-
-
-def analyse(data, sensor, threshold):
     peaks, peak_properties = find_peaks(
         data, prominence=0, width=1, distance=20000, height=threshold)
     results_half = peak_widths(data, peaks, rel_height=0.5)
     results_full = peak_widths(data, peaks, rel_height=0.99)
+
     if len(peaks) > 0:
         val1 = int(results_full[2][0])
         val2 = int(results_full[3][0])
@@ -122,5 +119,11 @@ def analyse(data, sensor, threshold):
             result_dict[f"{sensor}_{feature}"] = value()
         else:
             result_dict[f"{sensor}_{feature}"] = False
+    peak_info = {'peaks':peaks,
+                "peak_properties":peak_properties, 
+                "results_full":results_full,
+                "results_half":results_half,
+                "result_dict":result_dict}
 
-    return (peaks, peak_properties, results_half, results_full, result_dict)
+    
+    return peak_info
