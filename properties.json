@@ -1,8 +1,10 @@
 {
-    "root_path": "C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022",
+    "root_path": "C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022_test",
     "cut_before_signal":100,
-    "cut_after_signal":2500,
+    "cut_after_signal":4000,
     "sensor_to_cut": "Piezo1",
+    "points_offset": 100,
+    
     "sensors": {
         "VIS1": {
             "threshold": 0.1,
@@ -46,7 +48,7 @@
                 0.008,
                 0.1
             ],
-            "norm": true,
+            "norm": 100,
             "color": "orange"
         },
         "Piezo1": {
@@ -55,7 +57,7 @@
                 0.008,
                 0.1
             ],
-            "norm": true,
+            "norm": 100,
             "color": "green"
         },
         "Mikro2": {
@@ -64,7 +66,7 @@
                 0.008,
                 0.1
             ],
-            "norm": true,
+            "norm": 30,
             "color": "orange"
         },
         "Piezo2": {
@@ -73,7 +75,7 @@
                 0.008,
                 0.1
             ],
-            "norm": true,
+            "norm": 30,
             "color": "green"
         }
     },

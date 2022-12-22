@@ -9,81 +9,70 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
 
-def plot_measurement(df, peak_data, properties, name, path):
+def plot_measurement(df, features, properties, name, path):
     fig = px.line(df, x=df.index, y=df.columns)
-
-
+    
     for i, sensor in zip(range(len(df.columns)), df.columns):
         color = properties['sensors'][fig.data[i].name]['color']
         fig.data[i].line.color = color
-        if len(peak_data[sensor]['peaks']) > 0:
-            fig = draw_peak(fig, df, peak_data, sensor, color)
+        if len(features['sensors'][sensor]) > 0:
+            fig = draw_peak(fig, df, features, sensor, color)
     # fig.show()
-    
-    path=f"{path}\\results\\plots\\measurements\\combined"
+
+    path = f"{path}\\results\\plots\\measurements\\combined"
     mkdir_ifnotexits(path)
-    path=join(path, f'{name}.html')
+    path = join(path, f'{name}.html')
     fig.write_html(path)
 
 
-def draw_peak(fig, df, peak_data, sensor, color):
-    fig = draw_v(fig, df, peak_data, sensor, color)
-    # fig = draw_h(fig, df, peak_data, sensor, color)
-    fig = draw_half(fig, df, peak_data, sensor, color)
-    fig = draw_full(fig, df, peak_data, sensor, color)
+def draw_peak(fig, df, features, sensor, color):
+    fig = draw_v(fig, df, features, sensor, color)
+    fig = draw_h(fig, df, features, sensor, color)
+    fig = draw_half(fig, df, features, sensor, color)
+    fig = draw_full(fig, df, features, sensor, color)
     return fig
 
-def draw_v(fig, df, peak_data, sensor, color):
-    x0 = df.index[peak_data[sensor]['peaks'][0]]
+def draw_v(fig, df, features, sensor, color):
+    x0 = features['sensors'][sensor]['peak_time']
     x1 = x0
     y0 = 0
-    y1 = peak_data[sensor]['peak_properties']['peak_heights'][0]
+    y1 = features['sensors'][sensor]['peak_heights']
     fig = draw_line(fig, x0, x1, y0, y1, color)
     return fig
 
-
-def draw_h(fig, df, peak_data, sensor, color):
-    x0 = df.index[peak_data[sensor]['peak_properties']['left_bases'][0]]
-    x1 = df.index[peak_data[sensor]['peak_properties']['right_bases'][0]]
+def draw_h(fig, df, features, sensor, color):
+    x0 = df.index[int(features['sensors'][sensor]['left_ips'])]
+    x1 = df.index[int(features['sensors'][sensor]['right_ips'])]
     y0 = df[sensor].loc[x0]
     y1 = df[sensor].loc[x1]
     fig = draw_line(fig, x0, x1, y0, y1, color)
     return fig
 
-def draw_full(fig, df, peak_data, sensor, color):
-    keys = "widths heigth left_ips right_ips".split()
-    values = [i[0] for i in np.array(peak_data[sensor]['results_full'])]
-    results_full = {}
-    for key, val in zip(keys, values):
-        results_full[key] = val
-    x0 =  df.index[int(results_full['left_ips'])]
-    x1 =  df.index[int(results_full['right_ips'])]
-    y0 = results_full['heigth']
-    y1 = results_full['heigth']
+def draw_full(fig, df, features, sensor, color):
+    # print(peak_data[sensor])
+    x0 = df.index[int(features['sensors'][sensor]['left_ips_half'])]
+    x1 = df.index[int(features['sensors'][sensor]['right_ips_half'])]
+    y0 = df[sensor].loc[x0]
+    y1 = df[sensor].loc[x1]
     fig = draw_line(fig, x0, x1, y0, y1, color)
     return fig
 
-def draw_half(fig, df, peak_data, sensor, color):
-    keys = "widths heigth left_ips right_ips".split()
-    values = [i[0] for i in np.array(peak_data[sensor]['results_half'])]
-    results_half = {}
-    for key, val in zip(keys, values):
-        results_half[key] = val
-    x0 =  df.index[int(results_half['left_ips'])]
-    x1 =  df.index[int(results_half['right_ips'])]
-    y0 = results_half['heigth']
-    y1 = results_half['heigth']
+def draw_half(fig, df, features, sensor, color):
+    x0 = df.index[int(features['sensors'][sensor]['left_ips_full'])]
+    x1 = df.index[int(features['sensors'][sensor]['right_ips_full'])]
+    y0 = df[sensor].loc[x0]
+    y1 = df[sensor].loc[x1]
     fig = draw_line(fig, x0, x1, y0, y1, color)
     return fig
 
 def draw_line(fig, x0, x1, y0, y1, color):
     fig.add_shape(type="line",
-        x0=x0, y0=y0, x1=x1, y1=y1,
-        line=dict(
-            color=color,
-            width=4,
-        )
-    )
+                  x0=x0, y0=y0, x1=x1, y1=y1,
+                  line=dict(
+                      color=color,
+                      width=2,
+                  )
+                  )
     return fig
 
 # Piezo2 peaks [300]
@@ -106,9 +95,7 @@ def plot_measurement_stacked(df, peak_data, properties, name, path):
         ), row=i+1, col=1)
     fig.update_layout(height=1200, width=800, title_text=name)
 
-    path=f"{path}\\results\\plots\\measurements\\stacked"
+    path = f"{path}\\results\\plots\\measurements\\stacked"
     mkdir_ifnotexits(path)
-    path=join(path, f'{name}_stacked.html')
+    path = join(path, f'{name}_stacked.html')
     fig.write_html(path)
-
-   

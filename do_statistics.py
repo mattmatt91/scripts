@@ -1,18 +1,4 @@
-"""
-This function calculates statistical values and performs multivariate
-statistics. The values from the **results.csv** file are used for this.
 
-A PCA and an LDA are performed. Corresponding plots are created for this.
-
-
-:info: In the calculate function, parameters of the measurements can be deleted
- from the evaluation. (For example, if the same substance is used for
- all measurements. This property could be removed from the calculation)
-
-
-:copyright: (c) 2022 by Matthias Muhr, Hochschule-Bonn-Rhein-Sieg
-:license: see LICENSE for more details.
-"""
 from os.path import join
 from tkinter import font
 import pandas as pd
@@ -32,39 +18,16 @@ from random import randint
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import LeaveOneOut
 from sklearn import metrics
-from roc import get_roc
+# from roc import get_roc
 import matplotlib
 from helpers import save_df
-
-
-def create_droplist(keywords, cols):
-    """
-    This function creates a list with all feauters in which the given keywords occur.
-
-    Args:
-        keywords (list): list with keywords to drop
-        cols (list): list with feauters
-    """
-    drops = []
-    for key in keywords:
-        for col in cols:
-            if key in col:
-                drops.append(col)
-    return drops
 
 
 
 
 
 def save_html(html_object, path, name):
-    """
-    This Function saves a plottly figure as html to plots//statistics.
-
-    Param:
-        html_object (object): plottly html object to save
-        path (string): path to root directory of data
-        name (string): Name to save figure
-    """
+  
     path = path + '\\plots\\statistics'
     Path(path).mkdir(parents=True, exist_ok=True)
     path = path + '\\' + name + '.html'
@@ -73,14 +36,7 @@ def save_html(html_object, path, name):
 
 
 def save_jpeg(jpeg_object, path, name):
-    """
-    This Function saves a  figure as jpeg to plots//statistics.
-
-    Param:
-        html_object (object): plottly figure to save
-        path (string): path to root directory of data
-        name (string): Name to save figure
-    """
+  
     path = path + '\\plots\\statistics'
     Path(path).mkdir(parents=True, exist_ok=True)
     path = path + '\\' + name + '.jpeg'
@@ -94,14 +50,18 @@ def get_statistics(df, path):
     df_mean = pd.DataFrame()
     df_std = pd.DataFrame()
     path = join(path, 'results', 'statistics')
+
     for sample in samples:
-        df_stat = df[df.index == sample].describe()
-        save_df(df_stat, path, sample)
-        statistics_list[sample] = df_stat
-        df_mean[sample] = df_stat.T['mean']
-        df_std[sample] = df_stat.T['std']
+        df_sample = df[df['sample'] == sample].describe()
+        save_df(df_sample, path, sample)
+        statistics_list[sample] = df_sample
+        df_mean[sample] = df_sample.T['mean']
+        df_std[sample] = df_sample.T['std']
+
     save_df(df_mean.T, path, 'mean')
     save_df(df_std.T, path, 'std')
+
+
 
 
 def create_sample_list(df, properties):
@@ -116,19 +76,7 @@ def create_sample_list(df, properties):
 
 
 def calc_pca(df, path, df_names, properties, browser=True, dimension=True, drop_keywords=[]):
-    """
-    This function calculates a PCA with the data and calls the plot function. Components and
-    Loadings are safed in a file in //results// folder.
-
-    Args:
-        df (pandas.DataFrame): DataFrame with data form result.csv
-        path (string): root path to data
-        df_names (list): names of all measurements
-        properties (dictionary): properties is a dictionary with all parameters for evaluating the data
-        browser (bool): With **True** the plot is created as *html* (Plottly), with **False** as *jpeg* (matplotlib)
-        dimension (bool): If **True**, a *3D* plot is created, if **False**, a *2D* plot is created.
-        drop_keywords (list): list with all feauters to drop before calculatin pca
-    """
+  
     print('processing pca...')
     drop_list = create_droplist(drop_keywords, df.columns)
     df.drop(drop_list, axis=1, inplace=True)
@@ -157,15 +105,7 @@ def calc_pca(df, path, df_names, properties, browser=True, dimension=True, drop_
 
 # creates a df with the loadings and a column for sensor and feature
 def process_loadings(df, path, properties):
-    """
-    This function calculates the loadings of the PCA with the transferred components and creates a heat plot. 
-    The loadings are stored in //results//.
-
-    Args:
-        df (pandas.DataFrame): DataFrame with Components of PCA
-        path (string): root path to data
-        properties (dictionary): properties is a dictionary with all parameters for evaluating the data
-    """
+   
     df_components = get_true_false_matrix(df)
 
     plot_loadings_heat(df_components, path, properties)
@@ -173,16 +113,6 @@ def process_loadings(df, path, properties):
 
 
 def get_true_false_matrix(df):
-    """
-    This function reshapes and transposes the DataFrame with the passed loadings.
-    Columns with feauter and sensor are reshaped into two individual columns. 
-
-        Args:
-        df (pandas.DataFrame): DataFrame Loadings of PCA
-
-    Returns:
-        df (pandas.DataFrame): reshaped  and transposed DataFrame with Components of PCA
-    """
     df = df.T
     sensors = [x[:x.find('_')] for x in df.index.tolist()]
     df['sensors'] = sensors
@@ -192,14 +122,6 @@ def get_true_false_matrix(df):
 
 
 def plot_loadings_heat(df, path, properties):
-    """
-    This function creates a heat plot and other plots with the loadings of the PCA.
-
-    Args:
-        df (pandas.DataFrame): DataFrame with Components of PCA
-        path (string): root path to data
-        properties (dictionary): properties is a dictionary with all parameters for evaluating the data
-    """
     # preparing dataframe
     df = convert_df_pd(df)
     df['value_abs'] = df['value'].abs()
@@ -240,15 +162,6 @@ def plot_loadings_heat(df, path, properties):
 
 
 def convert_df_pd(df):
-    """
-    This function reshapes and transposes the passed DataFrame.
-
-    Args:
-        df (pandas.DataFrame): DataFrame in
-
-    Returns:
-        df_converted (pandas.DataFrame): reshaped  DataFrame 
-    """
     df.reset_index(drop=True, inplace=True)
     # formt den df um sodass pc keine Spalten mehr sind
     pcs = 'PC1 PC2 PC3'.split()
@@ -471,18 +384,19 @@ def calculate(path, properties, statistic=True, pca=True, lda=True, browser=Fals
     # preparing result.csv for statistics
     df = pd.read_csv(join(path,'results','results.txt'), delimiter='\t', decimal='.')
     # select sensors to drop for statisctics e.g. name
-    df.drop(['datetime', 'height', 'path', 'number'], axis=1, inplace=True)
+    df.drop(['datetime', 'height', 'path', 'number', 'rate'], axis=1, inplace=True)
     df.set_index(['name'], inplace=True)
+    df.fillna(0)
     # do statistics
     if statistic:
         get_statistics(df, path)
-    exit()
-    if pca:
-        calc_pca(df, path, df_names, properties, browser=browser,
-                 dimension=dimension, drop_keywords=[])
-    if lda:
-        calc_lda(df, path, df_names, properties, browser=browser,
-                 dimension=dimension, drop_keywords=[])
+    # if pca:
+    #     calc_pca(df, path, df_names, properties, browser=browser,
+    #              dimension=dimension, drop_keywords=[])
+    # 
+    # if lda:
+    #     calc_lda(df, path, df_names, properties, browser=browser,
+    #              dimension=dimension, drop_keywords=[])
 
 
 if __name__ == '__main__':
