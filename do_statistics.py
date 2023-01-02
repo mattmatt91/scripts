@@ -37,7 +37,7 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
 
     # df.drop(drop_list, axis=1, inplace=True)
     names = df['name']
-    df.drop('name', axis=1, inplace=True)
+    df.drop(['name','height'], axis=1, inplace=True) # removing hehgth ?????
     scalar = StandardScaler()
     scalar.fit(df)
     scaled_data = scalar.transform(df)
@@ -48,10 +48,7 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
     df_x_pca = pd.DataFrame(x_pca, index=df.index,
                             columns='PC1 PC2 PC3'.split())
     components = pd.DataFrame(
-        pca.components_, columns=df.columns, index='PC1 PC2 PC3'.split())
-    # plot pca
-    additive_labels = [round(pca.explained_variance_ratio_[i], 2)
-                       for i in range(3)]
+        pca.components_, columns=df.columns, index=['PC1', 'PC2', 'PC3'])
     save_df(components, join(path, 'results', 'statistics'), 'PCA_components')
     plot_components(df_x_pca, path, properties, names, name='PCA',)
 
@@ -63,8 +60,6 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
 def process_loadings(df, path, properties):
 
     df_components = get_true_false_matrix(df)
-    print(df_components)
-    exit()
     plot_loadings_heat(df_components, path, properties)
     save_df(df, path, 'PCA_loadings')
 
@@ -109,16 +104,6 @@ def calc_lda(df, path, df_names, properties, browser=True, dimension=True, drop_
 
 
 def cross_validate(function, x, y, path, properties):
-    """
-    This function performs a cross-validation (leave one out). The corresponding plot function is called. 
-
-    Args:
-        function (oobject): predictor function
-        x (numpy.array): x data for learning and prediction
-        y (list): y data for learning and prediction
-        path (string): root path to data
-        properties (dictionary): properties is a dictionary with all parameters for evaluating the data
-    """
     plot_properties = properties['plot_properties']["confusion_matrix"]
     df_result = pd.DataFrame()
     loo = LeaveOneOut()
@@ -190,9 +175,9 @@ def calculate(path, properties, statistic=True, pca=True, lda=True):
     if pca:
         calc_pca(df_mult_stat, path, properties)
 
-    # if lda:
-    #     calc_lda(df, path, df_names, properties, browser=browser,
-    #              dimension=dimension, drop_keywords=[])
+    if lda:
+        calc_lda(df, path, df_names, properties, browser=browser,
+                 dimension=dimension, drop_keywords=[])
 
 
 if __name__ == '__main__':

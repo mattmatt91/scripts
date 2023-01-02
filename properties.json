@@ -101,15 +101,9 @@
             "font_size": 10,
             "label_size": 12
         },
-        "loadings_plot": {
-            "dpi": 100,
-            "size": [
-                9,
-                7
-            ],
-            "font_size": 20,
-            "label_size": 20,
-            "legend_size": 20
+        "loadings": {
+            "width": 900,
+            "height": 650
         },
         "components_plot_2D": {
             "dpi": 200,
