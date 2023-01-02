@@ -12,7 +12,7 @@ from os.path import isfile, join
 def save_fig(fig, path, name):
     fig.tight_layout()
     # print(path)
-    path = join(path,'results', 'plots', 'compare')
+    path = join(path, 'results', 'plots', 'compare')
     Path(path).mkdir(parents=True, exist_ok=True)
     path = join(path, f'{name}.jpeg')
     # print(path)
@@ -29,8 +29,9 @@ def plot(df, sensor, path, names, properties):
     x_lim_plot = properties['sensors'][sensor]['x_lim_plot']
     x_lim_plot_start = x_lim_plot[0]
     x_lim_plot_end = x_lim_plot[1]
-
+    print(df)
     for sample in df.columns.unique():
+
         title = sensor + '_' + sample
         fig, ax = plt.subplots(
             figsize=plot_properties['size'], dpi=plot_properties['dpi'])
@@ -47,7 +48,8 @@ def plot(df, sensor, path, names, properties):
         plt.yticks(fontsize=plot_properties['font_size'])
         plt.xticks(fontsize=plot_properties['font_size'])
         ax.grid()
-        # plt.show()
+        plt.show()
+        exit()
         save_fig(fig, path, title)
         plt.close()
 
@@ -62,7 +64,8 @@ def evaluate_sensor(file, sensor, path, properties):
 def compare(path: str, properties: dict):
     root_path = join(path, 'results', 'merged_sensors')
     onlyfiles = [join(root_path, f)
-                 for f in listdir(root_path) if isfile(join(root_path, f))]
+                 for f in listdir(root_path) if isfile(join(root_path, f))]#
+    print(onlyfiles)
     sensors = [i for i in properties['sensors']]
     for file, sensor in zip(onlyfiles, sensors):
         evaluate_sensor(file, sensor, path, properties)

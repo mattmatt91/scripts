@@ -1,4 +1,4 @@
-from helpers import  get_subfolders, mkdir_ifnotexits, flattern_dict
+from helpers import get_subfolders, mkdir_ifnotexits, flattern_dict
 import pandas as pd
 from os.path import join
 from eval_measurement import evaluate_measurement
@@ -19,7 +19,8 @@ def scan_folder(path: str, properties: dict) -> None:
     data = init_data(properties)
     results = []
     for folder in subfolders:
-        data_measurement, features, name = evaluate_measurement(properties, folder)
+        data_measurement, features, name = evaluate_measurement(
+            properties, folder)
         results.append(flattern_dict(features))
         for sensor in data:
             if sensor == 'name':
@@ -35,7 +36,7 @@ def scan_folder(path: str, properties: dict) -> None:
     merge_results(results, path)
 
 
-def merge_results(result:list, folder:str):
+def merge_results(result: list, folder: str):
     df_result = pd.DataFrame(result)
     path_result = mkdir_ifnotexits(join(folder, 'results'))
     path_to_save = join(path_result, 'results.txt')
@@ -43,7 +44,7 @@ def merge_results(result:list, folder:str):
     # print(df_result.head())
 
 
-def merge_measurements(data:pd.DataFrame, folder:str):
+def merge_measurements(data: pd.DataFrame, folder: str):
     data_sensors = {}
     for sensor in data:
         if sensor != 'name' and sensor != 'time':
@@ -55,4 +56,3 @@ def merge_measurements(data:pd.DataFrame, folder:str):
             path_to_save = join(path_result, f'{sensor}.txt')
             df.to_csv(path_to_save, decimal='.', sep='\t')
             data_sensors[sensor] = df
-

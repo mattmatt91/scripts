@@ -10,9 +10,7 @@ def get_peak(data: pd.Series, threshold: float) -> dict:
         peak_info = {}
         peak_info["peak_time"] = data.index[peaks[0]]
         for key in peak_properties:
-            peak_info[key] = peak_properties[key][0] 
-        
-        
+            peak_info[key] = peak_properties[key][0]
 
         keys = "widths heigth left_ips right_ips".split()
 
@@ -34,6 +32,7 @@ def get_peak(data: pd.Series, threshold: float) -> dict:
         return peak_info
     else:
         return {}
+
 
 def extract_features(data: pd.Series, peak_info: dict):
     dict_feature = {"intetegral[Vs]": get_integral,

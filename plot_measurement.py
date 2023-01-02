@@ -7,95 +7,114 @@ from helpers import mkdir_ifnotexits
 from os.path import join
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+pd.options.plotting.backend = "plotly"
 
 
 def plot_measurement(df, features, properties, name, path):
-    fig = px.line(df, x=df.index, y=df.columns)
-    
-    for i, sensor in zip(range(len(df.columns)), df.columns):
-        color = properties['sensors'][fig.data[i].name]['color']
-        fig.data[i].line.color = color
-        if len(features['sensors'][sensor]) > 0:
-            fig = draw_peak(fig, df, features, sensor, color)
-    # fig.show()
+    fig  = df.plot(title=name)
+    for item in fig.data:
+        color = properties['sensors'][item.name]['color']
+        item.update(line_color=color)
+        
 
-    path = f"{path}\\results\\plots\\measurements\\combined"
+    path = f"{path}\\results\\plots\\measurements\\stacked"
+    mkdir_ifnotexits(path)
+    path = join(path, f'{name}.html')
+    fig.write_html(path)
+
+def plot_measurement_stacked(df, features, properties, name, path):
+    titles = tuple(df.columns)
+    n_rows = len(df.columns)
+
+    fig = make_subplots(rows=n_rows,
+                        cols=1,
+                        row_titles=titles,
+                        x_title=df.index.name)
+
+    traces = []
+    rows = []
+    for i, sensor in zip(range(len(df.columns)), df.columns):
+        traces, rows = draw_sensor(
+            traces, rows, df, features, properties, sensor, i, plt_peak=True)
+    cols = [1 for _ in rows]
+    fig.add_traces(traces, cols=cols, rows=rows)
+
+    fig.update_layout(height=1800,
+                      width=1000,
+                      title_text=name,
+                      showlegend=False)
+
+    path = f"{path}\\results\\plots\\measurements\\stacked"
     mkdir_ifnotexits(path)
     path = join(path, f'{name}.html')
     fig.write_html(path)
 
 
-def draw_peak(fig, df, features, sensor, color):
-    fig = draw_v(fig, df, features, sensor, color)
-    fig = draw_h(fig, df, features, sensor, color)
-    fig = draw_half(fig, df, features, sensor, color)
-    fig = draw_full(fig, df, features, sensor, color)
-    return fig
 
-def draw_v(fig, df, features, sensor, color):
-    x0 = features['sensors'][sensor]['peak_time']
-    x1 = x0
-    y0 = 0
-    y1 = features['sensors'][sensor]['peak_heights']
-    fig = draw_line(fig, x0, x1, y0, y1, color)
-    return fig
+def draw_sensor(traces, rows, df, features, properties, sensor, row, plt_peak=True):
+    color = properties['sensors'][sensor]['color']
+    trace = go.Scatter(
+        x=df.index,
+        y=df[sensor],
+        line=dict(color=color)
+    )
+    rows.append(row+1)
+    traces.append(trace)
 
-def draw_h(fig, df, features, sensor, color):
+    if len(features['sensors'][sensor]) > 0 and plt_peak:
+        traces_peak = draw_peak(df, features, sensor, color)
+        rows = rows + [row+1 for _ in traces_peak]
+        traces = traces + traces_peak
+    return traces, rows
+
+
+def draw_peak(df, features, sensor, color):
+    traces = []
+    # traces.append(draw_base(df, features, sensor, 'orange'))
+    traces.append(draw_vert(df, features, sensor, 'green'))
+    traces.append(draw_full(df, features, sensor, 'orange'))
+    traces.append(draw_half(df, features, sensor, 'orange'))
+    return traces
+
+
+def draw_base(df, features, sensor, color):
     x0 = df.index[int(features['sensors'][sensor]['left_ips'])]
     x1 = df.index[int(features['sensors'][sensor]['right_ips'])]
     y0 = df[sensor].loc[x0]
     y1 = df[sensor].loc[x1]
-    fig = draw_line(fig, x0, x1, y0, y1, color)
-    return fig
+    return draw_line(x0, x1, y0, y1, color=color)
 
-def draw_full(fig, df, features, sensor, color):
-    # print(peak_data[sensor])
-    x0 = df.index[int(features['sensors'][sensor]['left_ips_half'])]
-    x1 = df.index[int(features['sensors'][sensor]['right_ips_half'])]
-    y0 = df[sensor].loc[x0]
-    y1 = df[sensor].loc[x1]
-    fig = draw_line(fig, x0, x1, y0, y1, color)
-    return fig
 
-def draw_half(fig, df, features, sensor, color):
+def draw_vert(df, features, sensor, color):
+    x0 = features['sensors'][sensor]['peak_time']
+    x1 = x0
+    y0 = 0
+    y1 = features['sensors'][sensor]['peak_heights']
+    return draw_line(x0, x1, y0, y1, color=color)
+
+
+def draw_full(df, features, sensor, color):
     x0 = df.index[int(features['sensors'][sensor]['left_ips_full'])]
     x1 = df.index[int(features['sensors'][sensor]['right_ips_full'])]
     y0 = df[sensor].loc[x0]
     y1 = df[sensor].loc[x1]
-    fig = draw_line(fig, x0, x1, y0, y1, color)
-    return fig
-
-def draw_line(fig, x0, x1, y0, y1, color):
-    fig.add_shape(type="line",
-                  x0=x0, y0=y0, x1=x1, y1=y1,
-                  line=dict(
-                      color=color,
-                      width=2,
-                  )
-                  )
-    return fig
-
-# Piezo2 peaks [300]
-# Piezo2 peak_properties {'peak_heights': array([1.49031269]), 'prominences': array([1.49014866]), 'left_bases': array([253], dtype=int64), 'right_bases': array([2114], dtype=int64), 'widths': array([1.04341631]), 'width_heights': array([0.74523836]), 'left_ips': array([299.49432752]), 'right_ips': array([300.53774383])}
-# Piezo2 results_full (array([62.87805035]), array([0.01506552]), array([256.01251869]), array([318.89056904]))
-# Piezo2 results_half (array([1.04341631]), array([0.74523836]), array([299.49432752]), array([300.53774383]))
-# Piezo2 result_dict {'Piezo2_peak[s]': 0.003, 'Piezo2_start[s]': 0.00256, 'Piezo2_stop[s]': 0.00318, 'Piezo2_width[s]': 0.0006199999999999999, 'Piezo2_width_half[s]': 1.0000000000000026e-05, 'Piezo2_height': 1.4903126931494626, 'Piezo2_intetegral[Vs]': 0.0001756448384754551, 'Piezo2_slope[V/s]': array([47690.69356917]), 'Piezo2_width_heigth[s/V]': 0.0004160200760887034}
+    return draw_line(x0, x1, y0, y1, color=color)
 
 
-def plot_measurement_stacked(df, peak_data, properties, name, path):
-    titles = tuple(df.columns)
-    fig = make_subplots(rows=len(df.columns), cols=1, subplot_titles=titles)
-    for col, i in zip(df.columns, range(len(df.columns))):
-        color = properties['sensors'][col]['color']
-        fig.append_trace(go.Scatter(
-            fillcolor=color,
-            showlegend=False,
-            x=df.index,
-            y=df[col],
-        ), row=i+1, col=1)
-    fig.update_layout(height=1200, width=800, title_text=name)
+def draw_half(df, features, sensor, color):
+    x0 = df.index[int(features['sensors'][sensor]['left_ips_half'])]
+    x1 = df.index[int(features['sensors'][sensor]['right_ips_half'])]
+    y0 = df[sensor].loc[x0]
+    y1 = df[sensor].loc[x1]
+    return draw_line(x0, x1, y0, y1, color=color)
 
-    path = f"{path}\\results\\plots\\measurements\\stacked"
-    mkdir_ifnotexits(path)
-    path = join(path, f'{name}_stacked.html')
-    fig.write_html(path)
+
+def draw_line(x0, x1, y0, y1, color):
+    trace = go.Scatter(
+        x=[x0, x1],
+        y=[y0, y1],
+        line=dict(color=color,
+            width=4,
+            dash="dot")
+    )
+    return trace

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from plot_measurement import plot_measurement, plot_measurement_stacked
+from plot_measurement import  plot_measurement_stacked ,plot_measurement
 from helpers import clean_info_meaurement, read_json,  get_name_from_info, get_path_data, del_results, one_layer_back
 from extract_features import extract_features, get_peak
 import os
@@ -24,7 +24,8 @@ def evaluate_measurement(properties: dict, folder: str):
         features['sensors'][sensor] = featrues_sensor
 
     plot_measurement(data, features, properties, name, one_layer_back(folder))
-    plot_measurement_stacked(data, features, properties, name, one_layer_back(folder))
+    plot_measurement_stacked(data, features, properties,
+                             name, one_layer_back(folder))
     return data, features, name
 
 

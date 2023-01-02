@@ -1,10 +1,9 @@
 {
     "root_path": "C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022_test",
-    "cut_before_signal":100,
-    "cut_after_signal":4000,
+    "cut_before_signal": 100,
+    "cut_after_signal": 4000,
     "sensor_to_cut": "Piezo1",
     "points_offset": 100,
-    
     "sensors": {
         "VIS1": {
             "threshold": 0.1,
@@ -92,7 +91,6 @@
         "Blackpowder": "grey",
         "Knallplaettchen": "orange"
     },
-
     "plot_properties": {
         "measurement_plot": {
             "dpi": 100,
