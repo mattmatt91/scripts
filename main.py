@@ -7,11 +7,11 @@ from plot_feauters import plot_features
 if __name__ == '__main__':
 
     # root_path = 'data\\22.09.2022'
-    root_path = 'C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022'
+    root_path = 'C:\\Users\\mmuhr-adm\\Desktop\\02.03.2023'
     properties = read_json('', 'properties.json')
 
-    # scan_folder(root_path, properties)
-    calculate(root_path, properties, statistic=False, pca=True, lda=True) # computing statistics
+    scan_folder(root_path, properties)
+    # calculate(root_path, properties, statistic=False, pca=True, lda=True) # computing statistics
     # compare(root_path, properties)
     # plot_features(root_path, properties) # plots feauteres with all samples
     print('finished')
