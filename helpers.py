@@ -86,4 +86,4 @@ def mkdir_ifnotexits(path):
 def save_df(df, path, name, index=True):
     Path(path).mkdir(parents=True, exist_ok=True)
     path = join(path, f'{name}.txt')
-    df.to_csv(path, sep=';', decimal='.', index=index)
+    df.to_csv(path, sep=';', decimal=',', index=index)

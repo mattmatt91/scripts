@@ -39,9 +39,8 @@ def scan_folder(path: str, properties: dict) -> None:
 def merge_results(result: list, folder: str):
     df_result = pd.DataFrame(result)
     path_result = mkdir_ifnotexits(join(folder, 'results'))
-    path_to_save = join(path_result, 'results.txt')
-    df_result.to_csv(path_to_save, decimal='.', sep='\t', index=False)
-    # print(df_result.head())
+    path_to_save = join(path_result, 'results.csv')
+    df_result.fillna(0).to_csv(path_to_save, decimal=',', sep=';', index=False)
 
 
 def merge_measurements(data: pd.DataFrame, folder: str):

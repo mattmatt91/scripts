@@ -28,7 +28,7 @@ def get_peak(data: pd.Series, threshold: float) -> dict:
         val2 = int(results_full[3][0])
         df_peak = pd.DataFrame(data.iloc[val1:val2])
         peak_info['peak'] = df_peak
-
+        # print(peak_info)
         return peak_info
     else:
         return {}
@@ -50,7 +50,6 @@ def extract_features(data: pd.Series, peak_info: dict):
 def get_integral(data: pd.Series, peak_info: dict):
     x = peak_info['peak'].index.tolist()
     y = [i[0] for i in peak_info['peak'].values.tolist()]
-    # print(x,y)
     return np.trapz(y=y, x=x)
 
 
