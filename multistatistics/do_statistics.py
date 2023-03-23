@@ -9,7 +9,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import LeaveOneOut
 from sklearn import metrics
 # from roc import get_roc
-from hepers.helpers import save_df
+from helpers.helpers import Helpers as hp
 from plots.plot_mult_stat import plot_components, plot_loadings_heat
 
 
@@ -23,13 +23,13 @@ def get_statistics(df, path):
 
     for sample in samples:
         df_sample = df[df['sample'] == sample].describe()
-        save_df(df_sample, path, sample)
+        hp.save_df(df_sample, path, sample)
         statistics_list[sample] = df_sample
         df_mean[sample] = df_sample.T['mean']
         df_std[sample] = df_sample.T['std']
 
-    save_df(df_mean.T, path, 'mean')
-    save_df(df_std.T, path, 'std')
+    hp.save_df(df_mean.T, path, 'mean')
+    hp.save_df(df_std.T, path, 'std')
 
 
 def calc_pca(df: pd.DataFrame, path: str, properties: dict):
@@ -49,7 +49,7 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
                             columns='PC1 PC2 PC3'.split())
     components = pd.DataFrame(
         pca.components_, columns=df.columns, index=['PC1', 'PC2', 'PC3'])
-    save_df(components, join(path, 'results', 'statistics'), 'PCA_components')
+    hp.save_df(components, join(path, 'results', 'statistics'), 'PCA_components')
     plot_components(df_x_pca, path, properties, names, name='PCA',)
 
     # Loadings
@@ -61,7 +61,7 @@ def process_loadings(df, path, properties):
 
     df_components = get_true_false_matrix(df)
     plot_loadings_heat(df_components, path, properties)
-    save_df(df, path, 'PCA_loadings')
+    hp.save_df(df, path, 'PCA_loadings')
 
 
 def get_true_false_matrix(df):
@@ -160,13 +160,13 @@ def create_confusion(df):
 
 def calculate(path, properties, statistic=True, pca=True, lda=True):
     # preparing result.csv for statistics
-    df = pd.read_csv(join(path, 'results', 'results.txt'),
-                     delimiter='\t', decimal='.')
+    df = pd.read_csv(join(path, 'results', 'results.csv'),
+                     delimiter=';', decimal=',')
     # select sensors to drop for statisctics e.g. name
     df.fillna(0)
-    df_stat = df.drop(['datetime', 'height', 'path', 'number', 'rate'], axis=1)
+    df_stat = df.drop(['datetime', 'height' ,  'number', 'rate'], axis=1)
     df_stat.set_index(['name'], inplace=True)
-    df_mult_stat = df.drop(['datetime', 'path', 'number', 'rate'], axis=1)
+    df_mult_stat = df.drop(['datetime', 'number', 'rate'], axis=1)
     df_mult_stat.set_index(['sample'], inplace=True)
 
     # do statistics
@@ -176,8 +176,8 @@ def calculate(path, properties, statistic=True, pca=True, lda=True):
         calc_pca(df_mult_stat, path, properties)
 
     if lda:
-        calc_lda(df, path, df_names, properties, browser=browser,
-                 dimension=dimension, drop_keywords=[])
+        calc_lda(df, path, df_names, properties)
+    exit()
 
 
 if __name__ == '__main__':
