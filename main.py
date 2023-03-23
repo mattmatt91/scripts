@@ -1,8 +1,8 @@
-from read_files import scan_folder
-from helpers import read_json
-from do_statistics import calculate
-from compare_measurements import compare
-from plot_feauters import plot_features
+from filereader.read_files import scan_folder
+from hepers.helpers import read_json
+from multistatistics.do_statistics import calculate
+from compare.compare_measurements import compare
+from plots.plot_feauters import plot_features
 
 if __name__ == '__main__':
 
