@@ -9,5 +9,5 @@ class ReadFile:
         df.set_index('time', inplace=True)
         # print(df)
         df= df.loc[1.2:]
-        data = df['Mikro'] #.abs()
-        return np.array(data.to_list())
+        data = df['Mikro'].abs()
+        return np.array(data.to_list()), df.index.tolist()

@@ -5,47 +5,59 @@ from read import ReadFile
 
 
 
-data = ReadFile.read('data.csv')
+data, time = ReadFile.read('data.csv')
 
-duration = 1.0
+duration = time[-1]
+# duration = 1.0
 
-fs = 400.0
+fs = 100000
+# fs = 400.0
 
 samples = int(fs*duration)
+# print(f'samples: {samples}')
 
-t = np.arange(samples) / fs
+t = time
+# t = np.arange(samples) / fs
+# print(f't: {t}')
 
-signal = chirp(t, 20.0, t[-1], 100.0)
+signal = data
+# signal = chirp(t, 20.0, t[-1], 100.0)
+# print(f'signal: {signal}')
 
-signal *= (1.0 + 0.5 * np.sin(2.0*np.pi*3.0*t) )
+# signal *= (1.0 + 0.5 * np.sin(2.0*np.pi*3.0*t) )
+# print(f'signal: {signal}')
 
 
 analytic_signal = hilbert(signal)
+# print(f'analytic_signal: {analytic_signal}')
 
 amplitude_envelope = np.abs(analytic_signal)
+# print(f'amplitude_envelope: {amplitude_envelope}')
 
-instantaneous_phase = np.unwrap(np.angle(analytic_signal))
+# instantaneous_phase = np.unwrap(np.angle(analytic_signal))
+# print(f'instantaneous_phase: {instantaneous_phase}')
 
-instantaneous_frequency = (np.diff(instantaneous_phase) /
+# instantaneous_frequency = (np.diff(instantaneous_phase) /
+                           # (2.0*np.pi) * fs)
+# print(f'instantaneous_frequency: {instantaneous_frequency}')
 
-                           (2.0*np.pi) * fs)
+# exit()
 
+fig, ax = plt.subplots()
 
-fig, (ax0, ax1) = plt.subplots(nrows=2)
+ax.plot(t, signal, label='signal')
 
-ax0.plot(t, signal, label='signal')
+ax.plot(t, amplitude_envelope, label='envelope')
 
-ax0.plot(t, amplitude_envelope, label='envelope')
+ax.set_xlabel("time in seconds")
 
-ax0.set_xlabel("time in seconds")
+ax.legend()
 
-ax0.legend()
+# ax1.plot(t[1:], instantaneous_frequency)
 
-ax1.plot(t[1:], instantaneous_frequency)
+# ax1.set_xlabel("time in seconds")
 
-ax1.set_xlabel("time in seconds")
-
-ax1.set_ylim(0.0, 120.0)
+# ax1.set_ylim(0.0, 120.0)
 
 fig.tight_layout()
 

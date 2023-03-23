@@ -1,15 +1,15 @@
 import pandas as pd
 import numpy as np
 from plots.plot_measurement import  plot_measurement_stacked ,plot_measurement
-from hepers.helpers import clean_info_meaurement, read_json,  get_name_from_info, get_path_data, del_results, one_layer_back
+from helpers.helpers import Helpers as hp
 from filereader.extract_features import extract_features, get_peak
 import os
 
 
 def evaluate_measurement(properties: dict, folder: str):
-    info = clean_info_meaurement(
-        read_json(folder, 'properties.json'))
-    name = get_name_from_info(info)
+    info = hp.clean_info_meaurement(
+        hp.read_json(folder, 'properties.json'))
+    name = hp.get_name_from_info(info)
     path = os.path.join(folder, 'data.csv')
     features = info
     features['name'] = f"{info['sample']}_{info['number']}"
@@ -21,9 +21,9 @@ def evaluate_measurement(properties: dict, folder: str):
         featrues_sensor = evaluate_sensor(
             data[sensor], sensor, properties['sensors'][sensor]['threshold'])
         features['sensors'][sensor] = featrues_sensor
-    plot_measurement(data, features, properties, name, one_layer_back(folder))
+    plot_measurement(data, features, properties, name, hp.one_layer_back(folder))
     plot_measurement_stacked(data, features, properties,
-                             name, one_layer_back(folder))
+                             name, hp.one_layer_back(folder))
     return data, features, name
 
 

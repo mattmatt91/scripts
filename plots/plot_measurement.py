@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 import plotly.express as px
-from hepers.helpers import mkdir_ifnotexits
+from helpers.helpers import Helpers as hp
 from os.path import join
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
@@ -18,7 +18,7 @@ def plot_measurement(df, features, properties, name, path):
         
 
     path = f"{path}\\results\\plots\\measurements\\stacked"
-    mkdir_ifnotexits(path)
+    hp.mkdir_ifnotexits(path)
     path = join(path, f'{name}.html')
     fig.write_html(path)
 
@@ -45,7 +45,7 @@ def plot_measurement_stacked(df, features, properties, name, path):
                       showlegend=False)
 
     path = f"{path}\\results\\plots\\measurements\\stacked"
-    mkdir_ifnotexits(path)
+    hp.mkdir_ifnotexits(path)
     path = join(path, f'{name}.html')
     fig.write_html(path)
 

@@ -69,7 +69,7 @@
             "color": "orange"
         },
         "Piezo": {
-            "threshold": 0.1,
+            "threshold": 0.001,
             "x_lim_plot": [
                 0.008,
                 0.1
@@ -79,7 +79,7 @@
         }
     },
     "colors_samples": {
-        "Blank": "cornflowerblue",
+        "BLANK": "cornflowerblue",
         "Sugar": "red",
         "Tetrazene": "yellowgreen",
         "Silverazide": "mediumslateblue",
@@ -89,7 +89,8 @@
         "HMTD": "darkblue",
         "TATP": "yellow",
         "Blackpowder": "grey",
-        "Knallplaettchen": "orange"
+        "Knallplaettchen": "orange",
+        "Salt": "orange"
     },
     "plot_properties": {
         "measurement_plot": {
