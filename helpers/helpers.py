@@ -43,7 +43,7 @@ def get_subfolders(path):
 def clean_info_meaurement(info: dict):
     # deletes obsolete infos about measurement
     cleaned_info = {}
-    for key in ['datetime', 'height', 'number', 'path', 'rate', 'sample']:
+    for key in ['datetime', 'height', 'number', 'rate', 'sample']:
         cleaned_info[key] = info[key]
     return cleaned_info
 
@@ -86,4 +86,4 @@ def mkdir_ifnotexits(path):
 def save_df(df, path, name, index=True):
     Path(path).mkdir(parents=True, exist_ok=True)
     path = join(path, f'{name}.txt')
-    df.to_csv(path, sep=';', decimal='.', index=index)
+    df.to_csv(path, sep=';', decimal=',', index=index)

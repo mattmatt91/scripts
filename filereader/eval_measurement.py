@@ -8,21 +8,19 @@ import os
 
 def evaluate_measurement(properties: dict, folder: str):
     info = clean_info_meaurement(
-        read_json(folder, 'info.json'))
+        read_json(folder, 'properties.json'))
     name = get_name_from_info(info)
-    path = get_path_data(folder)
-    # del_results(folder)
-
+    path = os.path.join(folder, 'data.csv')
     features = info
-    features['name'] = name
+    features['name'] = f"{info['sample']}_{info['number']}"
     features['sensors'] = {}
-    data = pd.read_csv(path, decimal='.', sep='\t')
+
+    data = pd.read_csv(path, decimal=',', sep=';')
     data = clean_data(data, properties, info)
     for sensor in data.columns:
         featrues_sensor = evaluate_sensor(
             data[sensor], sensor, properties['sensors'][sensor]['threshold'])
         features['sensors'][sensor] = featrues_sensor
-
     plot_measurement(data, features, properties, name, one_layer_back(folder))
     plot_measurement_stacked(data, features, properties,
                              name, one_layer_back(folder))
@@ -37,8 +35,8 @@ def cut_time_section(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
     flag = True
     i = 0
     while flag:  # cut relevant section
-        index_to_cut = data[data['Piezo1'].gt(1)].index[i]
-        if data['Piezo1'].iloc[data.index.get_loc(index_to_cut)+1] > threshold:
+        index_to_cut = data[data['Piezo'].gt(threshold)].index[i]
+        if data['Piezo'].iloc[data.index.get_loc(index_to_cut)+1] > threshold:
             flag = False
         else:
             i += 1
@@ -49,17 +47,17 @@ def cut_time_section(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
 
 def clean_data(data, properties, info):
     # cleaning
-    data.drop('time [s]', axis=1, inplace=True)
+    data.drop('time', axis=1, inplace=True)
     means = data[0:properties['points_offset']].mean()  # set zero point
     data = data - means
     data = data.abs()  # set all positive
     data = cut_time_section(data, properties)
     data.apply(lambda x: round(x, 2))
     # adding new time axis
-    data['time [s]'] = np.round(np.arange(start=0, stop=len(
+    data['time'] = np.round(np.arange(start=0, stop=len(
         data)*(1/info['rate']), step=1/info['rate'], dtype=float), 5)
     data.reset_index(drop=True, inplace=True)
-    data.set_index('time [s]', inplace=True)
+    data.set_index('time', inplace=True)
     # smooth data
     for sensor in properties['sensors']:
         if properties['sensors'][sensor]['norm'] > 1:
