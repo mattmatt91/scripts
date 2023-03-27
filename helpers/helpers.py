@@ -3,6 +3,7 @@ from os import listdir,  scandir
 from os.path import isfile, join
 from pathlib import Path
 from shutil import rmtree
+from matplotlib import pyplot as plt
 
 class Helpers:
     def read_json(folder, filename):
@@ -85,5 +86,16 @@ class Helpers:
 
     def save_df(df, path, name, index=True):
         Path(path).mkdir(parents=True, exist_ok=True)
-        path = join(path, f'{name}.txt')
+        path = join(path, f'{name}.csv')
         df.to_csv(path, sep=';', decimal=',', index=index)
+
+    def save_fig(fig, path, name):
+        fig.tight_layout()
+        print(path, name)
+        path = join(path, 'results', 'plots', 'compare')
+        Path(path).mkdir(parents=True, exist_ok=True)
+        path = join(path, f'{name}.jpeg')
+        print(path)
+        fig.savefig(path)
+        plt.close(fig)
+

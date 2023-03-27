@@ -18,6 +18,7 @@ def scan_folder(path: str, properties: dict) -> None:
     subfolders = [f for f in hp.get_subfolders(path) if f.find('result') < 0]
     data = init_data(properties)
     results = []
+    print('reading files...')
     for folder in subfolders:
         try:    
             print(folder)
@@ -57,5 +58,5 @@ def merge_measurements(data: pd.DataFrame, folder: str):
             path_result = hp.mkdir_ifnotexits(
                 join(folder, 'results', 'merged_sensors'))
             path_to_save = join(path_result, f'{sensor}.txt')
-            df.to_csv(path_to_save, decimal='.', sep='\t')
+            df.to_csv(path_to_save, decimal=',', sep=';')
             data_sensors[sensor] = df

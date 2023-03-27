@@ -93,8 +93,6 @@ def convert_df_pd(df):
 
 
 def save_html(html_object, path, name):
-
-    path = path + '\\plots\\statistics'
     Path(path).mkdir(parents=True, exist_ok=True)
     path = path + '\\' + name + '.html'
     print(path)
