@@ -22,7 +22,7 @@ def scan_folder(path: str, properties: dict) -> None:
     for folder in subfolders:
         try:    
             print(folder)
-            data_measurement, features, name = evaluate_measurement(
+            data_measurement, features, name = evaluate_measurement( # features were extracted from each measurement
                 properties, folder)
             results.append(hp.flattern_dict(features))
             for sensor in data:

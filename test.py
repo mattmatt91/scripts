@@ -51,4 +51,16 @@ def change_height():
                         json.dump((data), json_file)
 
 
-test_melt()
+
+var  = 1
+
+
+
+
+def sub(var=2):
+    return var -3
+
+
+
+
+print(sub(var=var))

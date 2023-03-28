@@ -10,6 +10,8 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
     print('processing pca...')
     names = df['name']
     df.drop(['name','height'], axis=1, inplace=True) 
+    
+    
     scalar = StandardScaler()
     scalar.fit(df)
     scaled_data = scalar.transform(df)
@@ -19,11 +21,15 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
     # create df for plotting with PCs and samples as index
     df_x_pca = pd.DataFrame(x_pca, index=df.index,
                             columns='PC1 PC2 PC3'.split())
+    print(df_x_pca)
     components = pd.DataFrame(
         pca.components_, columns=df.columns, index=['PC1', 'PC2', 'PC3'])
+    
+    
+    
     file_path = join(path, 'results', 'statistics')
     hp.save_df(components, file_path, 'PCA_components')
-    plot_components(df_x_pca, join(file_path,'plots'), properties, names, name='PCA',)
+    plot_components(df_x_pca, join(file_path,'plots'), properties, names, name='PCA', col_names=['PC1', 'PC2','PC3'])
     process_loadings(components, join(file_path,'plots'), properties)
 
 

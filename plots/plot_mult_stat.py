@@ -9,17 +9,16 @@ import seaborn as sns
 import warnings
 
 
-def plot_components(x_r: pd.DataFrame, path: str, properties: dict, names: pd.Series, name=None):
+def plot_components(x_r: pd.DataFrame, path: str, properties: dict, names: pd.Series, name=None, col_names=['A', 'B', 'C']):
     plot_properties = properties['plot_properties']["components_plot_html"]
-
     colors_dict = {}
     for i in x_r.index.unique():
         colors_dict[i] = properties['colors_samples'][i]
     fig = px.scatter_3d(
         x_r,
-        x='PC1',
-        y='PC2',
-        z='PC3',
+        x=col_names[0],
+        y=col_names[1],
+        z=col_names[2],
         color_discrete_map=colors_dict,
         color=x_r.index,
         hover_data={'name': names.tolist()}

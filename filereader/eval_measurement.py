@@ -5,7 +5,7 @@ from helpers.helpers import Helpers as hp
 from filereader.extract_features import extract_features, get_peak
 import os
 
-
+# this function extracts and returns features from every measurement
 def evaluate_measurement(properties: dict, folder: str):
     info = hp.clean_info_meaurement(
         hp.read_json(folder, 'properties.json'))
