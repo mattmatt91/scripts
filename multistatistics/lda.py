@@ -1,6 +1,7 @@
 from plots.plot_mult_stat import plot_components, plot_loadings_heat
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import LeaveOneOut
 import matplotlib.pyplot as plt
@@ -8,25 +9,26 @@ import pandas as pd
 from os.path import join
 import seaborn as sns
 
+
 def calc_lda(df, path, properties):
     print('processing lda...')
-    print(df)
     names = df.index
-    # df.drop(['name','height'], axis=1, inplace=True) 
+
     scalar = StandardScaler()
+    # scalar = MinMaxScaler()
     scalar.fit(df)
     scaled_data = scalar.transform(df)
+
     lda = LinearDiscriminantAnalysis(n_components=3)
     x_lda = lda.fit(scaled_data, df.index).transform(scaled_data)
     df_x_lda = pd.DataFrame(x_lda, index=df.index, columns='C1 C2 C3'.split())
-    print(df_x_lda)
     file_path = join(path, 'results', 'statistics')
-    plot_components(df_x_lda,  join(file_path,'plots'), properties,names, name='LDA', col_names=['C1', 'C2','C3'])
+    plot_components(df_x_lda,  join(file_path, 'plots'), properties,
+                    names, name='LDA', col_names=['C1', 'C2', 'C3'])
 
-    
     # cross_validate(lda, scaled_data, df.index, path, properties)
 
-  
+
 def cross_validate(function, x, y, path, properties):
     plot_properties = properties['plot_properties']["confusion_matrix"]
     df_result = pd.DataFrame()

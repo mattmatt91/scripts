@@ -1,6 +1,6 @@
 from plots.plot_mult_stat import plot_components, plot_loadings_heat
 from helpers.helpers import Helpers as hp
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -13,6 +13,7 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
     
     
     scalar = StandardScaler()
+    scalar = MinMaxScaler()
     scalar.fit(df)
     scaled_data = scalar.transform(df)
     pca = PCA(n_components=3)
@@ -21,7 +22,6 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
     # create df for plotting with PCs and samples as index
     df_x_pca = pd.DataFrame(x_pca, index=df.index,
                             columns='PC1 PC2 PC3'.split())
-    print(df_x_pca)
     components = pd.DataFrame(
         pca.components_, columns=df.columns, index=['PC1', 'PC2', 'PC3'])
     

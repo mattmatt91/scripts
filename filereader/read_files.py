@@ -20,23 +20,21 @@ def scan_folder(path: str, properties: dict) -> None:
     results = []
     print('reading files...')
     for folder in subfolders:
-        try:    
-            print(folder)
-            data_measurement, features, name = evaluate_measurement( # features were extracted from each measurement
-                properties, folder)
-            results.append(hp.flattern_dict(features))
-            for sensor in data:
-                if sensor == 'name':
-                    data[sensor].append(name)
-                elif sensor == 'time':
-                    data[sensor].append(data_measurement.index)
+        print(folder)
+        data_measurement, features, name = evaluate_measurement( # features were extracted from each measurement
+            properties, folder)
+        results.append(hp.flattern_dict(features))
+        for sensor in data:
+            if sensor == 'name':
+                data[sensor].append(name)
+            elif sensor == 'time':
+                data[sensor].append(data_measurement.index)
+            else:
+                if sensor in data_measurement.columns:
+                    data[sensor].append(data_measurement[sensor])
                 else:
-                    if sensor in data_measurement.columns:
-                        data[sensor].append(data_measurement[sensor])
-                    else:
-                        print(f'{sensor} not in measurement {name}')
-        except:
-            print(folder)
+                    print(f'{sensor} not in measurement {name}')
+
     merge_measurements(data, path)
     merge_results(results, path)
 

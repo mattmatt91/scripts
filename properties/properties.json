@@ -1,5 +1,4 @@
 {
-    "root_path": "C:\\Users\\49157\\Desktop\\Paper II\\data\\22.09.2022_test",
     "cut_before_signal": 100,
     "cut_after_signal": 4000,
     "sensor_to_cut": "Piezo",
@@ -12,7 +11,8 @@
                 0.015
             ],
             "color": "red",
-            "norm": false
+            "abs": false,
+            "smooth": false
         },
         "IR1": {
             "threshold": 0.1,
@@ -20,8 +20,9 @@
                 0.008,
                 0.03
             ],
-            "norm": false,
-            "color": "blue"
+            "color": "blue",
+            "abs": false,
+            "smooth": false
         },
         "VIS2": {
             "threshold": 0.1,
@@ -29,8 +30,9 @@
                 0.008,
                 0.015
             ],
-            "norm": false,
-            "color": "orangered"
+            "color": "orangered",
+            "abs": false,
+            "smooth": false
         },
         "IR2": {
             "threshold": 0.1,
@@ -38,8 +40,9 @@
                 0.008,
                 0.03
             ],
-            "norm": false,
-            "color": "royalblue"
+            "color": "royalblue",
+            "abs": false,
+            "smooth": false
         },
         "VIS3": {
             "threshold": 0.1,
@@ -47,8 +50,9 @@
                 0.008,
                 0.015
             ],
-            "norm": false,
-            "color": "orangered"
+            "color": "orangered",
+            "abs": false,
+            "smooth": false
         },
         "IR3": {
             "threshold": 0.1,
@@ -56,8 +60,9 @@
                 0.008,
                 0.03
             ],
-            "norm": false,
-            "color": "royalblue"
+            "color": "royalblue",
+            "abs": false,
+            "smooth": false
         },
         "Mikro": {
             "threshold": 0.025,
@@ -65,8 +70,9 @@
                 0.008,
                 0.1
             ],
-            "norm": 100,
-            "color": "orange"
+            "color": "orange",
+            "abs": true,
+            "smooth": 20
         },
         "Piezo": {
             "threshold": 0.001,
@@ -74,8 +80,9 @@
                 0.008,
                 0.1
             ],
-            "norm": 100,
-            "color": "green"
+            "color": "green",
+            "abs": true,
+            "smooth": 20
         }
     },
     "colors_samples": {
@@ -91,104 +98,5 @@
         "Blackpowder": "grey",
         "Knallplaettchen": "orange",
         "Salt": "orange"
-    },
-    "plot_properties": {
-        "measurement_plot": {
-            "dpi": 100,
-            "size": [
-                10,
-                7
-            ],
-            "font_size": 10,
-            "label_size": 12
-        },
-        "loadings": {
-            "width": 900,
-            "height": 650
-        },
-        "components_plot_2D": {
-            "dpi": 200,
-            "size": [
-                10,
-                10
-            ],
-            "font_size": 10,
-            "label_size": 10,
-            "legend_size": 10,
-            "dot": 50
-        },
-        "components_plot_3D": {
-            "dpi": 200,
-            "size": [
-                10,
-                10
-            ],
-            "font_size": 10,
-            "label_size": 10,
-            "legend_size": 8,
-            "dot": 50
-        },
-        "components_plot_html": {
-            "font_size": 15,
-            "legend_size": 30
-        },
-        "param_plot": {
-            "dpi": 100,
-            "size": [
-                8,
-                10
-            ],
-            "font_size": 10,
-            "label_size": 10
-        },
-        "compare_plots": {
-            "dpi": 100,
-            "size": [
-                10,
-                10
-            ],
-            "font_size": 10,
-            "label_size": 15
-        },
-        "confusion_matrix": {
-            "dpi": 100,
-            "size": [
-                10,
-                10
-            ],
-            "font_size": 20,
-            "label_size": 30,
-            "count_size": 20
-        },
-        "roc_plot": {
-            "dpi": 100,
-            "size": [
-                10,
-                10
-            ],
-            "font_size": 20,
-            "label_size": 30,
-            "legend_size": 20
-        },
-        "exemplary_plot": {
-            "dpi": 100,
-            "size": [
-                10,
-                10
-            ],
-            "font_size": 20,
-            "label_size": 30,
-            "legend_size": 20
-        },
-        "Spectrometer_plot": {
-            "dpi": 100,
-            "size": [
-                10,
-                10
-            ],
-            "font_size": 20,
-            "label_size": 30,
-            "legend_size": 20
-        }
     }
 }

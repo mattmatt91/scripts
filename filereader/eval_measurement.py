@@ -1,30 +1,46 @@
 import pandas as pd
 import numpy as np
-from plots.plot_measurement import  plot_measurement_stacked ,plot_measurement
+from plots.plot_measurement import plot_measurement_stacked, plot_measurement
 from helpers.helpers import Helpers as hp
 from filereader.extract_features import extract_features, get_peak
 import os
+import json as js
 
 # this function extracts and returns features from every measurement
-def evaluate_measurement(properties: dict, folder: str):
-    info = hp.clean_info_meaurement(
-        hp.read_json(folder, 'properties.json'))
-    name = hp.get_name_from_info(info)
-    path = os.path.join(folder, 'data.csv')
-    features = info
-    features['name'] = f"{info['sample']}_{info['number']}"
-    features['sensors'] = {}
 
+
+def evaluate_measurement(properties: dict, folder: str):
+    name, path, features, info = read_properties(folder)
     data = pd.read_csv(path, decimal=',', sep=';')
     data = clean_data(data, properties, info)
+
+    # eval sensor
     for sensor in data.columns:
+        threshold = properties['sensors'][sensor]['threshold']
+        data_sensor = data[sensor]
+
         featrues_sensor = evaluate_sensor(
-            data[sensor], sensor, properties['sensors'][sensor]['threshold'])
+            data_sensor, sensor, threshold)
+
         features['sensors'][sensor] = featrues_sensor
-    plot_measurement(data, features, properties, name, hp.one_layer_back(folder))
+
+    # plot every measurement
+    plot_measurement(data, features, properties,
+                     name, hp.one_layer_back(folder))
     plot_measurement_stacked(data, features, properties,
                              name, hp.one_layer_back(folder))
     return data, features, name
+
+
+def read_properties(path):
+    info = hp.clean_info_meaurement(
+        hp.read_json(path, 'properties.json'))
+    name = hp.get_name_from_info(info)
+    path = os.path.join(path, 'data.csv')
+    features = info
+    features['name'] = f"{info['sample']}_{info['number']}"
+    features['sensors'] = {}
+    return name, path, features, info
 
 
 def cut_time_section(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
@@ -47,22 +63,41 @@ def cut_time_section(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
 
 def clean_data(data, properties, info):
     # cleaning
+    time = data['time']
     data.drop('time', axis=1, inplace=True)
+
+    # handle offset
     means = data[0:properties['points_offset']].mean()  # set zero point
     data = data - means
-    data = data.abs()  # set all positive
+    for sensor in data:
+        if properties['sensors'][sensor]['abs']:
+            # set all positive ### go on here
+            data[sensor] = data[sensor].abs()
     data = cut_time_section(data, properties)
     data.apply(lambda x: round(x, 2))
+
     # adding new time axis
+    data = create_time_axis(data, info)
+
+    # smooth data
+    data = smooth_data(data, properties)
+
+    return data
+
+
+def create_time_axis(data: pd.DataFrame, info: dict) -> pd.DataFrame:
     data['time'] = np.round(np.arange(start=0, stop=len(
         data)*(1/info['rate']), step=1/info['rate'], dtype=float), 5)
     data.reset_index(drop=True, inplace=True)
     data.set_index('time', inplace=True)
-    # smooth data
+    return data
+
+
+def smooth_data(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
     for sensor in properties['sensors']:
-        if properties['sensors'][sensor]['norm'] > 1:
+        if properties['sensors'][sensor]['smooth'] >0:
             data[sensor] = floating_mean(
-                data[sensor], n=properties['sensors'][sensor]['norm'])
+                data[sensor], n=properties['sensors'][sensor]['smooth'])
     return data
 
 
