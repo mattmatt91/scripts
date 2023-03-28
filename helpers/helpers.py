@@ -18,22 +18,6 @@ class Helpers:
         return name
 
 
-    def flattern_dict(data: dict) -> dict:
-        flat_dict = {}
-        for key0 in data:
-            if type(data[key0]) == dict:
-                for key1 in data[key0]:
-                    if type(data[key0][key1]) == dict:
-                        for key2 in data[key0][key1]:
-                            if type(data[key0][key1][key2]) == dict:
-                                print('dict to nested!!')
-                            else:
-                                flat_dict[f'{key1}_{key2}'] = data[key0][key1][key2]
-                    else:
-                        flat_dict[f'{key0}_{key1}'] = data[key0][key1]
-            else:
-                flat_dict[key0] = data[key0]
-        return flat_dict
 
 
     def get_subfolders(path):
@@ -91,11 +75,13 @@ class Helpers:
 
     def save_fig(fig, path, name):
         fig.tight_layout()
-        print(path, name)
         path = join(path, 'results', 'plots', 'compare')
         Path(path).mkdir(parents=True, exist_ok=True)
         path = join(path, f'{name}.jpeg')
         print(path)
         fig.savefig(path)
         plt.close(fig)
+
+    def pretty_json(data:dict, indent=3, sort_keys=True):
+        print(js.dumps(dict, sort_keys=sort_keys, indent=indent))
 

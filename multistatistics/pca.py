@@ -29,8 +29,8 @@ def calc_pca(df: pd.DataFrame, path: str, properties: dict):
     
     file_path = join(path, 'results', 'statistics')
     hp.save_df(components, file_path, 'PCA_components')
-    plot_components(df_x_pca, join(file_path,'plots'), properties, names, name='PCA', col_names=['PC1', 'PC2','PC3'])
-    process_loadings(components, join(file_path,'plots'), properties)
+    plot_components(df_x_pca, join(path,'plots', 'statistics'), properties, names, name='PCA', col_names=['PC1', 'PC2','PC3'])
+    process_loadings(components, join(path,'plots', 'statistics'), properties)
 
 
 # creates a df with the loadings and a column for sensor and feature

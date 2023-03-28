@@ -10,7 +10,6 @@ import warnings
 
 
 def plot_components(x_r: pd.DataFrame, path: str, properties: dict, names: pd.Series, name=None, col_names=['A', 'B', 'C']):
-    plot_properties = properties['plot_properties']["components_plot_html"]
     colors_dict = {}
     for i in x_r.index.unique():
         colors_dict[i] = properties['colors_samples'][i]
@@ -24,12 +23,6 @@ def plot_components(x_r: pd.DataFrame, path: str, properties: dict, names: pd.Se
         hover_data={'name': names.tolist()}
     )
 
-    # setting plot parameters
-    fig.update_layout(
-        legend_title_font_size=plot_properties['legend_size'],
-        legend_font_size=plot_properties['legend_size']/1.2,
-        font_size=plot_properties['font_size']
-    )
 
     # saving plot
     save_html(fig, path, name)
@@ -68,10 +61,9 @@ def plot_loadings_heat(df, path, properties):
     colors = {}
     for sensor in df['sensor'].unique():
         colors[sensor] = properties['sensors'][sensor]['color']
-    plot_properties = properties['plot_properties']['loadings']
 
-    plot_all_laodings(df, path, plot_properties, colors)
-    plot_sum_laodings(df, path, plot_properties, colors)
+    # plot_all_laodings(df, path, plot_properties, colors)
+    # plot_sum_laodings(df, path, plot_properties, colors)
 
 
 def normalize_data(data):

@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,19 +11,21 @@ import plotly.graph_objects as go
 pd.options.plotting.backend = "plotly"
 
 
-def plot_measurement(df, features, properties, name, path):
-    fig  = df.plot(title=name)
+def plot_measurement(df: pd.DataFrame, properties: dict, features: dict):
+    fig = df.plot()
     for item in fig.data:
         color = properties['sensors'][item.name]['color']
         item.update(line_color=color)
-        
-
-    path = f"{path}\\results\\plots\\measurements\\stacked"
+    path = join(os.getenv("DATA_PATH"),
+                "results\\plots\\measurements\\unstacked")
     hp.mkdir_ifnotexits(path)
+    name = features['name']
     path = join(path, f'{name}.html')
+    print(path)
     fig.write_html(path)
 
-def plot_measurement_stacked(df, features, properties, name, path):
+
+def plot_measurement_stacked(df: pd.DataFrame, properties: dict, features: dict):
     titles = tuple(df.columns)
     n_rows = len(df.columns)
 
@@ -38,17 +41,18 @@ def plot_measurement_stacked(df, features, properties, name, path):
             traces, rows, df, features, properties, sensor, i, plt_peak=True)
     cols = [1 for _ in rows]
     fig.add_traces(traces, cols=cols, rows=rows)
-
+    name = features['name']
     fig.update_layout(height=1800,
                       width=1000,
                       title_text=name,
                       showlegend=False)
 
-    path = f"{path}\\results\\plots\\measurements\\stacked"
+    path = join(os.getenv("DATA_PATH"),
+                "results\\plots\\measurements\\stacked")
     hp.mkdir_ifnotexits(path)
     path = join(path, f'{name}.html')
+    print(path)
     fig.write_html(path)
-
 
 
 def draw_sensor(traces, rows, df, features, properties, sensor, row, plt_peak=True):
@@ -86,26 +90,29 @@ def draw_base(df, features, sensor, color):
 
 
 def draw_vert(df, features, sensor, color):
-    x0 = features['sensors'][sensor]['peak_time']
+    plt_info = features['sensors'][sensor]['plot_info']
+    x0 = plt_info['tmax']
     x1 = x0
     y0 = 0
-    y1 = features['sensors'][sensor]['peak_heights']
+    y1 = df[sensor][plt_info['tmax']]
     return draw_line(x0, x1, y0, y1, color=color)
 
 
 def draw_full(df, features, sensor, color):
-    x0 = df.index[int(features['sensors'][sensor]['left_ips_full'])]
-    x1 = df.index[int(features['sensors'][sensor]['right_ips_full'])]
-    y0 = df[sensor].loc[x0]
-    y1 = df[sensor].loc[x1]
+    plt_info = features['sensors'][sensor]['plot_info']
+    x0 = plt_info['start_f']
+    x1 = plt_info['stop_f']
+    y0 = df[sensor][plt_info['start_f']]
+    y1 = df[sensor][plt_info['stop_f']]
     return draw_line(x0, x1, y0, y1, color=color)
 
 
 def draw_half(df, features, sensor, color):
-    x0 = df.index[int(features['sensors'][sensor]['left_ips_half'])]
-    x1 = df.index[int(features['sensors'][sensor]['right_ips_half'])]
-    y0 = df[sensor].loc[x0]
-    y1 = df[sensor].loc[x1]
+    plt_info = features['sensors'][sensor]['plot_info']
+    x0 = plt_info['start_h']
+    x1 = plt_info['stop_h']
+    y0 = df[sensor][plt_info['start_h']]
+    y1 = df[sensor][plt_info['stop_h']]
     return draw_line(x0, x1, y0, y1, color=color)
 
 
@@ -114,7 +121,7 @@ def draw_line(x0, x1, y0, y1, color):
         x=[x0, x1],
         y=[y0, y1],
         line=dict(color=color,
-            width=4,
-            dash="dot")
+                  width=4,
+                  dash="dot")
     )
     return trace

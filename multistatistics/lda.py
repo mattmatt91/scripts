@@ -22,8 +22,8 @@ def calc_lda(df, path, properties):
     lda = LinearDiscriminantAnalysis(n_components=3)
     x_lda = lda.fit(scaled_data, df.index).transform(scaled_data)
     df_x_lda = pd.DataFrame(x_lda, index=df.index, columns='C1 C2 C3'.split())
-    file_path = join(path, 'results', 'statistics')
-    plot_components(df_x_lda,  join(file_path, 'plots'), properties,
+    file_path = join(path, 'results', 'plots', 'statistics')
+    plot_components(df_x_lda,  file_path, properties,
                     names, name='LDA', col_names=['C1', 'C2', 'C3'])
 
     # cross_validate(lda, scaled_data, df.index, path, properties)

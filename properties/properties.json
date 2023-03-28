@@ -5,81 +5,49 @@
     "points_offset": 100,
     "sensors": {
         "VIS1": {
-            "threshold": 0.1,
-            "x_lim_plot": [
-                0.008,
-                0.015
-            ],
+            "threshold": 0.003,
             "color": "red",
             "abs": false,
             "smooth": false
         },
         "IR1": {
-            "threshold": 0.1,
-            "x_lim_plot": [
-                0.008,
-                0.03
-            ],
+            "threshold": 0.005,
             "color": "blue",
             "abs": false,
             "smooth": false
         },
         "VIS2": {
-            "threshold": 0.1,
-            "x_lim_plot": [
-                0.008,
-                0.015
-            ],
+            "threshold": 0.003,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR2": {
-            "threshold": 0.1,
-            "x_lim_plot": [
-                0.008,
-                0.03
-            ],
+            "threshold": 0.004,
             "color": "royalblue",
             "abs": false,
             "smooth": false
         },
         "VIS3": {
-            "threshold": 0.1,
-            "x_lim_plot": [
-                0.008,
-                0.015
-            ],
+            "threshold": 0.005,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR3": {
-            "threshold": 0.1,
-            "x_lim_plot": [
-                0.008,
-                0.03
-            ],
+            "threshold": 0.005,
             "color": "royalblue",
             "abs": false,
             "smooth": false
         },
         "Mikro": {
             "threshold": 0.025,
-            "x_lim_plot": [
-                0.008,
-                0.1
-            ],
             "color": "orange",
             "abs": true,
             "smooth": 20
         },
         "Piezo": {
             "threshold": 0.001,
-            "x_lim_plot": [
-                0.008,
-                0.1
-            ],
             "color": "green",
             "abs": true,
             "smooth": 20

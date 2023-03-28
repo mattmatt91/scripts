@@ -21,25 +21,26 @@ def scan_folder(path: str, properties: dict) -> None:
     print('reading files...')
     for folder in subfolders:
         print(folder)
-        data_measurement, features, name = evaluate_measurement( # features were extracted from each measurement
-            properties, folder)
-        results.append(hp.flattern_dict(features))
+        data_measurement, features= evaluate_measurement(properties, folder)
+        results.append(features)
+
         for sensor in data:
             if sensor == 'name':
-                data[sensor].append(name)
+                data[sensor].append(features['name'])
             elif sensor == 'time':
                 data[sensor].append(data_measurement.index)
             else:
                 if sensor in data_measurement.columns:
                     data[sensor].append(data_measurement[sensor])
                 else:
-                    print(f'{sensor} not in measurement {name}')
-
+                    name = features['name']
+                    print(f'{sensor} not in measurement {name}') 
     merge_measurements(data, path)
     merge_results(results, path)
 
 
 def merge_results(result: list, folder: str):
+    # print(result)
     df_result = pd.DataFrame(result)
     path_result = hp.mkdir_ifnotexits(join(folder, 'results'))
     path_to_save = join(path_result, 'results.csv')
@@ -55,6 +56,6 @@ def merge_measurements(data: pd.DataFrame, folder: str):
             df.set_index('time', inplace=True)
             path_result = hp.mkdir_ifnotexits(
                 join(folder, 'results', 'merged_sensors'))
-            path_to_save = join(path_result, f'{sensor}.txt')
+            path_to_save = join(path_result, f'{sensor}.csv')
             df.to_csv(path_to_save, decimal=',', sep=';')
             data_sensors[sensor] = df
