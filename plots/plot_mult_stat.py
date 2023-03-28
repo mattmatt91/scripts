@@ -7,51 +7,51 @@ import pandas as pd
 import plotly.express as px
 import seaborn as sns
 import warnings
+import os
+from os import path
 
 
-def plot_components(x_r: pd.DataFrame, path: str, properties: dict, names: pd.Series, name=None, col_names=['A', 'B', 'C']):
+def plot_components(x_r: pd.DataFrame, properties: dict, infos:dict, name=None):
     colors_dict = {}
     for i in x_r.index.unique():
         colors_dict[i] = properties['colors_samples'][i]
     fig = px.scatter_3d(
         x_r,
-        x=col_names[0],
-        y=col_names[1],
-        z=col_names[2],
+        x=x_r.columns[0],
+        y=x_r.columns[1],
+        z=x_r.columns[2],
         color_discrete_map=colors_dict,
         color=x_r.index,
-        hover_data={'name': names.tolist()}
+        hover_data=infos.to_dict('series')
     )
-
-
     # saving plot
+    path = join(os.getenv("DATA_PATH"), 'statistics')
     save_html(fig, path, name)
     # fig.show()
 
 
 def plot_all_laodings(df, path, plot_properties, colors):
     fig = px.histogram(df, barmode='group',
-            x="PC",
-            y="value",
-            color='sensor',
-            color_discrete_map=colors)
-    fig.update_layout(width=plot_properties["width"], height=plot_properties["height"], bargap=0.05)
+                       x="PC",
+                       y="value",
+                       color='sensor',
+                       color_discrete_map=colors)
+
+    path = join(os.getenv("DATA_PATH"), 'plots', 'statistics')
     # fig.show()
     save_html(fig, path, 'all_loadings')
 
+
 def plot_sum_laodings(df, path, plot_properties, colors):
     fig = px.histogram(df,
-            x="sensor",
-            y="value_abs",
-            color='sensor',
-            color_discrete_map=colors)
-    fig.update_layout(width=plot_properties["width"], height=plot_properties["height"], bargap=0.05)
+                       x="sensor",
+                       y="value_abs",
+                       color='sensor',
+                       color_discrete_map=colors)
     # fig.show()
     save_html(fig, path, 'sum_loadings')
 
-
-
-def plot_loadings_heat(df, path, properties):
+def plot_loadings_heat(df, properties):
     # preparing dataframe
     df = convert_df_pd(df)
     df['value_abs'] = df['value'].abs()
@@ -61,9 +61,9 @@ def plot_loadings_heat(df, path, properties):
     colors = {}
     for sensor in df['sensor'].unique():
         colors[sensor] = properties['sensors'][sensor]['color']
-
-    # plot_all_laodings(df, path, plot_properties, colors)
-    # plot_sum_laodings(df, path, plot_properties, colors)
+    path = join(os.getenv("DATA_PATH"), 'plots', 'statistics')
+    plot_all_laodings(df, path, properties, colors)
+    plot_sum_laodings(df, path, properties, colors)
 
 
 def normalize_data(data):
@@ -79,8 +79,6 @@ def convert_df_pd(df):
                 {'sensor': i, 'feature': m, 'PC': n, 'value': df.iloc[k][n]})
     df_converted = pd.DataFrame(converted)
     return df_converted
-
-
 
 
 def save_html(html_object, path, name):

@@ -5,38 +5,61 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import pandas as pd
 from os.path import join
+import os
 
-def calc_pca(df: pd.DataFrame, path: str, properties: dict):
+
+def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     print('processing pca...')
-    names = df['name']
-    df.drop(['name','height'], axis=1, inplace=True) 
-    
-    
+    # scale data
     scalar = StandardScaler()
     scalar = MinMaxScaler()
-    scalar.fit(df)
-    scaled_data = scalar.transform(df)
+    scalar.fit(features)
+    scaled_data = scalar.transform(features)
+    # perform pca
     pca = PCA(n_components=3)
     pca.fit(scaled_data)
     x_pca = pca.transform(scaled_data)
+
     # create df for plotting with PCs and samples as index
-    df_x_pca = pd.DataFrame(x_pca, index=df.index,
+    df_x_pca = pd.DataFrame(x_pca, index=infos['sample'],
                             columns='PC1 PC2 PC3'.split())
+
     components = pd.DataFrame(
-        pca.components_, columns=df.columns, index=['PC1', 'PC2', 'PC3'])
-    
-    
-    
-    file_path = join(path, 'results', 'statistics')
+        pca.components_, columns=features.columns, index=['PC1', 'PC2', 'PC3'])
+
+    # storing some data
+    create_result(pca)
+
+    # safe df
+    file_path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     hp.save_df(components, file_path, 'PCA_components')
-    plot_components(df_x_pca, join(path,'plots', 'statistics'), properties, names, name='PCA', col_names=['PC1', 'PC2','PC3'])
-    process_loadings(components, join(path,'plots', 'statistics'), properties)
+    # do plots
+    file_path = join(os.getenv("DATA_PATH"), 'plots', 'statistics')
+
+    # plotting 
+    plot_components(df_x_pca,
+                    properties,
+                    infos,
+                    name='PCA')
+    process_loadings(components, properties)
+
+
+def create_result(pca: PCA):
+    data = {'explained variance ratio':
+            pca.explained_variance_ratio_,
+            'singular values':
+            pca.singular_values_
+            }
+    df = pd.DataFrame(data, index = ['PC1', 'PC2', 'PC3'])
+    path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
+    hp.save_df(df, path, 'results_pca', index=True)
 
 
 # creates a df with the loadings and a column for sensor and feature
-def process_loadings(df, path, properties):
+def process_loadings(df: pd.DataFrame, properties: dict):
     df_components = get_true_false_matrix(df)
-    plot_loadings_heat(df_components, path, properties)
+    plot_loadings_heat(df_components, properties)
+    path = join(os.getenv("DATA_PATH"), 'statistics')
     hp.save_df(df, path, 'PCA_loadings')
 
 
