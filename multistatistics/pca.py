@@ -1,6 +1,6 @@
 from plots.plot_mult_stat import plot_components, plot_loadings_heat
 from helpers.helpers import Helpers as hp
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -12,8 +12,12 @@ def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     print('processing pca...')
     
     # scale data
-    scalar = StandardScaler()
+    # Merklicher Einfluss auf die PCA, aktuell RobustScalar die schlechteste Möglichkeit visuell. Präferiert: MinMax, MaxAbs
     scalar = MinMaxScaler()
+    #scalar = StandardScaler()
+    #scalar = Normalizer()
+    #scalar = MaxAbsScaler()
+    #scalar = RobustScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
     
