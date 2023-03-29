@@ -19,8 +19,8 @@ def do_statistics(properties, statistic=True, pca=True, lda=True):
             get_statistics(features, infos)
         if pca:
               calc_pca(features, infos, properties)
-        # if lda:
-        #     calc_lda(df_mult_stat, path,  properties)
+        if lda:
+            calc_lda(features, infos, properties)
 
 
 def prepare_data(file_path):

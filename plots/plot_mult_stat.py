@@ -11,7 +11,7 @@ import os
 from os import path
 
 
-def plot_components(x_r: pd.DataFrame, properties: dict, infos:dict, name=None):
+def plot_components(x_r: pd.DataFrame, properties: dict, infos: dict, name=None):
     colors_dict = {}
     for i in x_r.index.unique():
         colors_dict[i] = properties['colors_samples'][i]
@@ -25,31 +25,33 @@ def plot_components(x_r: pd.DataFrame, properties: dict, infos:dict, name=None):
         hover_data=infos.to_dict('series')
     )
     # saving plot
-    path = join(os.getenv("DATA_PATH"), 'statistics')
+    path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     save_html(fig, path, name)
     # fig.show()
 
 
-def plot_all_laodings(df, path, plot_properties, colors):
+def plot_all_laodings(df, plot_properties, colors):
     fig = px.histogram(df, barmode='group',
                        x="PC",
                        y="value",
                        color='sensor',
                        color_discrete_map=colors)
 
-    path = join(os.getenv("DATA_PATH"), 'plots', 'statistics')
+    path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     # fig.show()
     save_html(fig, path, 'all_loadings')
 
 
-def plot_sum_laodings(df, path, plot_properties, colors):
+def plot_sum_laodings(df, plot_properties, colors):
     fig = px.histogram(df,
                        x="sensor",
                        y="value_abs",
                        color='sensor',
                        color_discrete_map=colors)
     # fig.show()
+    path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     save_html(fig, path, 'sum_loadings')
+
 
 def plot_loadings_heat(df, properties):
     # preparing dataframe
@@ -61,9 +63,8 @@ def plot_loadings_heat(df, properties):
     colors = {}
     for sensor in df['sensor'].unique():
         colors[sensor] = properties['sensors'][sensor]['color']
-    path = join(os.getenv("DATA_PATH"), 'plots', 'statistics')
-    plot_all_laodings(df, path, properties, colors)
-    plot_sum_laodings(df, path, properties, colors)
+    plot_all_laodings(df, properties, colors)
+    plot_sum_laodings(df, properties, colors)
 
 
 def normalize_data(data):

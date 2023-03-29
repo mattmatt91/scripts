@@ -10,11 +10,13 @@ import os
 
 def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     print('processing pca...')
+    
     # scale data
     scalar = StandardScaler()
     scalar = MinMaxScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
+    
     # perform pca
     pca = PCA(n_components=3)
     pca.fit(scaled_data)
@@ -22,7 +24,7 @@ def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
 
     # create df for plotting with PCs and samples as index
     df_x_pca = pd.DataFrame(x_pca, index=infos['sample'],
-                            columns='PC1 PC2 PC3'.split())
+                            columns=['PC1', 'PC2', 'PC3'])
 
     components = pd.DataFrame(
         pca.components_, columns=features.columns, index=['PC1', 'PC2', 'PC3'])
@@ -34,7 +36,6 @@ def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     file_path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     hp.save_df(components, file_path, 'PCA_components')
     # do plots
-    file_path = join(os.getenv("DATA_PATH"), 'plots', 'statistics')
 
     # plotting 
     plot_components(df_x_pca,
@@ -59,7 +60,7 @@ def create_result(pca: PCA):
 def process_loadings(df: pd.DataFrame, properties: dict):
     df_components = get_true_false_matrix(df)
     plot_loadings_heat(df_components, properties)
-    path = join(os.getenv("DATA_PATH"), 'statistics')
+    path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     hp.save_df(df, path, 'PCA_loadings')
 
 

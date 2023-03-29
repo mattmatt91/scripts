@@ -10,70 +10,75 @@ from os.path import join
 import seaborn as sns
 
 
-def calc_lda(df, path, properties):
+def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
     print('processing lda...')
-    names = df.index
+    # prepare labels
+    sample_dict, sample_numbers = hp.sample_to_numbers(infos['sample'])
 
+    # scale data
     scalar = StandardScaler()
     # scalar = MinMaxScaler()
-    scalar.fit(df)
-    scaled_data = scalar.transform(df)
+    scalar.fit(features)
+    scaled_data = scalar.transform(features, sample_numbers)
 
+    # perform lda
     lda = LinearDiscriminantAnalysis(n_components=3)
-    x_lda = lda.fit(scaled_data, df.index).transform(scaled_data)
-    df_x_lda = pd.DataFrame(x_lda, index=df.index, columns='C1 C2 C3'.split())
-    file_path = join(path, 'results', 'plots', 'statistics')
-    plot_components(df_x_lda,  file_path, properties,
-                    names, name='LDA', col_names=['C1', 'C2', 'C3'])
+    x_lda = lda.fit(scaled_data, sample_numbers).transform(scaled_data)
 
-    # cross_validate(lda, scaled_data, df.index, path, properties)
+    # create df
+    df_x_lda = pd.DataFrame(x_lda, index=infos['sample'],
+                            columns=['C1', 'C2', 'C3'])
+    # plot lda
+    plot_components(df_x_lda,
+                    properties,
+                    infos,
+                    name='LDA')
+
+    cross_validate(lda, features, sample_numbers)
 
 
-def cross_validate(function, x, y, path, properties):
-    plot_properties = properties['plot_properties']["confusion_matrix"]
+def cross_validate(function, x, y):
     df_result = pd.DataFrame()
     loo = LeaveOneOut()
     loo.get_n_splits(x)
     for train_index, test_index in loo.split(x):
+        # split dataset
         x_train, x_test = x[train_index], x[test_index]
         y_train, y_test = y[train_index], y[test_index]
-        function.fit(x_train, y_train).transform(x_train)
-        predictions = function.predict(x_test)
-        result = pd.DataFrame({'true': y_test, 'predict': predictions})
-        result['value'] = result['predict'] == result['true']
-        df_result = df_result.append(result, ignore_index=True)
-    print('error rate: ' + str((df_result[df_result['value']
-          == False]['value'].count()/len(df_result))*100) + '%')
+        print(x_train, x_test )
+        print(y_train, y_test )
+        # function.fit(x_train, y_train).transform(x_train)
+        # predictions = function.predict(x_test)
+        # print(predictions)
+        # result = pd.DataFrame({'true': y_test, 'predict': predictions})
+        # result['value'] = result['predict'] == result['true']
+        # df_result = df_result.append(result, ignore_index=True)
+    # print('error rate: ' + str((df_result[df_result['value']
+    #       == False]['value'].count()/len(df_result))*100) + '%')
 
-    df_conf = create_confusion(df_result)
-    fig, ax = plt.subplots(
-        figsize=plot_properties['size'], dpi=plot_properties['dpi'])
-    count_size = plot_properties['count_size']
-    sns.heatmap(df_conf.fillna(0), linewidths=.5, annot=True, fmt='g',
-                cbar=False, cmap="viridis", ax=ax, annot_kws={"size": count_size})
-    ax.set_ylabel('true', fontsize=plot_properties['label_size'])
-    ax.set_xlabel('predicted', fontsize=plot_properties['label_size'])
-    plt.yticks(size=plot_properties['font_size'], rotation=30)
-    plt.xticks(size=plot_properties['font_size'], rotation=30)
-    plt.tight_layout()
-    hp.save_jpeg(fig, path, 'heatmap_crossvalidation_LDA')
-    # plt.show()
-    plt.close()
+    # df_conf = create_confusion(df_result)
+    
+def plot_confusion(data:pd.DataFrame):
+    print(data)
+    # fig, ax = plt.subplots(
+    #     figsize=plot_properties['size'], dpi=plot_properties['dpi'])
+    # count_size = plot_properties['count_size']
+    # sns.heatmap(df_conf.fillna(0), linewidths=.5, annot=True, fmt='g',
+    #             cbar=False, cmap="viridis", ax=ax, annot_kws={"size": count_size})
+    # ax.set_ylabel('true', fontsize=plot_properties['label_size'])
+    # ax.set_xlabel('predicted', fontsize=plot_properties['label_size'])
+    # plt.yticks(size=plot_properties['font_size'], rotation=30)
+    # plt.xticks(size=plot_properties['font_size'], rotation=30)
+    # plt.tight_layout()
+    # hp.save_jpeg(fig, path, 'heatmap_crossvalidation_LDA')
+    # # plt.show()
+    # plt.close()
 
     # computing cor curve
-    get_roc(df_result, path, properties)
+    # get_roc(df_result, path, properties)
 
 
 def create_confusion(df):
-    """
-    This function creates a confusion matrix with the passed results of the cross validation.
-
-    Args:
-        df (pandas.DataFrame): DataFrame with predicted and true values from all measurements
-
-    Returns:
-        df_conf (pandas.DataFrame): DataFrame with confusion matrix. rows are true and columns predicted values
-    """
     labels = df['true'].unique()
     df_conf = pd.DataFrame(columns=labels, index=labels)
     for i in df['true'].unique():

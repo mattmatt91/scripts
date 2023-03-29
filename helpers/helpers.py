@@ -4,9 +4,19 @@ from os.path import isfile, join
 from pathlib import Path
 from shutil import rmtree
 from matplotlib import pyplot as plt
+import pandas as pd
 
 
 class Helpers:
+
+    def sample_to_numbers(samlpes: pd.Series):
+        samles_unique = samlpes.unique()
+        sample_dict = {}
+        for sample, i in zip(samles_unique, range(len(samles_unique))):
+            sample_dict[sample] = i
+        numbers = [sample_dict[s] for s in samlpes]
+        return sample_dict, numbers
+        
     def read_json(folder, filename):
         # read json to dict
         with open(join(folder, filename)) as json_file:
@@ -61,17 +71,14 @@ class Helpers:
     def save_df(df, path, name, index=True):
         Path(path).mkdir(parents=True, exist_ok=True)
         path = join(path, f'{name}.csv')
-        print(path)
         df.to_csv(path, sep=';', decimal=',', index=index)
 
     def save_fig(fig, path, name):
         fig.tight_layout()
+        print(path, name)
         path = join(path, 'results', 'plots', 'compare')
         Path(path).mkdir(parents=True, exist_ok=True)
         path = join(path, f'{name}.jpeg')
         print(path)
         fig.savefig(path)
         plt.close(fig)
-
-    def pretty_json(data: dict, indent=3, sort_keys=True):
-        print(js.dumps(dict, sort_keys=sort_keys, indent=indent))

@@ -12,7 +12,7 @@ import json as js
 
 def evaluate_measurement(properties: dict, folder: str):
     # read properties
-    name, path, features = read_properties(folder)
+    path, features = read_properties(folder)
     # read file and remove time
     data = pd.read_csv(path, decimal=',', sep=';')
     data.drop(columns=['time'], inplace=True)
@@ -60,12 +60,11 @@ def plot(data: pd.DataFrame, properties: dict, features: dict):
 def read_properties(path):
     info = hp.clean_info_meaurement(
         hp.read_json(path, 'properties.json'))
-    name = hp.get_name_from_info(info)
     path = os.path.join(path, 'data.csv')
     features = info
     features['name'] = f"{info['sample']}_{info['number']}"
     features['sensors'] = {}
-    return name, path, features
+    return path, features
 
 
 
