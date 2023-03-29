@@ -22,7 +22,6 @@ if __name__ == '__main__':
     # scan_folder(root_path, properties) # reading files and merging
     do_statistics(properties, statistic=False, pca=True,
                   lda=True)  # computing statistics
-
     # compare(root_path, properties)
     # plot_features(root_path, properties)  # plots feauteres with all samples
     print('finished')
