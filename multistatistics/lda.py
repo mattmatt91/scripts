@@ -24,7 +24,7 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
     #scalar = RobustScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
-
+    
     # perform lda
     lda = LinearDiscriminantAnalysis(n_components=3)
     x_lda = lda.fit(scaled_data, sample_numbers).transform(scaled_data)
