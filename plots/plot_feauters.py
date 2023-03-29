@@ -9,17 +9,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
+from os.path import join
+from os import getenv
 
 
-def save_fig(fig, path, name):
-    fig.tight_layout()
-    path = path + '\\results\\plots\\param_plots'
-    Path(path).mkdir(parents=True, exist_ok=True)
-    path = path + '\\' + name.replace('/', ' dev ') + '.jpeg'
-
-    # plt.show()
-    fig.savefig(path)
-    plt.close(fig)
 
 
 def transform_table(path, df_mean, df_stabw, properties):
@@ -29,8 +22,6 @@ def transform_table(path, df_mean, df_stabw, properties):
         mean = df_mean[param]
         stabw = df_stabw[param]
         df_plot = pd.DataFrame({'mean': mean, 'stabw': stabw})
-        # calling plot function
-        plot_mean(path, df_plot, param, properties)
 
 
 def plot_mean(path, df_plot, param, properties):
@@ -60,13 +51,15 @@ def plot_mean(path, df_plot, param, properties):
     plt.close()
 
 
-def plot_features(path:str, properties:dict):
-
-    path_mean = path + '\\results\\statistics\\mean.txt'
-    path_stabw = path + '\\results\\statistics\\std.txt'
+def plot_features(properties: dict):
+    path = join(getenv("DATA_PATH"), 'results', 'statistics')
+    path_mean = join(path, 'results', 'statistics', 'statistics', 'mean.csv')
+    path_stabw = join(path, 'results', 'statistics', 'statistics', 'std.csv')
     df_mean = pd.read_csv(path_mean, decimal='.', sep=';', index_col=0)
     df_stabw = pd.read_csv(path_stabw, decimal='.', sep=';', index_col=0)
-    transform_table(path, df_mean, df_stabw, properties)
+    data = transform_table(df_mean, df_stabw, properties)
+    print(data)
+    # plot_mean(df_plot, param, properties)
 
 
 if __name__ == '__main__':

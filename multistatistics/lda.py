@@ -2,7 +2,7 @@ from plots.plot_mult_stat import plot_components, plot_heat
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.model_selection import LeaveOneOut
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -75,5 +75,3 @@ def cross_validate(function: LDA, x: np.array, y: np.array, sample_dict: dict):
     return df_conf_matrix
 
 
-def plot_confusion(data: pd.DataFrame):
-    data = data[['true_sample', 'predict_sample']]

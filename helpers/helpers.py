@@ -8,6 +8,16 @@ import pandas as pd
 
 
 class Helpers:
+    def save_html(html_object, path, name):
+        Path(path).mkdir(parents=True, exist_ok=True)
+        path = path + '\\' + name + '.html'
+        print(path)
+        html_object.write_html(path)
+
+    def get_all_files_in_sub(path:str):
+        return [join(path, f)
+            for f in listdir(path) if isfile(join(path, f))]
+
     def get_key_by_value(data:dict, value:int):
         for key, val in data.items():
             if val == value:
@@ -75,6 +85,7 @@ class Helpers:
     def save_df(df, path, name, index=True):
         Path(path).mkdir(parents=True, exist_ok=True)
         path = join(path, f'{name}.csv')
+        print(path)
         df.to_csv(path, sep=';', decimal=',', index=index)
 
     def save_fig(fig, path, name):

@@ -5,9 +5,12 @@ from multistatistics.lda import calc_lda
 from multistatistics.pca import calc_pca
 from multistatistics.statistics import get_statistics
 import os
+from helpers.helpers import Helpers as hp
 
 
-def do_statistics(properties, statistic=True, pca=True, lda=True):
+
+def do_statistics(statistic=True, pca=True, lda=True):
+    properties = hp.read_json('properties', 'properties.json')
     # preparing result.csv for statistics
     file_path = join(
         os.getenv("DATA_PATH"), 'results', 'results.csv')
@@ -40,4 +43,4 @@ def prepare_data(file_path):
 
 if __name__ == '__main__':
     path = 'E:\\Promotion\Daten\\29.06.21_Paper_reduziert'
-    do_statistics(path)
+    do_statistics()

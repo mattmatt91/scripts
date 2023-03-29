@@ -1,8 +1,9 @@
-from helpers.helpers import  Helpers as hp
+from helpers.helpers import Helpers as hp
 import pandas as pd
 from os.path import join
 from filereader.eval_measurement import evaluate_measurement
 import warnings
+from os import getenv
 warnings.simplefilter(action="ignore", category=RuntimeWarning)
 
 
@@ -14,16 +15,17 @@ def init_data(properties: dict) -> dict:
 
 
 # reading all measurements and creating files with all measurements for each sensor
-def scan_folder(path: str, properties: dict) -> None:
+def scan_folder() -> None:
+    path = getenv("DATA_PATH")
+    properties = hp.read_json('properties', 'properties.json')
     subfolders = [f for f in hp.get_subfolders(path) if f.find('result') < 0]
     data = init_data(properties)
     results = []
     print('reading files...')
     for folder in subfolders:
         print(folder)
-        data_measurement, features= evaluate_measurement(properties, folder)
+        data_measurement, features = evaluate_measurement(properties, folder)
         results.append(features)
-
         for sensor in data:
             if sensor == 'name':
                 data[sensor].append(features['name'])
@@ -34,7 +36,7 @@ def scan_folder(path: str, properties: dict) -> None:
                     data[sensor].append(data_measurement[sensor])
                 else:
                     name = features['name']
-                    print(f'{sensor} not in measurement {name}') 
+                    print(f'{sensor} not in measurement {name}')
     merge_measurements(data, path)
     merge_results(results, path)
 
