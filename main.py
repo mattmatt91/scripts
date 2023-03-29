@@ -12,8 +12,7 @@ os.environ["DATA_PATH"] = root_path
 
 if __name__ == '__main__':
     scan_folder()  # reads all measurement and evaluates them
-    # processes statisctics
-    do_statistics(statistic=True, pca=False, lda=False)
+    do_statistics(statistic=True, pca=True, lda=True)# processes statisctics
     compare()  # does some plots of sensor signals
     plot_features()  # plots feauteres with all samples
     print('finished')
