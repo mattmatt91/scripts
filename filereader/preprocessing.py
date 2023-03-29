@@ -24,6 +24,7 @@ class PreProcessing:
     def remove_offset(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
         means = data[0:properties['points_offset']].mean()  # set zero point
         data = data - means
+        std = np.std(data[0:properties['points_offset']])*properties['n_std']
         return data
 
 

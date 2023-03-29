@@ -1,9 +1,9 @@
 from plots.plot_mult_stat import plot_components, plot_heat
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.model_selection import LeaveOneOut
 import matplotlib.pyplot as plt
 import pandas as pd
 from os.path import join
@@ -17,10 +17,16 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
     sample_dict, sample_numbers = hp.sample_to_numbers(infos['sample'])
 
     # scale data
-    scalar = StandardScaler()
-    # scalar = MinMaxScaler()
+    # hat nur geringen Einfluss auf die LDA, aber visuell erkennbar. Güte noch zu evaluieren
+    scalar = MinMaxScaler()
+    #scalar = StandardScaler()
+    #scalar = Normalizer()
+    #scalar = MaxAbsScaler()
+    #scalar = RobustScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
+
+    
 
     # perform lda
     lda = LDA(n_components=3)
@@ -34,6 +40,8 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
                     properties,
                     infos,
                     name='LDA')
+
+
 
     cv_data = cross_validate(lda, x_lda, sample_numbers, sample_dict)
     plot_heat(cv_data)
