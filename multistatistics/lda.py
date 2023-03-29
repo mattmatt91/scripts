@@ -6,6 +6,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import LeaveOneOut
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.metrics import confusion_matrix
 from os.path import join
 import seaborn as sns
 import numpy as np
