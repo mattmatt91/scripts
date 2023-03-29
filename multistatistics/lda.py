@@ -1,13 +1,14 @@
-from plots.plot_mult_stat import plot_components, plot_loadings_heat
+from plots.plot_mult_stat import plot_components, plot_heat
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.model_selection import LeaveOneOut
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import pandas as pd
 from os.path import join
 import seaborn as sns
+import numpy as np
 
 
 def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
@@ -19,10 +20,10 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
     scalar = StandardScaler()
     # scalar = MinMaxScaler()
     scalar.fit(features)
-    scaled_data = scalar.transform(features, sample_numbers)
+    scaled_data = scalar.transform(features)
 
     # perform lda
-    lda = LinearDiscriminantAnalysis(n_components=3)
+    lda = LDA(n_components=3)
     x_lda = lda.fit(scaled_data, sample_numbers).transform(scaled_data)
 
     # create df
@@ -34,56 +35,36 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
                     infos,
                     name='LDA')
 
-    cross_validate(lda, features, sample_numbers)
-
-
-def cross_validate(function, x, y):
-    df_result = pd.DataFrame()
-    loo = LeaveOneOut()
-    loo.get_n_splits(x)
-    for train_index, test_index in loo.split(x):
-        # split dataset
-        x_train, x_test = x[train_index], x[test_index]
-        y_train, y_test = y[train_index], y[test_index]
-        print(x_train, x_test )
-        print(y_train, y_test )
-        # function.fit(x_train, y_train).transform(x_train)
-        # predictions = function.predict(x_test)
-        # print(predictions)
-        # result = pd.DataFrame({'true': y_test, 'predict': predictions})
-        # result['value'] = result['predict'] == result['true']
-        # df_result = df_result.append(result, ignore_index=True)
-    # print('error rate: ' + str((df_result[df_result['value']
-    #       == False]['value'].count()/len(df_result))*100) + '%')
-
-    # df_conf = create_confusion(df_result)
-    
-def plot_confusion(data:pd.DataFrame):
-    print(data)
-    # fig, ax = plt.subplots(
-    #     figsize=plot_properties['size'], dpi=plot_properties['dpi'])
-    # count_size = plot_properties['count_size']
-    # sns.heatmap(df_conf.fillna(0), linewidths=.5, annot=True, fmt='g',
-    #             cbar=False, cmap="viridis", ax=ax, annot_kws={"size": count_size})
-    # ax.set_ylabel('true', fontsize=plot_properties['label_size'])
-    # ax.set_xlabel('predicted', fontsize=plot_properties['label_size'])
-    # plt.yticks(size=plot_properties['font_size'], rotation=30)
-    # plt.xticks(size=plot_properties['font_size'], rotation=30)
-    # plt.tight_layout()
-    # hp.save_jpeg(fig, path, 'heatmap_crossvalidation_LDA')
-    # # plt.show()
-    # plt.close()
-
+    cv_data = cross_validate(lda, x_lda, sample_numbers, sample_dict)
+    plot_heat(cv_data)
     # computing cor curve
     # get_roc(df_result, path, properties)
 
 
-def create_confusion(df):
-    labels = df['true'].unique()
-    df_conf = pd.DataFrame(columns=labels, index=labels)
-    for i in df['true'].unique():
-        for n in df['true'].unique():
-            value = df[(df['true'] == i) & (
-                df['predict'] == n)]['true'].count()
-            df_conf.loc[i, n] = value  # zeilen sind true spalten predict
-    return df_conf
+def cross_validate(function: LDA, x: np.array, y: np.array, sample_dict: dict):
+    result = []
+    for i in range(len(x)):
+        x_test = x[i]
+        y_test = y[i]
+        x_train = np.delete(x, i, 0)
+        y_train = np.delete(y, i, 0)
+        function.fit(x_train, y_train).transform(x_train)
+        prediction = function.predict([x_test])[0]
+        result.append({'true': y_test, 'predict': prediction,
+                      'result': y_test == prediction})
+    data = pd.DataFrame(result)
+    data['true_sample'] = [hp.get_key_by_value(
+        sample_dict, i) for i in data['true']]
+    data['predict_sample'] = [hp.get_key_by_value(
+        sample_dict, i) for i in data['predict']]
+    accuracy = (data['result'].value_counts().loc[True] /
+                len(data['result']))*100
+    print(f'accuracy of lda cross validation is {accuracy} %')
+    conf_matrix = confusion_matrix(data['true_sample'], data['predict_sample'])
+    sample_names = data['true_sample'].unique()
+    df_conf_matrix = pd.DataFrame(conf_matrix, columns=sample_names, index=sample_names)
+    return df_conf_matrix
+
+
+def plot_confusion(data: pd.DataFrame):
+    data = data[['true_sample', 'predict_sample']]

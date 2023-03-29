@@ -8,7 +8,11 @@ import pandas as pd
 
 
 class Helpers:
-
+    def get_key_by_value(data:dict, value:int):
+        for key, val in data.items():
+            if val == value:
+                return key
+    
     def sample_to_numbers(samlpes: pd.Series):
         samles_unique = samlpes.unique()
         sample_dict = {}

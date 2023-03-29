@@ -11,6 +11,17 @@ import os
 from os import path
 
 
+def plot_heat(data: pd.DataFrame):
+    fig = px.imshow(data,
+                    text_auto=True,
+                    aspect="auto",
+                    color_continuous_scale='tealgrn'
+                    )
+    fig.update_layout(coloraxis_showscale=False)
+    path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
+    save_html(fig ,path, 'Heatplot_LDA')
+
+
 def plot_components(x_r: pd.DataFrame, properties: dict, infos: dict, name=None):
     colors_dict = {}
     for i in x_r.index.unique():

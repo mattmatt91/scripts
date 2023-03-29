@@ -55,17 +55,15 @@ def change_height():
                         json.dump((data), json_file)
 
 
-
 def test_lda():
-    print(__doc__)
-
+    # print(__doc__)
 
     iris = datasets.load_iris()
 
     X = iris.data
     y = iris.target
     target_names = iris.target_names
-    print(X,y,target_names)
+    print(X, y, target_names)
     exit()
     pca = PCA(n_components=2)
     X_r = pca.fit(X).transform(X)
@@ -75,7 +73,7 @@ def test_lda():
 
     # Percentage of variance explained for each components
     print('explained variance ratio (first two components): %s'
-        % str(pca.explained_variance_ratio_))
+          % str(pca.explained_variance_ratio_))
 
     plt.figure()
     for c, i, target_name in zip("rgb", [0, 1, 2], target_names):
@@ -92,4 +90,11 @@ def test_lda():
     plt.show()
 
 
-test_lda()
+def get_key_by_value(data:dict, value:int):
+        for key, val in data.items():
+            print(key, val)
+            if val == value:
+                return val
+
+data = {1: 'test1', 2: 'test2'}
+print(get_key_by_value(data, 'test1'))
