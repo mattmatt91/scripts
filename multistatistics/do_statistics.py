@@ -8,7 +8,6 @@ import os
 from helpers.helpers import Helpers as hp
 
 
-
 def do_statistics(statistic=True, pca=True, lda=True):
     properties = hp.read_json('properties', 'properties.json')
     # preparing result.csv for statistics
@@ -21,7 +20,7 @@ def do_statistics(statistic=True, pca=True, lda=True):
         if statistic:  # simple statistics
             get_statistics(features, infos)
         if pca:
-              calc_pca(features, infos, properties)
+            calc_pca(features, infos, properties)
         if lda:
             calc_lda(features, infos, properties)
 

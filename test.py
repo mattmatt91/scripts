@@ -1,3 +1,4 @@
+import plotly.express as px
 import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.decomposition import PCA
@@ -63,8 +64,6 @@ def test_lda():
     X = iris.data
     y = iris.target
     target_names = iris.target_names
-    print(X, y, target_names)
-    exit()
     pca = PCA(n_components=2)
     X_r = pca.fit(X).transform(X)
 
@@ -96,5 +95,13 @@ def get_key_by_value(data:dict, value:int):
             if val == value:
                 return val
 
-data = {1: 'test1', 2: 'test2'}
-print(get_key_by_value(data, 'test1'))
+
+def test_px():
+    df = px.data.iris()
+    df["e"] = df["sepal_width"]/100
+    fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species",
+                    error_x="e", error_y="e")
+    fig.show()
+
+
+test_px()

@@ -8,21 +8,21 @@ import pandas as pd
 
 
 class Helpers:
-    def save_html(html_object, path, name):
+    def save_html(html_object, path: str, name: str):
         Path(path).mkdir(parents=True, exist_ok=True)
         path = path + '\\' + name + '.html'
         print(path)
         html_object.write_html(path)
 
-    def get_all_files_in_sub(path:str):
+    def get_all_files_in_sub(path: str):
         return [join(path, f)
-            for f in listdir(path) if isfile(join(path, f))]
+                for f in listdir(path) if isfile(join(path, f))]
 
-    def get_key_by_value(data:dict, value:int):
+    def get_key_by_value(data: dict, value: int):
         for key, val in data.items():
             if val == value:
                 return key
-    
+
     def sample_to_numbers(samlpes: pd.Series):
         samles_unique = samlpes.unique()
         sample_dict = {}
@@ -30,7 +30,7 @@ class Helpers:
             sample_dict[sample] = i
         numbers = [sample_dict[s] for s in samlpes]
         return sample_dict, numbers
-        
+
     def read_json(folder, filename):
         # read json to dict
         with open(join(folder, filename)) as json_file:

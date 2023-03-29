@@ -2,7 +2,6 @@ from plots.plot_mult_stat import plot_components, plot_loadings_heat
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler
 from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
 import pandas as pd
 from os.path import join
 import os
@@ -10,17 +9,17 @@ import os
 
 def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     print('processing pca...')
-    
+
     # scale data
     # Merklicher Einfluss auf die PCA, aktuell RobustScalar die schlechteste Möglichkeit visuell. Präferiert: MinMax, MaxAbs
     scalar = MinMaxScaler()
-    #scalar = StandardScaler()
-    #scalar = Normalizer()
-    #scalar = MaxAbsScaler()
-    #scalar = RobustScaler()
+    # scalar = StandardScaler()
+    # scalar = Normalizer()
+    # scalar = MaxAbsScaler()
+    # scalar = RobustScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
-    
+
     # perform pca
     pca = PCA(n_components=3)
     pca.fit(scaled_data)
@@ -41,7 +40,7 @@ def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     hp.save_df(components, file_path, 'PCA_components')
     # do plots
 
-    # plotting 
+    # plotting
     plot_components(df_x_pca,
                     properties,
                     infos,
@@ -55,7 +54,7 @@ def create_result(pca: PCA):
             'singular values':
             pca.singular_values_
             }
-    df = pd.DataFrame(data, index = ['PC1', 'PC2', 'PC3'])
+    df = pd.DataFrame(data, index=['PC1', 'PC2', 'PC3'])
     path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     hp.save_df(df, path, 'results_pca', index=True)
 

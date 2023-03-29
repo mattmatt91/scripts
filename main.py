@@ -7,14 +7,13 @@ import os
 
 
 # root_path = 'C:\\Users\\User\\Desktop\\test_dataset'  # set path to data repository
-root_path = 'D:\\test_dataset'
-
+root_path = 'D:\\safe_combustion'
 os.environ["DATA_PATH"] = root_path
 
-
-if __name__ == '__main__':  
-    # scan_folder() 
-    # do_statistics(statistic=True, pca=False, lda=False) 
-    compare()
-    # plot_features(root_path, properties)  # plots feauteres with all samples
+if __name__ == '__main__':
+    scan_folder()  # reads all measurement and evaluates them
+    # processes statisctics
+    do_statistics(statistic=True, pca=False, lda=False)
+    compare()  # does some plots of sensor signals
+    plot_features()  # plots feauteres with all samples
     print('finished')

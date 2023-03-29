@@ -1,14 +1,9 @@
-import matplotlib.pyplot as plt
-import matplotlib
 from os.path import join
 import numpy as np
 from pathlib import Path
 import pandas as pd
 import plotly.express as px
-import seaborn as sns
-import warnings
 import os
-from os import path
 
 
 def plot_heat(data: pd.DataFrame):
@@ -19,7 +14,7 @@ def plot_heat(data: pd.DataFrame):
                     )
     fig.update_layout(coloraxis_showscale=False)
     path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
-    save_html(fig ,path, 'Heatplot_LDA')
+    save_html(fig, path, 'Heatplot_LDA')
 
 
 def plot_components(x_r: pd.DataFrame, properties: dict, infos: dict, name=None):

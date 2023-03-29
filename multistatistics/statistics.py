@@ -3,7 +3,8 @@ from os.path import join
 import pandas as pd
 import os
 
-def get_statistics(features:dict, infos:dict):
+
+def get_statistics(features: dict, infos: dict):
     print('processing statistics...')
     samples = infos['sample'].unique().tolist()
     statistics_list = {}

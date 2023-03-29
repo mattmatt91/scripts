@@ -1,14 +1,9 @@
 from plots.plot_mult_stat import plot_components, plot_heat
 from helpers.helpers import Helpers as hp
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler
+from sklearn.preprocessing import MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler, StandardScaler
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn.model_selection import LeaveOneOut
-import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.metrics import confusion_matrix
-from os.path import join
-import seaborn as sns
 import numpy as np
 
 
@@ -20,14 +15,12 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
     # scale data
     # hat nur geringen Einfluss auf die LDA, aber visuell erkennbar. Güte noch zu evaluieren
     scalar = MinMaxScaler()
-    #scalar = StandardScaler()
-    #scalar = Normalizer()
-    #scalar = MaxAbsScaler()
-    #scalar = RobustScaler()
+    # scalar = StandardScaler()
+    # scalar = Normalizer()
+    # scalar = MaxAbsScaler()
+    # scalar = RobustScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
-
-    
 
     # perform lda
     lda = LDA(n_components=3)
@@ -41,8 +34,6 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
                     properties,
                     infos,
                     name='LDA')
-
-
 
     cv_data = cross_validate(lda, x_lda, sample_numbers, sample_dict)
     plot_heat(cv_data)
@@ -71,7 +62,6 @@ def cross_validate(function: LDA, x: np.array, y: np.array, sample_dict: dict):
     print(f'accuracy of lda cross validation is {accuracy} %')
     conf_matrix = confusion_matrix(data['true_sample'], data['predict_sample'])
     sample_names = data['true_sample'].unique()
-    df_conf_matrix = pd.DataFrame(conf_matrix, columns=sample_names, index=sample_names)
+    df_conf_matrix = pd.DataFrame(
+        conf_matrix, columns=sample_names, index=sample_names)
     return df_conf_matrix
-
-
