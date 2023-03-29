@@ -7,8 +7,7 @@ import os
 
 
 # hello world
-# hello world
-# hello world
+
 
 root_path = 'E:\\test_dataset' # set path to data repository
 # root_path = 'D:\safe_combustion'
