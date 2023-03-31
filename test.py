@@ -8,6 +8,9 @@ import sys
 import os
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt 
+from scipy.signal import find_peaks
+import numpy as np
 
 
 def test_melt():
@@ -104,4 +107,24 @@ def test_px():
     fig.show()
 
 
-test_px()
+def test_featrues():
+    x = np.array([np.sin(i/10)*2 for i in range(50)])
+    peaks, properties = find_peaks(x, prominence=1, width=20)
+    properties["prominences"], properties["widths"]
+    print(peaks)
+    print(properties)
+    plt.plot(x)
+    plt.plot(peaks, x[peaks], "x")
+    plt.vlines(x=peaks, ymin=x[peaks] - properties["prominences"],
+            ymax = x[peaks], color = "C1")
+    plt.hlines(y=properties["width_heights"], xmin=properties["left_ips"],
+            xmax=properties["right_ips"], color = "C1")
+    plt.show()
+    # {'prominences': array([1.99914721]), 'left_bases': array([0], dtype=int64), 'right_bases': array([47], dtype=int64), 'widths': array([20.939394]), 'width_heights': array([0.9995736]), 'left_ips': array([5.23893447]), 'right_ips': array([26.17832846])}
+
+def test_next():
+    my_list ='asf ztr wsdfaer hzr'.split()
+    x = next(x for x in my_list if len(x) > 4)
+    print(x)
+
+test_next()

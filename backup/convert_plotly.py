@@ -40,7 +40,6 @@ def convert_to_plotly(df, name, path):
         name (string): name for the data
         path (string): root path to save the plot
     """
-    print(df)
     samples = df.columns
     df['wavelength']= df.index
     df = pd.melt(df, id_vars='wavelength', value_vars=df.columns[:-1])

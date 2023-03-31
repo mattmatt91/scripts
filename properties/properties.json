@@ -1,36 +1,36 @@
 {
     "cut_before_signal": 100,
-    "cut_after_signal": 4000,
+    "cut_after_signal": 8000,
     "sensor_to_cut": "Piezo",
     "points_offset": 100,
     "n_std": 5,
     "sensors": {
         "VIS1": {
-            "threshold": 0.003,
+            "threshold": 0.01,
             "color": "red",
             "abs": false,
             "smooth": false
         },
         "IR1": {
-            "threshold": 0.005,
+            "threshold": 0.01,
             "color": "blue",
             "abs": false,
             "smooth": false
         },
         "VIS2": {
-            "threshold": 0.003,
+            "threshold": 0.01,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR2": {
-            "threshold": 0.004,
+            "threshold": 0.01,
             "color": "royalblue",
             "abs": false,
             "smooth": false
         },
         "VIS3": {
-            "threshold": 0.005,
+            "threshold": 0.007,
             "color": "orangered",
             "abs": false,
             "smooth": false
@@ -45,7 +45,7 @@
             "threshold": 0.025,
             "color": "orange",
             "abs": true,
-            "smooth": 20
+            "smooth": 200
         },
         "Piezo": {
             "threshold": 0.001,

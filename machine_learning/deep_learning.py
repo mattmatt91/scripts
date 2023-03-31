@@ -7,7 +7,7 @@ import numpy as np
 
 def deep_learing(features:pd.DataFrame, infos:pd.DataFrame):
     dataset = loadtxt('machine_learning\\test_data.csv', delimiter=',')
-# split into input (X) and output (y) variables
+    # split into input (X) and output (y) variables
     X = dataset[:,0:8]
     y = dataset[:,8]
     print(X.shape, y.shape)
@@ -39,18 +39,6 @@ def deep_learing(features:pd.DataFrame, infos:pd.DataFrame):
         print('%s => %d (expected %d)' % (X[i].tolist(), predictions[i], y[i]))
 
 
-def prepare_data(file_path):
-    df = pd.read_csv(file_path, delimiter=';', decimal=',')
-    df.fillna(0)  # features without values filled with 0.
-    info_cols = ['datetime',
-                 'height',
-                 'number',
-                 'rate',
-                 'sample',
-                 'name']
-    infos = df[info_cols]
-    features = df.drop(columns=info_cols)
-    features.index = infos['name']
-    return features, infos
+
 
 

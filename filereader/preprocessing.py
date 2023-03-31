@@ -7,17 +7,8 @@ class PreProcessing:
         threshold = properties['sensors'][sensor_to_cut]['threshold']
         cut_before_signal = properties['cut_before_signal']
         cut_after_signal = properties['cut_after_signal']
-        flag = True
-        i = 0
-
-        while flag:  # cut relevant section
-            index_to_cut = data[data['Piezo'].gt(threshold)].index[i]
-            if data['Piezo'].iloc[data.index.get_loc(index_to_cut)+1] > threshold:
-                flag = False
-            else:
-                i += 1
-        data = data[index_to_cut -
-                    cut_before_signal: index_to_cut + cut_after_signal]
+        index = next(n for n in range(len(data.index)) if data[sensor_to_cut][data.index[n]] > threshold)
+        data = data.iloc[index-cut_before_signal:index+cut_after_signal]
         return data
 
 
@@ -47,7 +38,7 @@ class PreProcessing:
         return data
 
 
-    def floating_mean(data, n=25):
+    def floating_mean(data:pd.DataFrame, n=25):
         data_flat = np.convolve(data, np.ones(n)/n, mode='same')
         data = pd.Series(
             data_flat, index=data.index[:len(data_flat)], name=data.name)

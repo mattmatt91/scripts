@@ -16,14 +16,14 @@ def evaluate_measurement(properties: dict, folder: str):
     # read file and remove time
     data = pd.read_csv(path, decimal=',', sep=';')
     data.drop(columns=['time'], inplace=True)
-    # removing offset and level to 0 V
-    data = pp.remove_offset(data, properties)
     # cutting relevant timesection
     data = pp.cut_time_section(data, properties)
-    # add new timeaxis
-    data = pp.create_time_axis(data, features)
     # smooth and abs data wich are tagged for in properties
     data = pp.smooth_and_abs_data(data, properties)
+    # removing offset and level to 0 V
+    data = pp.remove_offset(data, properties)
+    # add new timeaxis
+    data = pp.create_time_axis(data, features)
     # eval sensor
     features = evaluate_sensors(data, properties, features)
     # plot measurements
@@ -36,7 +36,7 @@ def clean_before_return(features:dict):
     sensors = features.pop('sensors')
     for sensor in sensors:
         for feature in sensors[sensor]:
-            if feature != 'plot_info':
+            if feature[0] != '_':
                 features[f'{sensor}_{feature}'] = sensors[sensor][feature]
     return features
 
