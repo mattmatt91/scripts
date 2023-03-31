@@ -79,7 +79,7 @@ def draw_peak(df, features, sensor, color):
     traces = []
     traces.append(draw_vert(features, sensor, 'green'))
     traces.append(draw_base(features, sensor, 'orange'))
-    traces.append(draw_half(features, sensor, 'orange'))
+    traces.append(draw_half(features, sensor, 'blue'))
     return traces
 
 

@@ -19,3 +19,8 @@ if __name__ == '__main__':
     compare()  # does some plots of sensor signals
     plot_features()  # plots feauteres with all samples
     print('finished')
+
+
+
+
+# blank 3 kein signal????
