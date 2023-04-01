@@ -78,3 +78,44 @@ def get_integral(data: pd.Series, x1: float, x2: float) -> float:
 def get_slope(x2: float, y2: float, x1: float, y1: float) -> float:
     slope = (y2 - y1)/(x2 - x1)
     return slope
+
+
+
+import numpy as np
+import pandas as pd
+
+def calculate_intersections(data, line_height):
+    # Convert the Pandas DataFrame to a NumPy array for easier indexing
+    data_arr = data.to_numpy()
+
+    # Calculate the number of rows and columns in the data array
+    num_rows, num_cols = data_arr.shape
+
+    # Initialize an empty list to store the intersections
+    intersections = []
+
+    # Loop over each column in the data array
+    for j in range(num_cols):
+        # Initialize a variable to store the index of the row where the line intersects the data
+        intersection_idx = -1
+
+        # Loop over each row in the data array
+        for i in range(num_rows):
+            # If the data value is less than or equal to the line height and the previous data value is greater than the line height,
+            # the line intersects the data between these two rows
+            if i > 0 and data_arr[i, j] <= line_height and data_arr[i-1, j] > line_height:
+                # Calculate the y value of the intersection
+                y_intersection = line_height
+
+                # Calculate the x value of the intersection using linear interpolation
+                x1 = i - 1
+                x2 = i
+                y1 = data_arr[i-1, j]
+                y2 = data_arr[i, j]
+                x_intersection = x1 + ((y_intersection - y1) / (y2 - y1)) * (x2 - x1)
+
+                # Add the intersection to the list of intersections
+                intersections.append((x_intersection, y_intersection))
+
+    # Convert the list of intersections to a NumPy array and return it
+    return np.array(intersections)
