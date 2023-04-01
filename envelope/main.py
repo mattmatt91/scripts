@@ -65,3 +65,26 @@ plt.show()
 
 
 
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
+
+# Generate noisy 2D data
+t = np.linspace(0, 1, 100)
+x = np.sin(10 * np.pi * t) + 0.2 * np.random.randn(100)
+y = np.sin(5 * np.pi * t) + 0.2 * np.random.randn(100)
+
+# Calculate upper envelope
+peaks, _ = find_peaks(y)
+upper_envelope = np.interp(t, t[peaks], y[peaks])
+
+# Plot results
+plt.plot(t, x, label='Data')
+plt.plot(t, y, label='Noisy Data')
+plt.plot(t, upper_envelope, label='Upper Envelope')
+plt.legend()
+plt.show()
+
+
+
