@@ -8,7 +8,7 @@ import sys
 import os
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 import numpy as np
 
@@ -92,18 +92,18 @@ def test_lda():
     plt.show()
 
 
-def get_key_by_value(data:dict, value:int):
-        for key, val in data.items():
-            print(key, val)
-            if val == value:
-                return val
+def get_key_by_value(data: dict, value: int):
+    for key, val in data.items():
+        print(key, val)
+        if val == value:
+            return val
 
 
 def test_px():
     df = px.data.iris()
     df["e"] = df["sepal_width"]/100
     fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species",
-                    error_x="e", error_y="e")
+                     error_x="e", error_y="e")
     fig.show()
 
 
@@ -116,15 +116,24 @@ def test_featrues():
     plt.plot(x)
     plt.plot(peaks, x[peaks], "x")
     plt.vlines(x=peaks, ymin=x[peaks] - properties["prominences"],
-            ymax = x[peaks], color = "C1")
+               ymax=x[peaks], color="C1")
     plt.hlines(y=properties["width_heights"], xmin=properties["left_ips"],
-            xmax=properties["right_ips"], color = "C1")
+               xmax=properties["right_ips"], color="C1")
     plt.show()
     # {'prominences': array([1.99914721]), 'left_bases': array([0], dtype=int64), 'right_bases': array([47], dtype=int64), 'widths': array([20.939394]), 'width_heights': array([0.9995736]), 'left_ips': array([5.23893447]), 'right_ips': array([26.17832846])}
 
+
 def test_next():
-    my_list ='asf ztr wsdfaer hzr'.split()
+    my_list = 'asf ztr wsdfaer hzr'.split()
     x = next(x for x in my_list if len(x) > 4)
     print(x)
 
-test_next()
+
+def test_pandas():
+    df = pd.DataFrame(
+        {'time': [1, 2, 3, 4, 5], 'data': [0, 0.2, 0.5, 0.6, 0.3]})
+    df.set_index('time', inplace=True)
+    print(df.index[-1])
+
+
+test_pandas()

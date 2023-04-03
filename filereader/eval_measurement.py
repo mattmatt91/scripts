@@ -28,7 +28,6 @@ def evaluate_measurement(properties: dict, folder: str):
     features = evaluate_sensors(data, properties, features)
     # plot measurements
     plot(data, properties, features)
-    exit()
     features = clean_before_return(features)
     return data, features
 
@@ -45,7 +44,7 @@ def evaluate_sensors(data: pd.DataFrame, properties: dict, features):
     for sensor in data.columns:
         threshold = properties['sensors'][sensor]['threshold']
         data_sensor = data[sensor]
-
+        print(sensor)
         featrues_sensor = extract_features(
             data_sensor, threshold)
         features['sensors'][sensor] = featrues_sensor

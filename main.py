@@ -9,8 +9,8 @@ import os
 
 # root_path = 'C:\\Users\\User\\Desktop\\test_dataset'  # set path to data repository
 root_path = 'D:\\safe_combustion'
-root_path = 'C:\\Users\\matth\\Desktop\\drophammer\\test_dataset'
-root_path = 'E:\\test_plot'
+# root_path = 'C:\\Users\\matth\\Desktop\\drophammer\\test_dataset'
+# root_path = 'D:\\test_plot'
 
 
 if __name__ == '__main__':

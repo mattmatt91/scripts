@@ -50,21 +50,20 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
 
 
 def get_baseline(data: pd.Series, heigth: float):
-    _x1 = data[data > heigth].index[0]
-    ix1 = data.index.get_loc(_x1)
+    data_new = data[data > heigth]
+    ix1 = data.index.get_loc(data_new.index[0])
     x1 = data.index[ix1-1]
-    y1 = data.loc[x1]
-    
-    
-    data_2nd = data.loc[x1:] 
-    print(data_2nd[data_2nd < heigth])
-    _x2 = data_2nd[data_2nd < heigth].index[0]
-    ix2 = data_2nd.index.get_loc(_x2)
-    x2 = data_2nd.index[ix2+2]
-    y2 = data_2nd.loc[x2]
+    y1 = data[x1]
 
-    width = x2-x1
-    print({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width})
+    if data_new.index[-1] == data.index[-1]:
+        x2 = data.index[-1]
+    else:
+        ix2 = data.index.get_loc(data_new.index[-1])
+        x2 = data.index[ix2+1]
+    y2 = data[x2]
+    width = x2-ix1
+
+    # print({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width})
     return {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width}
 
 
@@ -78,5 +77,3 @@ def get_integral(data: pd.Series, x1: float, x2: float) -> float:
 def get_slope(x2: float, y2: float, x1: float, y1: float) -> float:
     slope = (y2 - y1)/(x2 - x1)
     return slope
-
-
