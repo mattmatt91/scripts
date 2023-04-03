@@ -24,9 +24,9 @@ class PreProcessing:
             if properties['sensors'][sensor]['abs']:
                 data[sensor] = data[sensor].abs()
             if type(properties['sensors'][sensor]['smooth']) == int:
+                # data[sensor] = PreProcessing.smooth_me(data[sensor])
                 data[sensor] = PreProcessing.floating_mean(
                     data[sensor], n=properties['sensors'][sensor]['smooth'])
-        # data.apply(lambda x: round(x, 2))
         return data
 
 
@@ -43,3 +43,14 @@ class PreProcessing:
         data = pd.Series(
             data_flat, index=data.index[:len(data_flat)], name=data.name)
         return data
+    
+    def smooth_me( df: pd.DataFrame)->pd.DataFrame:
+        last_value = 0
+        smoothed = []
+        for i in range(len(df)):
+            if df.iloc[i] < df.iloc[i:i+1].max():
+                smoothed.append(last_value)
+            else:
+                last_value = df.iloc[i]
+                smoothed.append(last_value) 
+        return smoothed

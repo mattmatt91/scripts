@@ -10,7 +10,7 @@ import os
 # root_path = 'C:\\Users\\User\\Desktop\\test_dataset'  # set path to data repository
 root_path = 'D:\\safe_combustion'
 # root_path = 'C:\\Users\\matth\\Desktop\\drophammer\\test_dataset'
-# root_path = 'D:\\test_plot'
+root_path = 'D:\\test_plot'
 
 
 if __name__ == '__main__':
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # do_statistics(statistic=True, pca=True, lda=True)# processes statisctics
     # do_machine_learning() # 
     # compare()  # does some plots of sensor signals
-    #vplot_features()  # plots feauteres with all samples
+    # plot_features()  # plots feauteres with all samples
     print('finished')
 
 
