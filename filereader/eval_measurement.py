@@ -27,8 +27,8 @@ def evaluate_measurement(properties: dict, folder: str):
     # eval sensor
     features = evaluate_sensors(data, properties, features)
     # plot measurements
-    exit()
     plot(data, properties, features)
+    exit()
     features = clean_before_return(features)
     return data, features
 

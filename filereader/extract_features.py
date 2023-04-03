@@ -9,7 +9,7 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
         peak_y = data.max()
 
         base = get_baseline(data, threshold)
-        # middle = get_baseline(data, peak_y/2)
+        middle = get_baseline(data, peak_y/2)
 
         slope_pos = get_slope(
             x1=base['x1'],
@@ -35,11 +35,11 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
             '_base_x2': base['x2'],
             'base_y2': base['y2'],
             'base_width': base['width'],
-            # '_half_x1': middle['x1'],
-            # 'half_y1': middle['y1'],
-            # '_half_x2': middle['x2'],
-            # 'half_y2': middle['y2'],
-            # 'half_width': middle['width'],
+            '_half_x1': middle['x1'],
+            'half_y1': middle['y1'],
+            '_half_x2': middle['x2'],
+            'half_y2': middle['y2'],
+            'half_width': middle['width'],
             'integral': integral,
             'slope_pos': slope_pos,
             'slope_neg': slope_neg
@@ -50,18 +50,15 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
 
 
 def get_baseline(data: pd.Series, heigth: float):
-    # exit()
-
     _x1 = data[data > heigth].index[0]
     ix1 = data.index.get_loc(_x1)
     x1 = data.index[ix1-1]
     y1 = data.loc[x1]
-
-    data_2nd = data.loc[x1:]  # 2 offset because x1 is before peak
-    print(len(data_2nd))
-    print(len(data_2nd[data_2nd < heigth]))
+    
+    
+    data_2nd = data.loc[x1:] 
+    print(data_2nd[data_2nd < heigth])
     _x2 = data_2nd[data_2nd < heigth].index[0]
-    print(_x2)
     ix2 = data_2nd.index.get_loc(_x2)
     x2 = data_2nd.index[ix2+2]
     y2 = data_2nd.loc[x2]
@@ -83,39 +80,3 @@ def get_slope(x2: float, y2: float, x1: float, y1: float) -> float:
     return slope
 
 
-def calculate_intersections(data, line_height):
-    # Convert the Pandas DataFrame to a NumPy array for easier indexing
-    data_arr = data.to_numpy()
-
-    # Calculate the number of rows and columns in the data array
-    num_rows, num_cols = data_arr.shape
-
-    # Initialize an empty list to store the intersections
-    intersections = []
-
-    # Loop over each column in the data array
-    for j in range(num_cols):
-        # Initialize a variable to store the index of the row where the line intersects the data
-        intersection_idx = -1
-
-        # Loop over each row in the data array
-        for i in range(num_rows):
-            # If the data value is less than or equal to the line height and the previous data value is greater than the line height,
-            # the line intersects the data between these two rows
-            if i > 0 and data_arr[i, j] <= line_height and data_arr[i-1, j] > line_height:
-                # Calculate the y value of the intersection
-                y_intersection = line_height
-
-                # Calculate the x value of the intersection using linear interpolation
-                x1 = i - 1
-                x2 = i
-                y1 = data_arr[i-1, j]
-                y2 = data_arr[i, j]
-                x_intersection = x1 + \
-                    ((y_intersection - y1) / (y2 - y1)) * (x2 - x1)
-
-                # Add the intersection to the list of intersections
-                intersections.append((x_intersection, y_intersection))
-
-    # Convert the list of intersections to a NumPy array and return it
-    return np.array(intersections)
