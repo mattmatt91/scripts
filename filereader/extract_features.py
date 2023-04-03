@@ -9,7 +9,7 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
         peak_y = data.max()
 
         base = get_baseline(data, threshold)
-        middle = get_baseline(data, peak_y/2)
+        # middle = get_baseline(data, peak_y/2)
 
         slope_pos = get_slope(
             x1=base['x1'],
@@ -35,11 +35,11 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
             '_base_x2': base['x2'],
             'base_y2': base['y2'],
             'base_width': base['width'],
-            '_half_x1': middle['x1'],
-            'half_y1': middle['y1'],
-            '_half_x2': middle['x2'],
-            'half_y2': middle['y2'],
-            'half_width': middle['width'],
+            # '_half_x1': middle['x1'],
+            # 'half_y1': middle['y1'],
+            # '_half_x2': middle['x2'],
+            # 'half_y2': middle['y2'],
+            # 'half_width': middle['width'],
             'integral': integral,
             'slope_pos': slope_pos,
             'slope_neg': slope_neg
@@ -51,20 +51,23 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
 
 def get_baseline(data: pd.Series, heigth: float):
     # exit()
-    ix1 = next(n for n in range(len(data.index)) if data.iloc[n] > heigth)
+
+    _x1 = data[data > heigth].index[0]
+    ix1 = data.index.get_loc(_x1)
     x1 = data.index[ix1-1]
     y1 = data.loc[x1]
 
-    data_2nd = data.iloc[ix1:]
-    index = data_2nd[data_2nd<heigth].index
-    if len(index)>0:
-        x2 = index[0]
-    else:
-        x2 = data.index[len(data.index)-1]
-    y2 = data.loc[x2]
+    data_2nd = data.loc[x1:]  # 2 offset because x1 is before peak
+    print(len(data_2nd))
+    print(len(data_2nd[data_2nd < heigth]))
+    _x2 = data_2nd[data_2nd < heigth].index[0]
+    print(_x2)
+    ix2 = data_2nd.index.get_loc(_x2)
+    x2 = data_2nd.index[ix2+2]
+    y2 = data_2nd.loc[x2]
 
     width = x2-x1
-    print( {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width})
+    print({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width})
     return {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width}
 
 
@@ -79,10 +82,6 @@ def get_slope(x2: float, y2: float, x1: float, y1: float) -> float:
     slope = (y2 - y1)/(x2 - x1)
     return slope
 
-
-
-import numpy as np
-import pandas as pd
 
 def calculate_intersections(data, line_height):
     # Convert the Pandas DataFrame to a NumPy array for easier indexing
@@ -112,7 +111,8 @@ def calculate_intersections(data, line_height):
                 x2 = i
                 y1 = data_arr[i-1, j]
                 y2 = data_arr[i, j]
-                x_intersection = x1 + ((y_intersection - y1) / (y2 - y1)) * (x2 - x1)
+                x_intersection = x1 + \
+                    ((y_intersection - y1) / (y2 - y1)) * (x2 - x1)
 
                 # Add the intersection to the list of intersections
                 intersections.append((x_intersection, y_intersection))

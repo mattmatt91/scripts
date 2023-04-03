@@ -55,6 +55,7 @@ def plot_measurement_stacked(df: pd.DataFrame, properties: dict, features: dict)
     path = join(path, f'{name}.html')
     # fig.show()
     print(path)
+    # fig.show()
     fig.write_html(path)
 
 

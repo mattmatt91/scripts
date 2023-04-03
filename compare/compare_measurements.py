@@ -24,7 +24,7 @@ def evaluate_sensor(file: str, sensor: str, path: str):
 def plot(df, sensor, path):
     fig = px.line(df, title=sensor)
     path_file = join(path, 'results', 'plots', 'compare')
-    hp.save_html(fig, path, sensor)
+    hp.save_html(fig, path_file, sensor)
 
 
 if __name__ == '__main__':
