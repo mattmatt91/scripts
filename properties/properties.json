@@ -36,7 +36,7 @@
             "smooth": false
         },
         "IR3": {
-            "threshold": 0.005,
+            "threshold": 0.05,
             "color": "royalblue",
             "abs": false,
             "smooth": false
@@ -48,7 +48,7 @@
             "smooth": 200
         },
         "Piezo": {
-            "threshold": 0.001,
+            "threshold": 0.002,
             "color": "green",
             "abs": true,
             "smooth": 20

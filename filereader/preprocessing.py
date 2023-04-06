@@ -7,7 +7,7 @@ class PreProcessing:
         threshold = properties['sensors'][sensor_to_cut]['threshold']
         cut_before_signal = properties['cut_before_signal']
         cut_after_signal = properties['cut_after_signal']
-        index = next(n for n in range(len(data.index)) if data[sensor_to_cut][data.index[n]] > threshold)
+        index = data[data[sensor_to_cut]>threshold].index[0]
         data = data.iloc[index-cut_before_signal:index+cut_after_signal]
         return data
 
