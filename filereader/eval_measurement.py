@@ -16,12 +16,12 @@ def evaluate_measurement(properties: dict, folder: str):
     # read file and remove time
     data = pd.read_csv(path, decimal=',', sep=';')
     data.drop(columns=['time'], inplace=True)
-    # cutting relevant timesection
-    data = pp.cut_time_section(data, properties)
     # smooth and abs data wich are tagged for in properties
     data = pp.smooth_and_abs_data(data, properties)
     # removing offset and level to 0 V
     data = pp.remove_offset(data, properties)
+    # cutting relevant timesection
+    data = pp.cut_time_section(data, properties)
     # add new timeaxis
     data = pp.create_time_axis(data, features)
     # eval sensor
@@ -43,7 +43,6 @@ def clean_before_return(features:dict):
 def evaluate_sensors(data: pd.DataFrame, properties: dict, features):
     for sensor in data.columns:
         threshold = properties['sensors'][sensor]['threshold']
-        print(sensor, threshold)
         data_sensor = data[sensor]
         featrues_sensor = extract_features(
             data_sensor, threshold)

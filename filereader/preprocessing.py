@@ -7,9 +7,12 @@ class PreProcessing:
         threshold = properties['sensors'][sensor_to_cut]['threshold']
         cut_before_signal = properties['cut_before_signal']
         cut_after_signal = properties['cut_after_signal']
-        index = data[data[sensor_to_cut]>threshold].index[0]
+        index = data[sensor_to_cut].idxmax()
         data = data.iloc[index-cut_before_signal:index+cut_after_signal]
-        return data
+        if data[sensor_to_cut].max() > threshold:
+            return data
+        else:
+            raise ValueError("no peak in vis")
 
 
     def remove_offset(data: pd.DataFrame, properties: dict) -> pd.DataFrame:

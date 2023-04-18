@@ -23,7 +23,6 @@ def scan_folder() -> None:
     results = []
     print('reading files...')
     for folder in subfolders:
-        print(folder)
         data_measurement, features = evaluate_measurement(properties, folder)
         results.append(features)
         for sensor in data:

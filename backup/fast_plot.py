@@ -26,10 +26,8 @@ def read_measurements(path_data):
 
     # iterate over all subfolders
     for folder in subfolder:
-        print(folder)
         filenames = [path.join(folder, i) for i in listdir(folder)]
         for file in filenames:
-            print(file)
             # if file.find('.json')>0:
             #     info = read_json(file)
             #     print(info, 5)

@@ -2,7 +2,7 @@
     "cut_before_signal": 100,
     "cut_after_signal": 8000,
     "sensor_to_cut": "Piezo",
-    "points_offset": 100,
+    "points_offset": 2000,
     "n_std": 5,
     "sensors": {
         "VIS1": {
@@ -30,25 +30,25 @@
             "smooth": false
         },
         "VIS3": {
-            "threshold": 0.007,
+            "threshold": 0.01,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR3": {
-            "threshold": 0.05,
+            "threshold": 0.02,
             "color": "royalblue",
             "abs": false,
             "smooth": false
         },
         "Mikro": {
-            "threshold": 0.025,
+            "threshold": 0.1,
             "color": "orange",
             "abs": true,
             "smooth": 200
         },
         "Piezo": {
-            "threshold": 0.002,
+            "threshold": 0.001,
             "color": "green",
             "abs": true,
             "smooth": 20
