@@ -30,13 +30,13 @@
             "smooth": false
         },
         "VIS3": {
-            "threshold": 0.01,
+            "threshold": 0.008,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR3": {
-            "threshold": 0.02,
+            "threshold": 0.01,
             "color": "royalblue",
             "abs": false,
             "smooth": false

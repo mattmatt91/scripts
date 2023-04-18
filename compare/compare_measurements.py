@@ -4,6 +4,7 @@ import plotly.express as px
 from helpers.helpers import Helpers as hp
 from os.path import join
 from os import getenv
+from os.path import join
 
 
 def compare():
@@ -12,19 +13,27 @@ def compare():
     onlyfiles = hp.get_all_files_in_sub(path)
     sensors = [i for i in properties['sensors']]
     for file, sensor in zip(onlyfiles, sensors):
+        print(file, sensor)
+    
+    for file, sensor in zip(onlyfiles, sensors):
         evaluate_sensor(file, sensor, path)
 
 
 def evaluate_sensor(file: str, sensor: str, path: str):
     df = pd.read_csv(file, decimal=',', sep=';')
     df.set_index('time', inplace=True)
+    samples = [i.split('_')[0] for i in df.columns.to_list()]
+    print(samples)
+    print(type(set(samples)))
     plot(df, sensor, path)
-
+    exit()
 
 def plot(df, sensor, path):
     fig = px.line(df, title=sensor)
-    path_file = join(path, 'results', 'plots', 'compare')
-    hp.save_html(fig, path_file, sensor)
+    path = join(getenv("DATA_PATH"),
+            "results\\plots\\compare")
+    fig.show()
+    hp.save_html(fig, path, sensor)
 
 
 if __name__ == '__main__':

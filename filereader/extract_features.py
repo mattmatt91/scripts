@@ -4,12 +4,9 @@ import json as js
 
 
 def extract_features(data: pd.Series, threshold: float) -> dict:
-    if data.max() >= threshold and data.idxmax() > 0.00065 and data.idxmax() < 0.02:
+    if data.max() >= threshold and data.idxmax() > 0.00065 and data.idxmax() < 0.03:
         peak_x = data.idxmax()
-
-        
         peak_y = data.max()
-
         base = get_baseline(data, threshold, peak_x)
         middle = get_baseline(data, peak_y/2, peak_x)
 
@@ -51,7 +48,7 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
         return {}
 
 
-def get_baseline(data: pd.Series, heigth: float, peak_x:float):
+def get_baseline(data: pd.Series, heigth: float, peak_x: float):
     data_first = data[data > heigth]
     # print(data_new.index.to_list())
     ix1 = data.index.get_loc(data_first.index[0])
@@ -59,7 +56,7 @@ def get_baseline(data: pd.Series, heigth: float, peak_x:float):
     y1 = data[x1]
 
     data_second = data[peak_x:]
-    if len(data_second[data_second < heigth])>0:
+    if len(data_second[data_second < heigth]) > 0:
         ix2 = data.index.get_loc(data_second[data_second < heigth].index[0])
         x2 = data.index[ix2+1]
     else:
