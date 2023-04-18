@@ -4,12 +4,14 @@ import json as js
 
 
 def extract_features(data: pd.Series, threshold: float) -> dict:
-    if data.max() >= threshold: # and data.idxmax() < 0.01 and data.idxmax() > 0.0008:
+    if data.max() >= threshold and data.idxmax() > 0.00065 and data.idxmax() < 0.02:
         peak_x = data.idxmax()
+
+        
         peak_y = data.max()
 
-        base = get_baseline(data, threshold)
-        middle = get_baseline(data, peak_y/2)
+        base = get_baseline(data, threshold, peak_x)
+        middle = get_baseline(data, peak_y/2, peak_x)
 
         slope_pos = get_slope(
             x1=base['x1'],
@@ -49,22 +51,22 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
         return {}
 
 
-def get_baseline(data: pd.Series, heigth: float):
-    data_new = data[data > heigth]
+def get_baseline(data: pd.Series, heigth: float, peak_x:float):
+    data_first = data[data > heigth]
     # print(data_new.index.to_list())
-    ix1 = data.index.get_loc(data_new.index[0])
+    ix1 = data.index.get_loc(data_first.index[0])
     x1 = data.index[ix1-1]
     y1 = data[x1]
 
-    if data_new.index[-1] == data.index[-1]:
-        x2 = data.index[-1]
-    else:
-        ix2 = data.index.get_loc(data_new.index[-1])
+    data_second = data[peak_x:]
+    if len(data_second[data_second < heigth])>0:
+        ix2 = data.index.get_loc(data_second[data_second < heigth].index[0])
         x2 = data.index[ix2+1]
+    else:
+        ix2 = data.index.get_loc(data.index[-1])
+        x2 = data.index[ix2]
     y2 = data[x2]
-    # print(heigth, x2)
     width = x2-x1
-
     # print({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width})
     return {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width}
 

@@ -48,7 +48,7 @@
             "smooth": 200
         },
         "Piezo": {
-            "threshold": 0.001,
+            "threshold": 0.00092,
             "color": "green",
             "abs": true,
             "smooth": 20

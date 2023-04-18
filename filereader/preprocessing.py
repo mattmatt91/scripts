@@ -12,7 +12,7 @@ class PreProcessing:
         if data[sensor_to_cut].max() > threshold:
             return data
         else:
-            raise ValueError("no peak in vis")
+            raise ValueError("no peak in piezo")
 
 
     def remove_offset(data: pd.DataFrame, properties: dict) -> pd.DataFrame:

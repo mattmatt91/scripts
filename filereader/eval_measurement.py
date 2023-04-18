@@ -44,6 +44,7 @@ def evaluate_sensors(data: pd.DataFrame, properties: dict, features):
     for sensor in data.columns:
         threshold = properties['sensors'][sensor]['threshold']
         data_sensor = data[sensor]
+        # print(sensor)
         featrues_sensor = extract_features(
             data_sensor, threshold)
         features['sensors'][sensor] = featrues_sensor
