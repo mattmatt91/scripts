@@ -66,6 +66,8 @@
         "TATP": "yellow",
         "Blackpowder": "grey",
         "Knallplaettchen": "orange",
-        "Salt": "orange"
+        "Salt": "orange",
+        "BLANK_Ball15mm": "green",
+        "AgN3": "purple"
     }
 }
