@@ -9,7 +9,6 @@ import os
 
 def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     print('processing pca...')
-
     # scale data
     # Merklicher Einfluss auf die PCA, aktuell RobustScalar die schlechteste Möglichkeit visuell. Präferiert: MinMax, MaxAbs
     scalar = MinMaxScaler()
@@ -57,7 +56,6 @@ def create_result(pca: PCA):
     df = pd.DataFrame(data, index=['PC1', 'PC2', 'PC3'])
     path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     hp.save_df(df, path, 'results_pca', index=True)
-
 
 # creates a df with the loadings and a column for sensor and feature
 def process_loadings(df: pd.DataFrame, properties: dict):

@@ -6,49 +6,49 @@
     "n_std": 5,
     "sensors": {
         "VIS1": {
-            "threshold": 0.01,
+            "n_stabw": 10,
             "color": "red",
             "abs": false,
             "smooth": false
         },
         "IR1": {
-            "threshold": 0.01,
+            "n_stabw": 10,
             "color": "blue",
             "abs": false,
             "smooth": false
         },
         "VIS2": {
-            "threshold": 0.01,
+            "n_stabw": 15,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR2": {
-            "threshold": 0.01,
+            "n_stabw": 15,
             "color": "royalblue",
             "abs": false,
             "smooth": false
         },
         "VIS3": {
-            "threshold": 0.008,
+            "n_stabw": 15,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR3": {
-            "threshold": 0.01,
+            "n_stabw": 15,
             "color": "royalblue",
             "abs": false,
             "smooth": false
         },
         "Mikro": {
-            "threshold": 0.1,
+            "n_stabw": 10,
             "color": "orange",
             "abs": true,
             "smooth": 200
         },
         "Piezo": {
-            "threshold": 0.00092,
+            "n_stabw": 5,
             "color": "green",
             "abs": true,
             "smooth": 20
@@ -70,5 +70,12 @@
         "BLANK_Ball15mm": "green",
         "AgN3": "purple",
         "Pb(N3)2": "mediumturquoise"
+    },
+    "color_height": {
+        "6": "red",
+        "8": "green",
+        "10": "blue",
+        "15": "yellow"
     }
+
 }

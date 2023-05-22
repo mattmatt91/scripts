@@ -3,24 +3,34 @@ from helpers.helpers import Helpers as hp
 from multistatistics.do_statistics import do_statistics
 from compare.compare_measurements import compare
 from plots.plot_feauters import plot_features
-from machine_learning.machine_learning import do_machine_learning
 import os
+import sys
 
 
-# root_path = 'C:\\Users\\User\\Desktop\\test_dataset'  # set path to data repository
-# root_path = 'D:\\safe_combustion'
-# root_path = 'C:\\Users\\matth\\Desktop\\drophammer\\test_dataset'
-root_path = 'J:\\safe_combustion'
 
+if __name__ == '__main__':    
+    arg = sys.argv[1]
+    root_path = sys.argv[2]
+    
+    if len(sys.argv) < 3:
+        print("Usage: python main.py -a <path to data>")
+        sys.exit(1)
 
-if __name__ == '__main__':
-    os.environ["DATA_PATH"] = root_path
-    scan_folder()  # reads all measurement and evaluates them
-    do_statistics(statistic=True, pca=True, lda=True)# processes statisctics
-    # do_machine_learning() 
-    compare()  # does some plots of sensor signals
-    plot_features()  # plots feauteres with all samples
-    print('finished')
+    if arg == "-p":
+        print("Argument value:", root_path)  
+        os.environ["DATA_PATH"] = root_path
+    
+        
+        scan_folder()  # reads all measurement and evaluates them
+        do_statistics(statistic=True, pca=True, lda=True)# processes statisctics
+        # do_machine_learning() 
+        # compare()  # does some plots of sensor signals
+        # plot_features()  # plots feauteres with all samples
+        print('finished')
+    
+    else:
+        print("Invalid argument:", arg)
+        exit()
 
 
 

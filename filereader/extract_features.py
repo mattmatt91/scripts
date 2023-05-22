@@ -3,8 +3,9 @@ import numpy as np
 import json as js
 
 
-def extract_features(data: pd.Series, threshold: float) -> dict:
-    if data.max() >= threshold and data.idxmax() > 0.00065 and data.idxmax() < 0.03:
+def extract_features(data: pd.Series, n_stabw:int) -> dict:
+    threshold = np.std(data[:0.2])*n_stabw
+    if data.max() >= threshold:
         peak_x = data.idxmax()
         peak_y = data.max()
         base = get_baseline(data, threshold, peak_x)
@@ -48,33 +49,47 @@ def extract_features(data: pd.Series, threshold: float) -> dict:
         return {}
 
 
-def get_baseline(data: pd.Series, heigth: float, peak_x: float):
-    data_first = data[data > heigth]
-    # print(data_new.index.to_list())
-    ix1 = data.index.get_loc(data_first.index[0])
-    x1 = data.index[ix1-1]
-    y1 = data[x1]
+def get_first_element(data: list, threshold: float, g_s: str, len_offset: int):
+    if g_s == 'g':
+        for i in range(len(data)):
+            if data[i] > threshold:
+                return i + len_offset
+        return len(data)
 
-    data_second = data[peak_x:]
-    if len(data_second[data_second < heigth]) > 0:
-        ix2 = data.index.get_loc(data_second[data_second < heigth].index[0])
-        x2 = data.index[ix2+1]
-    else:
-        ix2 = data.index.get_loc(data.index[-1])
-        x2 = data.index[ix2]
-    y2 = data[x2]
-    width = x2-x1
+    elif g_s == 's':
+        for i in range(len(data)):
+            if data[i] < threshold:
+                return i + len_offset
+        return len(data)
+
+
+def get_baseline(data: pd.Series, heigth: float, peak_x: float):
+    data_list = data.to_list()
+    index_peak = data.index.get_loc(peak_x)
+    data_after_peak = data_list[index_peak:]
+    data_before_peak = data_list[:index_peak]
+    x1_i = get_first_element(data_before_peak, heigth, 'g', 0)
+    x2_i = get_first_element(data_after_peak, heigth,
+                             's', len(data_before_peak))
+    x1 = data.index[x1_i]
+    x2 = data.index[x2_i]
+    y1 = heigth
+    y2 = heigth
+    width = x2 - x1
     # print({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width})
     return {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'width': width}
 
 
 def get_integral(data: pd.Series, x1: float, x2: float) -> float:
-    peak = data.loc[x1:x2]
-    x = peak.index
-    y = peak.to_list()
-    return np.trapz(y=y, x=x)
+    try:
+        peak = data.loc[x1:x2]
+        x = peak.index
+        y = peak.to_list()
+        return np.trapz(y=y, x=x)
+    except:
+        return 0
 
 
 def get_slope(x2: float, y2: float, x1: float, y1: float) -> float:
-    slope = (y2 - y1)/(x2 - x1)
+    slope = (y2 - y1)/(x2*1.001 - x1)
     return slope

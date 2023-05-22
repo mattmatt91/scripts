@@ -48,8 +48,14 @@ class Helpers:
     def clean_info_meaurement(info: dict):
         # deletes obsolete infos about measurement
         cleaned_info = {}
-        for key in ['datetime', 'height', 'number', 'rate', 'sample']:
-            cleaned_info[key] = info[key]
+        for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball']:
+            try:
+                cleaned_info[key] = info[key]
+            except: #check if ballsize was added tp properties, sle set to 10 mm
+                if key == 'ball':
+                    cleaned_info[key] = 10
+                    
+                pass
         return cleaned_info
 
     def get_path_data(path):

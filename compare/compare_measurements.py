@@ -26,7 +26,6 @@ def evaluate_sensor(file: str, sensor: str, path: str):
     print(samples)
     print(type(set(samples)))
     plot(df, sensor, path)
-    exit()
 
 def plot(df, sensor, path):
     fig = px.line(df, title=sensor)

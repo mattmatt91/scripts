@@ -20,6 +20,7 @@ def plot_heat(data: pd.DataFrame):
 def plot_components(x_r: pd.DataFrame, properties: dict, infos: dict, name=None):
     colors_dict = {}
     for i in x_r.index.unique():
+        print(i)
         colors_dict[i] = properties['colors_samples'][i]
     fig = px.scatter_3d(
         x_r,
@@ -28,12 +29,13 @@ def plot_components(x_r: pd.DataFrame, properties: dict, infos: dict, name=None)
         z=x_r.columns[2],
         color_discrete_map=colors_dict,
         color=x_r.index,
+        symbol=infos['ball'], 
         hover_data=infos.to_dict('series')
     )
     # saving plot
     path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     save_html(fig, path, name)
-    # fig.show()
+    fig.show()
 
 
 def plot_all_laodings(df, plot_properties, colors):

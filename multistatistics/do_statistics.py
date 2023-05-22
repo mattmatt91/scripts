@@ -6,6 +6,7 @@ from multistatistics.pca import calc_pca
 from multistatistics.statistics import get_statistics
 import os
 from helpers.helpers import Helpers as hp
+import numpy as np
 
 
 def do_statistics(statistic=True, pca=True, lda=True):
@@ -28,15 +29,18 @@ def do_statistics(statistic=True, pca=True, lda=True):
 def prepare_data(file_path):
     df = pd.read_csv(file_path, delimiter=';', decimal=',')
     df.fillna(0)  # features without values filled with 0.
+    print(df)
     info_cols = ['datetime',
                  'height',
                  'number',
                  'rate',
                  'sample',
-                 'name']
+                 'name',
+                 'ball']
     infos = df[info_cols]
     features = df.drop(columns=info_cols)
     features.index = infos['name']
+    # features = features.astype(np.float128)
     return features, infos
 
 
