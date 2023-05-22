@@ -29,7 +29,8 @@ def plot_components(x_r: pd.DataFrame, properties: dict, infos: dict, name=None)
         z=x_r.columns[2],
         color_discrete_map=colors_dict,
         color=x_r.index,
-        symbol=infos['ball'], 
+        symbol=infos['height'],
+        size=infos['ball'],
         hover_data=infos.to_dict('series')
     )
     # saving plot

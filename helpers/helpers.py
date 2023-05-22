@@ -51,11 +51,12 @@ class Helpers:
         for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball']:
             try:
                 cleaned_info[key] = info[key]
-            except: #check if ballsize was added tp properties, sle set to 10 mm
-                if key == 'ball':
-                    cleaned_info[key] = 10
-                    
+            except: 
                 pass
+
+        if not "ball" in cleaned_info.keys(): # cheap bug fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            cleaned_info["ball"] = 10
+
         return cleaned_info
 
     def get_path_data(path):

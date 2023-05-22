@@ -63,6 +63,7 @@
         "Leadstyphnate": "darkturquoise",
         "TNT": "darkgreen",
         "HMTD": "darkblue",
+        "HMTDn": "yellowgreen",
         "TATP": "yellow",
         "Blackpowder": "grey",
         "Knallplaettchen": "orange",
@@ -77,5 +78,4 @@
         "10": "blue",
         "15": "yellow"
     }
-
 }

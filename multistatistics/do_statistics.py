@@ -33,7 +33,6 @@ def prepare_data(file_path):
     info_cols = ['datetime',
                  'height',
                  'number',
-                 'rate',
                  'sample',
                  'name',
                  'ball']
