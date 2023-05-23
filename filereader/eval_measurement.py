@@ -20,6 +20,8 @@ def evaluate_measurement(properties: dict, folder: str):
     data = pp.smooth_and_abs_data(data, properties)
     # removing offset and level to 0 V
     data = pp.remove_offset(data, properties)
+    # reduce lenght of data
+    data = pp.cut_time_section(data, properties)
     # add new timeaxis
     data = pp.create_time_axis(data, features)
     # eval sensor

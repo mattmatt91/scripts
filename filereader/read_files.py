@@ -20,50 +20,43 @@ def scan_folder() -> None:
     properties = hp.read_json('properties', 'properties.json')
     subfolders = [f for f in hp.get_subfolders(path) if f.find('result') < 0]
     data = init_data(properties)
-    results = []
+    flag_first = True # set flag for initing csv with header
     print('reading files...')
     i = 0
     for folder in subfolders:
         data_measurement, features = evaluate_measurement(properties, folder)
-        results.append(features)
-        for sensor in data:
-            if sensor == 'name':
-                data[sensor].append(features['name'])
-            elif sensor == 'time':
-                data[sensor].append(data_measurement.index)
-            else:
-                if sensor in data_measurement.columns:
-                    data[sensor].append(data_measurement[sensor])
-                else:
-                    name = features['name']
-                    print(f'{sensor} not in measurement {name}')
-
-        i += 1
-        if i >= 208:
-            merge_measurements(data, path)
-            merge_results(results, path)
-    print('mergig measurements')
-    merge_measurements(data, path)
-    merge_results(results, path)
+        append_results(features, path, flag_first)
+        append_measurement(data_measurement, path, flag_first, features)
+        flag_first = False
 
 
-def merge_results(result: list, folder: str):
-    # print(result)
-    df_result = pd.DataFrame(result)
+def append_results(result: dict, folder: str, first:bool):
+    df_result = pd.DataFrame([result])
     path_result = hp.mkdir_ifnotexits(join(folder, 'results'))
     path_to_save = join(path_result, 'results.csv')
-    df_result.fillna(0).to_csv(path_to_save, decimal=',', sep=';', index=False)
+    if first:
+        df_result.fillna(0).to_csv(path_to_save, decimal=',', sep=';', index=False)
+    else:
+        df_result.fillna(0).to_csv(path_to_save, mode='a', header=False, decimal=',', sep=';', index=False)
 
 
-def merge_measurements(data: pd.DataFrame, folder: str):
-    data_sensors = {}
-    for sensor in data:
-        if sensor != 'name' and sensor != 'time':
-            df = pd.DataFrame(data[sensor], index=data['name']).T
-            df['time'] = data['time'][0]
-            df.set_index('time', inplace=True)
-            path_result = hp.mkdir_ifnotexits(
-                join(folder, 'results', 'merged_sensors'))
-            path_to_save = join(path_result, f'{sensor}.csv')
-            df.to_csv(path_to_save, decimal=',', sep=';')
-            data_sensors[sensor] = df
+
+def append_measurement(data: pd.DataFrame, folder: str, first:bool, features:dict):       
+            for sensor in data.columns:
+                path_result = hp.mkdir_ifnotexits(
+                    join(folder, 'results', 'merged_sensors'))
+                path_to_save = join(path_result, f'{sensor}.csv')
+                if first:
+                    df = data[sensor]
+                    df.columns =  [features['name']]
+                    df['time'] = data.index
+                    df = df.reset_index().T
+                    df.to_csv(path_to_save, decimal=',', sep=';', index=True)
+                else:
+                    df = pd.DataFrame([data[sensor].tolist()], index=[features['name']])
+                    df.to_csv(path_to_save, mode='a', header=False, decimal=',', sep=';', index=True)
+                
+                    
+
+
+

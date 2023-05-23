@@ -21,14 +21,14 @@ if __name__ == '__main__':
         os.environ["DATA_PATH"] = root_path
     
         
-        # scan_folder()  # reads all measurement and evaluates them
+        scan_folder()  # reads all measurement and evaluates them
         
         how_to_plot = {"size":"sample",
                        "symbol":"combustion",
                        "color":"height",
                        "none":"ballsize"}
         
-        do_statistics(how_to_plot, statistic=True, pca=True, lda=True)# processes statisctics
+        # do_statistics(how_to_plot, statistic=True, pca=True, lda=True)# processes statisctics
         # do_machine_learning() 
         # compare()  # does some plots of sensor signals
         # plot_features()  # plots feauteres with all samples

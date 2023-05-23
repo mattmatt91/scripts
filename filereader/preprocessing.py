@@ -13,7 +13,7 @@ class PreProcessing:
         #     return data
         # else:
         #     raise ValueError("no peak in piezo")
-        return data[0:154500]
+        return data[80000:154500]
 
 
     def remove_offset(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
