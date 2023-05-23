@@ -1,12 +1,12 @@
 import pandas as pd
-import numpy as np
 from plots.plot_measurement import plot_measurement_stacked, plot_measurement
 from helpers.helpers import Helpers as hp
 from filereader.extract_features import extract_features
 import os
 from filereader.preprocessing import PreProcessing as pp
+import webbrowser
 import json as js
-from matplotlib import pyplot  as plt
+new = 1
 # this function extracts and returns features from every measurement
 
 
@@ -30,7 +30,7 @@ def evaluate_measurement(properties: dict, folder: str):
     return data, features
 
 
-def clean_before_return(features:dict):
+def clean_before_return(features: dict):
     sensors = features.pop('sensors')
     for sensor in sensors:
         for feature in sensors[sensor]:
@@ -38,12 +38,13 @@ def clean_before_return(features:dict):
                 features[f'{sensor}_{feature}'] = sensors[sensor][feature]
     return features
 
+
 def evaluate_sensors(data: pd.DataFrame, properties: dict, features):
     for sensor in data.columns:
         n_stabw = properties["sensors"][sensor]["n_stabw"]
         data_sensor = data[sensor]
-        featrues_sensor = extract_features(data_sensor, n_stabw)
-        features['sensors'][sensor] = featrues_sensor
+        features_sensor = extract_features(data_sensor, n_stabw)
+        features['sensors'][sensor] = features_sensor
     return features
 
 
@@ -53,8 +54,10 @@ def plot(data: pd.DataFrame, properties: dict, features: dict):
 
 
 def read_properties(path):
-    info = hp.clean_info_meaurement(
-        hp.read_json(path, 'properties.json'))
+    print(path)
+    info_raw = hp.read_json(path, 'properties.json')
+    info_raw = add_combustion_param_and_ball_to_info(info_raw, path)
+    info = hp.clean_info_meaurement(info_raw)
     path = os.path.join(path, 'data.csv')
     features = info
     features['name'] = f"{info['sample']}_{info['number']}"
@@ -62,4 +65,38 @@ def read_properties(path):
     return path, features
 
 
-
+def add_combustion_param_and_ball_to_info(info_raw: dict, path: str):
+    flag = False
+    if not "ball" in info_raw.keys():
+        info_raw['ball'] = 10
+        flag = True
+    if not "combustion" in info_raw.keys():
+        if path.find('N3') >= 0 or path.find('15mm') >= 0:
+            info_raw['ball'] = 15
+        if path.find('safe_combustion') >= 0:
+            if info_raw['sample'].find('BLANK') >= 0:
+                info_raw['combustion'] = "none"
+            elif info_raw['sample'].find('Salt') >= 0:
+                info_raw['combustion'] = "none"
+            else:
+                info_raw['combustion'] = "full"
+        else:
+            url = os.path.join(path, 'quickplot.html')
+            webbrowser.open(url, new=new)
+            print(f"measurement: {path}")
+            combustion_input = input(
+                'press \n1 for combustion, \n2 for partial combustion, \n3 for no combustion\n')
+            if int(combustion_input) == 1:
+                combustion = "full"
+            elif int(combustion_input) == 2:
+                combustion = "partial"
+            elif int(combustion_input) == 3:
+                combustion = "none"
+            else:
+                combustion = 'unknown'
+            info_raw['combustion'] = combustion
+        flag = True
+    if flag:
+        with open(os.path.join(path, 'properties.json'), "w") as outfile:
+            outfile.write(js.dumps(info_raw, indent=4))
+    return info_raw

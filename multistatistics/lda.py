@@ -7,7 +7,7 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 
 
-def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
+def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:dict):
     print('processing lda...')
     # prepare labels
     sample_dict, sample_numbers = hp.sample_to_numbers(infos['sample'])
@@ -30,7 +30,7 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict):
     df_x_lda = pd.DataFrame(x_lda, index=infos['sample'],
                             columns=['C1', 'C2', 'C3'])
     # plot lda
-    plot_components(df_x_lda,
+    plot_components(how_to_plot,df_x_lda,
                     properties,
                     infos,
                     name='LDA')

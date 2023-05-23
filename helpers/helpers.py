@@ -48,15 +48,8 @@ class Helpers:
     def clean_info_meaurement(info: dict):
         # deletes obsolete infos about measurement
         cleaned_info = {}
-        for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball']:
-            try:
-                cleaned_info[key] = info[key]
-            except: 
-                pass
-
-        if not "ball" in cleaned_info.keys(): # cheap bug fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            cleaned_info["ball"] = 10
-
+        for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball', 'combustion']:
+            cleaned_info[key] = info[key]
         return cleaned_info
 
     def get_path_data(path):

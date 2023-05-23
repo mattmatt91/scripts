@@ -6,13 +6,13 @@
     "n_std": 5,
     "sensors": {
         "VIS1": {
-            "n_stabw": 10,
+            "n_stabw": 15,
             "color": "red",
             "abs": false,
             "smooth": false
         },
         "IR1": {
-            "n_stabw": 10,
+            "n_stabw": 15,
             "color": "blue",
             "abs": false,
             "smooth": false
@@ -59,9 +59,6 @@
         "Sugar": "red",
         "Tetrazene": "yellowgreen",
         "Silverazide": "mediumslateblue",
-        "Leadazide": "orange",
-        "Leadstyphnate": "darkturquoise",
-        "TNT": "darkgreen",
         "HMTD": "darkblue",
         "HMTDn": "yellowgreen",
         "TATP": "yellow",
@@ -72,10 +69,30 @@
         "AgN3": "purple",
         "Pb(N3)2": "mediumturquoise"
     },
-    "color_height": {
+    "colors_ballsize": {
         "6": "red",
         "8": "green",
         "10": "blue",
         "15": "yellow"
+    },
+    "colors_combustion": {
+        "full": "red",
+        "partial": "yellow",
+        "none": "green"
+    },
+    "colors_height": {
+        "20": "red",
+        "25": "yellow",
+        "30": "orange",
+        "35": "green",
+        "40": "orangered",
+        "45": "yellowgreen",
+        "50": "pink",
+        "55": "darkgreen",
+        "60": "darkblue",
+        "65": "mediumturquoise",
+        "70": "cornflowerblue",
+        "75": "purple",
+        "80": "blue"
     }
 }

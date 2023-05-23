@@ -17,20 +17,46 @@ def plot_heat(data: pd.DataFrame):
     save_html(fig, path, 'Heatplot_LDA')
 
 
-def plot_components(x_r: pd.DataFrame, properties: dict, infos: dict, name=None):
+def plot_components(how_to_plot: dict, x_r: pd.DataFrame, properties: dict, infos: dict, name=None):
+
     colors_dict = {}
-    for i in x_r.index.unique():
-        print(i)
-        colors_dict[i] = properties['colors_samples'][i]
+    print(how_to_plot)
+    if how_to_plot["size"] == "ballsize":
+        size_list = infos['ball']
+    elif how_to_plot["size"] == "height":
+        size_list = infos['height']
+    elif how_to_plot["size"] == "sample":
+        size_list = x_r.index
+
+    if how_to_plot["shape"] == "ballsize":
+        shape_list = infos['ball']
+    elif how_to_plot["shape"] == "height":
+        shape_list = infos['height']
+    elif how_to_plot["shape"] == "sample":
+        shape_list = x_r.index
+
+    if how_to_plot["color"] == "ballsize":
+        for i in infos['ball'].unique():
+            colors_dict[i] = properties['colors_ballsize'][str(i)]
+        color_list = infos['ball']
+    elif how_to_plot["color"] == "height":
+        for i in infos['height'].unique():
+            colors_dict[i] = properties['colors_height'][str(i)]
+        color_list = infos['height']
+    elif how_to_plot["color"] == "sample":
+        for i in x_r.index.unique():
+            colors_dict[i] = properties['colors_samples'][i]
+        color_list = x_r.index
+
     fig = px.scatter_3d(
         x_r,
         x=x_r.columns[0],
         y=x_r.columns[1],
         z=x_r.columns[2],
         color_discrete_map=colors_dict,
-        color=x_r.index,
-        symbol=infos['height'],
-        size=infos['ball'],
+        color=color_list,
+        symbol=shape_list,
+        size=size_list,
         hover_data=infos.to_dict('series')
     )
     # saving plot
@@ -70,6 +96,8 @@ def plot_loadings_heat(df, properties):
     df['value_norm'] = normalize_data(df['value'])
 
     colors = {}
+    print(df)
+    exit()
     for sensor in df['sensor'].unique():
         colors[sensor] = properties['sensors'][sensor]['color']
     plot_all_laodings(df, properties, colors)

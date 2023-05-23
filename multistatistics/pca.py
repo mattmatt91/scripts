@@ -7,7 +7,7 @@ from os.path import join
 import os
 
 
-def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
+def calc_pca(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:dict):
     print('processing pca...')
     # scale data
     # Merklicher Einfluss auf die PCA, aktuell RobustScalar die schlechteste Möglichkeit visuell. Präferiert: MinMax, MaxAbs
@@ -40,7 +40,7 @@ def calc_pca(features: pd.DataFrame, infos: dict, properties: dict):
     # do plots
 
     # plotting
-    plot_components(df_x_pca,
+    plot_components(how_to_plot, df_x_pca,
                     properties,
                     infos,
                     name='PCA')

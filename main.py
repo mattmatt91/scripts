@@ -22,7 +22,13 @@ if __name__ == '__main__':
     
         
         # scan_folder()  # reads all measurement and evaluates them
-        do_statistics(statistic=True, pca=True, lda=True)# processes statisctics
+        
+        how_to_plot = {"size":"sample",
+                       "shape":"ballsize",
+                       "color":"height",
+                       "none":"combustion"}
+        
+        do_statistics(how_to_plot, statistic=True, pca=True, lda=True)# processes statisctics
         # do_machine_learning() 
         # compare()  # does some plots of sensor signals
         # plot_features()  # plots feauteres with all samples
