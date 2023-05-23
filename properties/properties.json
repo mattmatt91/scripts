@@ -54,7 +54,7 @@
             "smooth": 20
         }
     },
-    "colors_samples": {
+    "sample": {
         "BLANK": "cornflowerblue",
         "Sugar": "red",
         "Tetrazene": "yellowgreen",
@@ -69,18 +69,18 @@
         "AgN3": "purple",
         "Pb(N3)2": "mediumturquoise"
     },
-    "colors_ballsize": {
+    "ballsize": {
         "6": "red",
         "8": "green",
         "10": "blue",
         "15": "yellow"
     },
-    "colors_combustion": {
+    "combustion": {
         "full": "red",
         "partial": "yellow",
         "none": "green"
     },
-    "colors_height": {
+    "height": {
         "20": "red",
         "25": "yellow",
         "30": "orange",

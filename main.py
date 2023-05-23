@@ -24,9 +24,9 @@ if __name__ == '__main__':
         # scan_folder()  # reads all measurement and evaluates them
         
         how_to_plot = {"size":"sample",
-                       "shape":"ballsize",
+                       "symbol":"combustion",
                        "color":"height",
-                       "none":"combustion"}
+                       "none":"ballsize"}
         
         do_statistics(how_to_plot, statistic=True, pca=True, lda=True)# processes statisctics
         # do_machine_learning() 

@@ -22,7 +22,7 @@ def scan_folder() -> None:
     data = init_data(properties)
     results = []
     print('reading files...')
-    i = 0 
+    i = 0
     for folder in subfolders:
         data_measurement, features = evaluate_measurement(properties, folder)
         results.append(features)
@@ -37,11 +37,12 @@ def scan_folder() -> None:
                 else:
                     name = features['name']
                     print(f'{sensor} not in measurement {name}')
-        i +=1
-    if i ==100:
-        merge_measurements(data, path)
-        merge_results(results, path)
-        i = 0
+
+        i += 1
+        if i >= 208:
+            merge_measurements(data, path)
+            merge_results(results, path)
+    print('mergig measurements')
     merge_measurements(data, path)
     merge_results(results, path)
 

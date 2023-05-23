@@ -18,36 +18,43 @@ def plot_heat(data: pd.DataFrame):
 
 
 def plot_components(how_to_plot: dict, x_r: pd.DataFrame, properties: dict, infos: dict, name=None):
+    style_dict = {}
+    for key in how_to_plot.keys():
+        values =[]
+        mapping =[]
+        data= {"values":values, "mapping":mapping} 
+        style_dict[key] = data
 
-    colors_dict = {}
-    print(how_to_plot)
+    print(style_dict)
+    exit()
     if how_to_plot["size"] == "ballsize":
-        size_list = infos['ball']
+        size_list = [str(i) for i in infos['ball'].tolist()]
     elif how_to_plot["size"] == "height":
-        size_list = infos['height']
+        size_list = [str(i) for i in infos['height'].tolist()]
     elif how_to_plot["size"] == "sample":
-        size_list = x_r.index
+        size_list = x_r.index.to_list()
 
     if how_to_plot["shape"] == "ballsize":
-        shape_list = infos['ball']
+        shape_list = [str(i) for i in infos['ball'].tolist()]
     elif how_to_plot["shape"] == "height":
-        shape_list = infos['height']
+        shape_list = [str(i) for i in infos['height'].tolist()]
     elif how_to_plot["shape"] == "sample":
-        shape_list = x_r.index
+        shape_list = x_r.index.to_list()
 
     if how_to_plot["color"] == "ballsize":
-        for i in infos['ball'].unique():
-            colors_dict[i] = properties['colors_ballsize'][str(i)]
-        color_list = infos['ball']
+        colors_dict = properties['colors_ballsize']
+        color_list = [str(i) for i in infos['ball'].tolist()]
     elif how_to_plot["color"] == "height":
-        for i in infos['height'].unique():
-            colors_dict[i] = properties['colors_height'][str(i)]
-        color_list = infos['height']
+        colors_dict = properties['colors_height']
+        color_list = [str(i) for i in infos['height'].tolist()]
     elif how_to_plot["color"] == "sample":
-        for i in x_r.index.unique():
-            colors_dict[i] = properties['colors_samples'][i]
-        color_list = x_r.index
+        colors_dict = properties['colors_samples']
+        color_list = x_r.index.to_list()
 
+    print(color_list)
+    print(size_list)
+    print(shape_list)
+    print(colors_dict)
     fig = px.scatter_3d(
         x_r,
         x=x_r.columns[0],
@@ -96,8 +103,6 @@ def plot_loadings_heat(df, properties):
     df['value_norm'] = normalize_data(df['value'])
 
     colors = {}
-    print(df)
-    exit()
     for sensor in df['sensor'].unique():
         colors[sensor] = properties['sensors'][sensor]['color']
     plot_all_laodings(df, properties, colors)
