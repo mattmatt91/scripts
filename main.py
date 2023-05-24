@@ -24,11 +24,12 @@ if __name__ == '__main__':
         # scan_folder()  # reads all measurement and evaluates them
         
         how_to_plot = {"size":"combustion",
-                       "symbol":"ball",
+                       "symbol":"height",
                        "color":"sample",
                        "none":"height"}
         
-        seperation_key = 'sample'
+        # seperation_key = 'new_seperator'
+        seperation_key = 'new_seperator'
         
         do_statistics(seperation_key ,how_to_plot, statistic=True, pca=True, lda=True)# processes statisctics
 

@@ -1,4 +1,4 @@
-from plots.plot_mult_stat import plot_components, plot_loadings_heat
+from plots.plot_mult_stat import plot_components, plot_loadings
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler
 from sklearn.decomposition import PCA
@@ -59,8 +59,10 @@ def create_result(pca: PCA):
 
 # creates a df with the loadings and a column for sensor and feature
 def process_loadings(df: pd.DataFrame, properties: dict):
+    print(df)
+    exit()
     df_components = get_true_false_matrix(df)
-    plot_loadings_heat(df_components, properties)
+    plot_loadings(df_components, properties, 'PCA')
     path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     hp.save_df(df, path, 'PCA_loadings')
 

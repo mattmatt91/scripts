@@ -69,16 +69,16 @@ def plot_components(how_to_plot: dict, x_r: pd.DataFrame, properties: dict, info
     fig.show()
 
 
-def plot_all_laodings(df, plot_properties, colors):
+def plot_all_laodings(df, plot_properties, colors, method:str):
     fig = px.histogram(df, barmode='group',
-                       x="PC",
-                       y="value",
+                       x="PC" if method == 'PCA' else "C",
+                       y="value_abs",
                        color='sensor',
                        color_discrete_map=colors)
 
     path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     # fig.show()
-    save_html(fig, path, 'all_loadings')
+    save_html(fig, path, f'{method}_all_loadings')
 
 
 def plot_sum_laodings(df, plot_properties, colors):
@@ -92,9 +92,17 @@ def plot_sum_laodings(df, plot_properties, colors):
     save_html(fig, path, 'sum_loadings')
 
 
-def plot_loadings_heat(df, properties):
+
+def plot_loadings(df: pd.DataFrame, properties: dict, method:str):
     # preparing dataframe
-    df = convert_df_pd(df)
+    print(df)
+    print(method)
+    if method == 'PCA':
+        header = ['PC1', 'PC2', 'PC3']
+    elif method == 'LDA':
+        header = ['C1', 'C2', 'C3']
+
+    df = convert_df_pd(df, header)
     df['value_abs'] = df['value'].abs()
     df['value_abs_norm'] = normalize_data(df['value_abs'])
     df['value_norm'] = normalize_data(df['value'])
@@ -102,7 +110,7 @@ def plot_loadings_heat(df, properties):
     colors = {}
     for sensor in df['sensor'].unique():
         colors[sensor] = properties['sensors'][sensor]['color']
-    plot_all_laodings(df, properties, colors)
+    plot_all_laodings(df, properties, colors, method)
     plot_sum_laodings(df, properties, colors)
 
 
@@ -110,9 +118,9 @@ def normalize_data(data):
     return (data - np.min(data)) / (np.max(data) - np.min(data))
 
 
-def convert_df_pd(df):
-    pcs = 'PC1 PC2 PC3'.split()
+def convert_df_pd(df:pd.DataFrame, pcs: list):
     converted = []
+    # print(df)
     for i, m, k in zip(df['sensors'], df['features'], range(len(df['features']))):
         for n in pcs:
             converted.append(
