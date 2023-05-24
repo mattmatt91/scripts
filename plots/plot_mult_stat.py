@@ -17,56 +17,53 @@ def plot_heat(data: pd.DataFrame):
     save_html(fig, path, 'Heatplot_LDA')
 
 
+def create_mapping_size(data: list):
+    mapping = {}
+    n = 10
+    for i in set(data):
+        mapping[i] = n
+        n += 10
+    numeric_values = [mapping[i] for i in data]
+    return numeric_values
+
+
 def plot_components(how_to_plot: dict, x_r: pd.DataFrame, properties: dict, infos: dict, name=None):
     style_dict = {}
     for key in how_to_plot.keys():
-        values =[]
-        mapping =[]
-        data= {"values":values, "mapping":mapping} 
-        style_dict[key] = data
+        if key != 'none':
+            if key == 'color':
+                mapping = properties[how_to_plot[key]]
+                values = [str(i) for i in infos[how_to_plot[key]].tolist()]
+            elif key == 'size':
+                mapping = []
+                values = infos[how_to_plot[key]].tolist()
+                if type(values[0]) == str:
+                    values = create_mapping_size(values)
+            elif key == 'symbol':
+                mapping = []
+                values = infos[how_to_plot[key]].tolist()
 
-    print(style_dict)
-    exit()
-    if how_to_plot["size"] == "ballsize":
-        size_list = [str(i) for i in infos['ball'].tolist()]
-    elif how_to_plot["size"] == "height":
-        size_list = [str(i) for i in infos['height'].tolist()]
-    elif how_to_plot["size"] == "sample":
-        size_list = x_r.index.to_list()
+            data = {"values": values, "mapping": mapping}
+            style_dict[key] = data
 
-    if how_to_plot["shape"] == "ballsize":
-        shape_list = [str(i) for i in infos['ball'].tolist()]
-    elif how_to_plot["shape"] == "height":
-        shape_list = [str(i) for i in infos['height'].tolist()]
-    elif how_to_plot["shape"] == "sample":
-        shape_list = x_r.index.to_list()
 
-    if how_to_plot["color"] == "ballsize":
-        colors_dict = properties['colors_ballsize']
-        color_list = [str(i) for i in infos['ball'].tolist()]
-    elif how_to_plot["color"] == "height":
-        colors_dict = properties['colors_height']
-        color_list = [str(i) for i in infos['height'].tolist()]
-    elif how_to_plot["color"] == "sample":
-        colors_dict = properties['colors_samples']
-        color_list = x_r.index.to_list()
-
-    print(color_list)
-    print(size_list)
-    print(shape_list)
-    print(colors_dict)
     fig = px.scatter_3d(
         x_r,
         x=x_r.columns[0],
         y=x_r.columns[1],
         z=x_r.columns[2],
-        color_discrete_map=colors_dict,
-        color=color_list,
-        symbol=shape_list,
-        size=size_list,
+        color_discrete_map=style_dict['color']['mapping'],
+        color=style_dict['color']['values'],
+        symbol=style_dict['symbol']['values'],
+        size=style_dict['size']['values'],
         hover_data=infos.to_dict('series')
+
     )
     # saving plot
+    legend_color = how_to_plot['color']
+    legend_symbol = how_to_plot['symbol']
+    legend_heaer = f'{legend_color}\t{legend_symbol}'
+    fig.update_layout(legend_title_text=legend_heaer)
     path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     save_html(fig, path, name)
     fig.show()

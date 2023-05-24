@@ -69,20 +69,32 @@ def read_properties(path):
 
 def add_combustion_param_and_ball_to_info(info_raw: dict, path: str):
     flag = False
-    if not "ball" in info_raw.keys():
-        info_raw['ball'] = 10
-        flag = True
-    if not "combustion" in info_raw.keys():
-        if path.find('N3') >= 0 or path.find('15mm') >= 0:
-            info_raw['ball'] = 15
-        if path.find('safe_combustion') >= 0:
-            if info_raw['sample'].find('BLANK') >= 0:
-                info_raw['combustion'] = "none"
-            elif info_raw['sample'].find('Salt') >= 0:
-                info_raw['combustion'] = "none"
-            else:
-                info_raw['combustion'] = "full"
+    # check data from save combustion
+    # check combustion
+    if path.find('safe_combustion') >= 0:
+        # check combustion
+        if info_raw['sample'].find('BLANK') >= 0:
+            info_raw['combustion'] = "none"
+            flag = True
+        elif info_raw['sample'].find('Salt') >= 0:
+            info_raw['combustion'] = "none"
+            flag = True
         else:
+            info_raw['combustion'] = "full"
+            flag = True
+        # check ballsize
+        if not 'ball' in info_raw.keys():
+            if path.find('N3') >= 0:
+                info_raw['ball'] = 15
+            elif path.find('15mm') >= 0:
+                info_raw['ball'] = 15
+            else:
+                info_raw['ball'] = 10
+            flag = True
+
+    # check combustion for unknown measurements
+    else:
+        if not "combustion" in info_raw.keys():
             url = os.path.join(path, 'quickplot.html')
             webbrowser.open(url, new=new)
             print(f"measurement: {path}")
@@ -95,9 +107,9 @@ def add_combustion_param_and_ball_to_info(info_raw: dict, path: str):
             elif int(combustion_input) == 3:
                 combustion = "none"
             else:
-                combustion = 'unknown'
+                combustion = "unknown"
             info_raw['combustion'] = combustion
-        flag = True
+            flag = True
     if flag:
         with open(os.path.join(path, 'properties.json'), "w") as outfile:
             outfile.write(js.dumps(info_raw, indent=4))

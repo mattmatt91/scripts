@@ -9,7 +9,7 @@ from helpers.helpers import Helpers as hp
 import numpy as np
 
 
-def do_statistics(how_to_plot:dict, statistic=True, pca=True, lda=True):
+def do_statistics(seperation_key:str,how_to_plot:dict, statistic=True, pca=True, lda=True, ):
     properties = hp.read_json('properties', 'properties.json')
     # preparing result.csv for statistics
     file_path = join(
@@ -23,10 +23,11 @@ def do_statistics(how_to_plot:dict, statistic=True, pca=True, lda=True):
         if pca:
             calc_pca(features, infos, properties, how_to_plot)
         if lda:
-            calc_lda(features, infos, properties, how_to_plot)
+            calc_lda(features, infos, properties, how_to_plot, seperation_key)
 
 
 def prepare_data(file_path):
+    print(file_path)
     df = pd.read_csv(file_path, delimiter=';', decimal=',')
     df.fillna(0)  # features without values filled with 0.
     info_cols = ['datetime',

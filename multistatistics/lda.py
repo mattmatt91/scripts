@@ -7,10 +7,14 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 
 
-def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:dict):
+def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot: dict, seperation_key: str):
     print('processing lda...')
+
+    infos['new_seperator'] = [infos['sample'][i] + '_' +
+                              str(infos['height'][i]) for i in range(len(infos['sample']))]
+
     # prepare labels
-    sample_dict, sample_numbers = hp.sample_to_numbers(infos['sample'])
+    sample_dict, sample_numbers = hp.sample_to_numbers(infos[seperation_key])
 
     # scale data
     # hat nur geringen Einfluss auf die LDA, aber visuell erkennbar. Güte noch zu evaluieren
@@ -30,7 +34,7 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:
     df_x_lda = pd.DataFrame(x_lda, index=infos['sample'],
                             columns=['C1', 'C2', 'C3'])
     # plot lda
-    plot_components(how_to_plot,df_x_lda,
+    plot_components(how_to_plot, df_x_lda,
                     properties,
                     infos,
                     name='LDA')

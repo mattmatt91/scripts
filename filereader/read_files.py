@@ -7,37 +7,30 @@ from os import getenv
 warnings.simplefilter(action="ignore", category=RuntimeWarning)
 
 
-def init_data(properties: dict) -> dict:
-    data = {'name': [], 'time': []}
-    for sensor in properties['sensors']:
-        data[sensor] = []
-    return data
-
-
 # reading all measurements and creating files with all measurements for each sensor
 def scan_folder() -> None:
     path = getenv("DATA_PATH")
     properties = hp.read_json('properties', 'properties.json')
     subfolders = [f for f in hp.get_subfolders(path) if f.find('result') < 0]
-    data = init_data(properties)
     flag_first = True # set flag for initing csv with header
     print('reading files...')
-    i = 0
+    results = []
     for folder in subfolders:
         data_measurement, features = evaluate_measurement(properties, folder)
-        append_results(features, path, flag_first)
+        evaluate_measurement(properties, folder)
+        results.append(features)
         append_measurement(data_measurement, path, flag_first, features)
         flag_first = False
+    save_results(results, path)
 
 
-def append_results(result: dict, folder: str, first:bool):
-    df_result = pd.DataFrame([result])
+def save_results(results: list, folder: str):
+    print('saving results')
+    df_result = pd.DataFrame(results)
     path_result = hp.mkdir_ifnotexits(join(folder, 'results'))
     path_to_save = join(path_result, 'results.csv')
-    if first:
-        df_result.fillna(0).to_csv(path_to_save, decimal=',', sep=';', index=False)
-    else:
-        df_result.fillna(0).to_csv(path_to_save, mode='a', header=False, decimal=',', sep=';', index=False)
+    df_result.fillna(0).to_csv(path_to_save, decimal=',', sep=';', index=False)
+  
 
 
 
