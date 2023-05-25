@@ -1,3 +1,5 @@
+import seaborn as sns
+from matplotlib import pyplot as plt
 from os.path import join
 import numpy as np
 from pathlib import Path
@@ -8,7 +10,7 @@ import os
 
 def plot_heat(data: pd.DataFrame):
     fig = px.imshow(data,
-                    text_auto=True,
+                    # text_auto=True,
                     aspect="auto",
                     color_continuous_scale='tealgrn'
                     )
@@ -46,7 +48,6 @@ def plot_components(how_to_plot: dict, x_r: pd.DataFrame, properties: dict, info
             data = {"values": values, "mapping": mapping}
             style_dict[key] = data
 
-
     fig = px.scatter_3d(
         x_r,
         x=x_r.columns[0],
@@ -66,10 +67,10 @@ def plot_components(how_to_plot: dict, x_r: pd.DataFrame, properties: dict, info
     fig.update_layout(legend_title_text=legend_heaer)
     path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     save_html(fig, path, name)
-    fig.show()
+    # fig.show()
 
 
-def plot_all_laodings(df, plot_properties, colors, method:str):
+def plot_all_laodings(df, plot_properties, colors, method: str):
     fig = px.histogram(df, barmode='group',
                        x="PC" if method == 'PCA' else "C",
                        y="value_abs",
@@ -92,11 +93,8 @@ def plot_sum_laodings(df, plot_properties, colors):
     save_html(fig, path, 'sum_loadings')
 
 
-
-def plot_loadings(df: pd.DataFrame, properties: dict, method:str):
+def plot_loadings(df: pd.DataFrame, properties: dict, method: str):
     # preparing dataframe
-    print(df)
-    print(method)
     if method == 'PCA':
         header = ['PC1', 'PC2', 'PC3']
     elif method == 'LDA':
@@ -114,11 +112,21 @@ def plot_loadings(df: pd.DataFrame, properties: dict, method:str):
     plot_sum_laodings(df, properties, colors)
 
 
+def plot_coef(df: pd.DataFrame, properties: dict):
+    df = df
+    df_plot = pd.DataFrame()
+    for sensor in df['sensor'].unique():
+        numeric_cols = df.select_dtypes(include=[np.number])
+        df_plot[sensor] = numeric_cols[df['sensor'] == sensor].abs().mean()
+    sns.heatmap(df.select_dtypes(include=[np.number]).abs(), annot=False)
+    # plt.show()
+
+
 def normalize_data(data):
     return (data - np.min(data)) / (np.max(data) - np.min(data))
 
 
-def convert_df_pd(df:pd.DataFrame, pcs: list):
+def convert_df_pd(df: pd.DataFrame, pcs: list):
     converted = []
     # print(df)
     for i, m, k in zip(df['sensors'], df['features'], range(len(df['features']))):

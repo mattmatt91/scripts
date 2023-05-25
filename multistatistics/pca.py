@@ -7,27 +7,22 @@ from os.path import join
 import os
 
 
-def calc_pca(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:dict):
+def calc_pca(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot: dict):
     print('processing pca...')
-    # scale data
+
     # Merklicher Einfluss auf die PCA, aktuell RobustScalar die schlechteste Möglichkeit visuell. Präferiert: MinMax, MaxAbs
     scalar = MinMaxScaler()
-    # scalar = StandardScaler()
-    # scalar = Normalizer()
-    # scalar = MaxAbsScaler()
-    # scalar = RobustScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
 
     # perform pca
     pca = PCA(n_components=3)
-    pca.fit(scaled_data)
-    x_pca = pca.transform(scaled_data)
+    x_pca = pca.fit(scaled_data).transform(scaled_data)
 
     # create df for plotting with PCs and samples as index
     df_x_pca = pd.DataFrame(x_pca, index=infos['sample'],
                             columns=['PC1', 'PC2', 'PC3'])
-
+    
     components = pd.DataFrame(
         pca.components_, columns=features.columns, index=['PC1', 'PC2', 'PC3'])
 
@@ -58,16 +53,16 @@ def create_result(pca: PCA):
     hp.save_df(df, path, 'results_pca', index=True)
 
 # creates a df with the loadings and a column for sensor and feature
+
+
 def process_loadings(df: pd.DataFrame, properties: dict):
-    print(df)
-    exit()
     df_components = get_true_false_matrix(df)
     plot_loadings(df_components, properties, 'PCA')
     path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     hp.save_df(df, path, 'PCA_loadings')
 
 
-def get_true_false_matrix(df):
+def get_true_false_matrix(df:pd.DataFrame):
     df = df.T
     sensors = [x[:x.find('_')] for x in df.index.tolist()]
     df['sensors'] = sensors

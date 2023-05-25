@@ -1,53 +1,66 @@
-from plots.plot_mult_stat import plot_components, plot_heat, plot_loadings
+from plots.plot_mult_stat import plot_components, plot_heat, plot_coef
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler, StandardScaler
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 import numpy as np
+from os.path import join
+import os
 
 
 def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot: dict, seperation_key: str):
     print('processing lda...')
 
+    # add new columns for seperation
     infos['new_seperator'] = [infos['sample'][i] + '_' +
                               str(infos['height'][i]) for i in range(len(infos['sample']))]
 
     # prepare labels
     sample_dict, sample_numbers = hp.sample_to_numbers(infos[seperation_key])
 
-    # scale data
     # hat nur geringen Einfluss auf die LDA, aber visuell erkennbar. Güte noch zu evaluieren
     scalar = MinMaxScaler()
-    # scalar = StandardScaler()
-    # scalar = Normalizer()
-    # scalar = MaxAbsScaler()
-    # scalar = RobustScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
 
     # perform lda
     lda = LDA(n_components=3)
     x_lda = lda.fit(scaled_data, sample_numbers).transform(scaled_data)
-    components = pd.DataFrame(
-        lda.transform(scaled_data), columns=features.columns, index=['C1', 'C2', 'C3'])
-    plot_loadings(components, properties, "LDA")
-    
-    
+
     # create df
     df_x_lda = pd.DataFrame(x_lda, index=infos['sample'],
                             columns=['C1', 'C2', 'C3'])
+    
+    
+    
+    header_samples = [hp.get_key_by_value(sample_dict, i) for i in lda.classes_]
+    components = pd.DataFrame(
+        lda.coef_, index=header_samples, columns=features.columns).T
     # plot lda
     plot_components(how_to_plot, df_x_lda,
                     properties,
                     infos,
                     name='LDA')
+    process_coef(components, properties)
 
+    # proces corssvalidation
     cv_data = cross_validate(lda, x_lda, sample_numbers, sample_dict)
-    # process_coef(lda, scaled_data)
     plot_heat(cv_data)
-    # computing cor curve
-    # get_roc(df_result, path, properties)
+
+
+def process_coef(df: pd.DataFrame, properties: dict):
+    df['sensor'] = [i.split('_')[0] for i in df.index.tolist()]
+    df['feature'] = [i[i.find('_')+1:] for i in df.index.tolist()]
+    path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
+    plot_coef(df, properties)
+    hp.save_df(df, path, 'LDA_coef')
+    
+    
+    
+
+
+
 
 
 def cross_validate(function: LDA, x: np.array, y: np.array, sample_dict: dict):
@@ -75,11 +88,4 @@ def cross_validate(function: LDA, x: np.array, y: np.array, sample_dict: dict):
         conf_matrix, columns=sample_names, index=sample_names)
     return df_conf_matrix
 
-def process_coef(lda:LDA, scaled_data):
-    print(scaled_data)
-    print(len(scaled_data))
-    print(len(scaled_data[0]))
-    
-    # linear_discriminants = lda.transform(scaled_data)
-    # print(linear_discriminants)
-    
+

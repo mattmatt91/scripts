@@ -17,7 +17,6 @@ def scan_folder() -> None:
     results = []
     for folder in subfolders:
         data_measurement, features = evaluate_measurement(properties, folder)
-        evaluate_measurement(properties, folder)
         results.append(features)
         append_measurement(data_measurement, path, flag_first, features)
         flag_first = False

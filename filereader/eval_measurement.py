@@ -82,6 +82,12 @@ def add_combustion_param_and_ball_to_info(info_raw: dict, path: str):
         else:
             info_raw['combustion'] = "full"
             flag = True
+        if not 'combustion_bool' in info_raw.keys():
+            if info_raw['combustion'] =='full' or info_raw['combustion'] =='partial': 
+                info_raw['combustion_bool'] = True
+            elif info_raw['combustion'] =='none': 
+                info_raw['combustion_bool'] = False
+            flag = True
         # check ballsize
         if not 'ball' in info_raw.keys():
             if path.find('N3') >= 0:
@@ -109,6 +115,12 @@ def add_combustion_param_and_ball_to_info(info_raw: dict, path: str):
             else:
                 combustion = "unknown"
             info_raw['combustion'] = combustion
+            flag = True
+        if not 'combustion_bool' in info_raw.keys():
+            if info_raw['combustion'] =='full' or info_raw['combustion'] =='partial': 
+                info_raw['combustion_bool'] = True
+            elif info_raw['combustion'] =='none': 
+                info_raw['combustion_bool'] = False
             flag = True
     if flag:
         with open(os.path.join(path, 'properties.json'), "w") as outfile:
