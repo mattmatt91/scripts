@@ -9,7 +9,7 @@ from helpers.helpers import Helpers as hp
 import numpy as np
 
 
-def do_statistics(seperation_key:str,how_to_plot:dict, statistic=True, pca=True, lda=True, ):
+def do_statistics(seperation_key: str, how_to_plot: dict, selector: dict, statistic=True, pca=True, lda=True):
     properties = hp.read_json('properties', 'properties.json')
     # preparing result.csv for statistics
     file_path = join(
@@ -17,7 +17,7 @@ def do_statistics(seperation_key:str,how_to_plot:dict, statistic=True, pca=True,
     if not exists(file_path):
         print('no results available, please run read files from main')
     else:
-        features, infos = prepare_data(file_path)
+        features, infos = prepare_data(file_path, selector)
         if statistic:  # simple statistics
             get_statistics(features, infos)
         if pca:
@@ -26,7 +26,7 @@ def do_statistics(seperation_key:str,how_to_plot:dict, statistic=True, pca=True,
             calc_lda(features, infos, properties, how_to_plot, seperation_key)
 
 
-def prepare_data(file_path):
+def prepare_data(file_path: str, selector: dict):
     print(file_path)
     df = pd.read_csv(file_path, delimiter=';', decimal=',')
     df.fillna(0)  # features without values filled with 0.
@@ -37,10 +37,15 @@ def prepare_data(file_path):
                  'name',
                  'ball',
                  'rate',
-                 'combustion']
+                 'combustion',
+                 'combustion_bool']
     infos = df[info_cols]
     features = df.drop(columns=info_cols)
     features.index = infos['name']
+    if selector.keys()[0] != 'none':
+        key_select = selector.keys()[0]
+        val_select = selector[key_select]
+        features = features[infos[key_select] == val_select]
     # features = features.astype(np.float128)
     return features, infos
 

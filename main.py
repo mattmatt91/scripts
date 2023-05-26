@@ -20,18 +20,23 @@ if __name__ == '__main__':
         print("Argument value:", root_path)  
         os.environ["DATA_PATH"] = root_path
     
+        # rea dfiles and create results file
+        scan_folder() 
         
-        scan_folder()  # reads all measurement and evaluates them
         
+        # specify the appearance of features
         how_to_plot = {"size":"combustion",
                        "symbol":"height",
                        "color":"sample",
                        "none":"height"}
         
         # seperation_key = 'new_seperator'
-        seperation_key = 'new_seperator'
+        seperation_key = 'new_seperator' # use this for selecting seperator for LDA
         
-        do_statistics(seperation_key ,how_to_plot, statistic=True, pca=True, lda=True)# processes statisctics
+        selector = {'combustion':True} # always pass dict, if no selection use 'none' as key
+        # selector = {'none':True} # always pass dict, if no selection use 'none' as key
+        
+        do_statistics(seperation_key ,how_to_plot, selector, statistic=True, pca=True, lda=True)# processes statisctics
 
         # compare()  # does some plots of sensor signals
         # plot_features()  # plots feauteres with all samples

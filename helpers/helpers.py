@@ -48,7 +48,7 @@ class Helpers:
     def clean_info_meaurement(info: dict):
         # deletes obsolete infos about measurement
         cleaned_info = {}
-        for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball', 'combustion']:
+        for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball', 'combustion', 'combustion_bool']:
             cleaned_info[key] = info[key]
         return cleaned_info
 
