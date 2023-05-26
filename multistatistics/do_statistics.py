@@ -42,11 +42,15 @@ def prepare_data(file_path: str, selector: dict):
     infos = df[info_cols]
     features = df.drop(columns=info_cols)
     features.index = infos['name']
-    if selector.keys()[0] != 'none':
-        key_select = selector.keys()[0]
+    if list(selector.keys())[0] != 'none':
+        key_select = list(selector.keys())[0]
         val_select = selector[key_select]
-        features = features[infos[key_select] == val_select]
-    # features = features.astype(np.float128)
+        selected_data_index = infos[infos[key_select] == val_select].index
+
+        infos = infos.loc[selected_data_index]
+        features = features.iloc[selected_data_index]
+
+
     return features, infos
 
 
