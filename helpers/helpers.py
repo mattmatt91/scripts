@@ -5,6 +5,7 @@ from pathlib import Path
 from shutil import rmtree
 from matplotlib import pyplot as plt
 import pandas as pd
+import math
 
 
 class Helpers:
@@ -48,7 +49,7 @@ class Helpers:
     def clean_info_meaurement(info: dict):
         # deletes obsolete infos about measurement
         cleaned_info = {}
-        for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball', 'combustion', 'combustion_bool']:
+        for key in ['datetime', 'height', 'number', 'rate', 'sample', 'ball', 'combustion', 'combustion_bool', 'droptime']:
             cleaned_info[key] = info[key]
         return cleaned_info
 
@@ -97,3 +98,9 @@ class Helpers:
         print(path)
         fig.savefig(path)
         plt.close(fig)
+        
+    def calc_droptime(height:int):
+        height = height/100
+        g = 9.81  # Acceleration due to gravity on Earth (in m/s^2)
+        time = math.sqrt(2 * height / g)
+        return time

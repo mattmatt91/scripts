@@ -3,9 +3,9 @@ import numpy as np
 import json as js
 
 
-def extract_features(data: pd.Series, n_stabw:int) -> dict:
+def extract_features(data: pd.Series, n_stabw:int, earliest_signal: float) -> dict:
     threshold = np.std(data[:0.2])*n_stabw
-    if data.max() >= threshold:
+    if data.max() >= threshold and data.idxmax()> earliest_signal:
         peak_x = data.idxmax()
         peak_y = data.max()
         base = get_baseline(data, threshold, peak_x)

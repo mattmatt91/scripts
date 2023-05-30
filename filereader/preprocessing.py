@@ -3,7 +3,7 @@ import pandas as pd
 
 class PreProcessing:
     def cut_time_section(data: pd.DataFrame, properties: dict) -> pd.DataFrame:
-        data_slim = data.iloc[80000:154500]
+        data_slim = data.iloc[properties['cut_points_before_signal']:properties['cut_points_after_signal']]
         return  data_slim
 
 
@@ -49,3 +49,5 @@ class PreProcessing:
                 last_value = df.iloc[i]
                 smoothed.append(last_value) 
         return smoothed
+    
+    

@@ -26,6 +26,7 @@ def evaluate_measurement(properties: dict, folder: str):
     data = pp.create_time_axis(data, features)
     # eval sensor
     features = evaluate_sensors(data, properties, features)
+    features.pop('droptime')
     # plot measurements
     plot(data, properties, features)
     features = clean_before_return(features)
@@ -42,10 +43,14 @@ def clean_before_return(features: dict):
 
 
 def evaluate_sensors(data: pd.DataFrame, properties: dict, features):
+    earliest_signal = (hp.calc_droptime(features['height']) 
+                       - (properties["cut_points_before_signal"])
+                       /100000 + features['droptime'])*0.9
+                        # random bugfix for peakdtection
     for sensor in data.columns:
         n_stabw = properties["sensors"][sensor]["n_stabw"]
         data_sensor = data[sensor]
-        features_sensor = extract_features(data_sensor, n_stabw)
+        features_sensor = extract_features(data_sensor, n_stabw, earliest_signal)
         features['sensors'][sensor] = features_sensor
     return features
 
