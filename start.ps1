@@ -1,2 +1,2 @@
 venv\scripts\activate
-python main.py
+python main.py -p 'J:\impact_sensitivity\'

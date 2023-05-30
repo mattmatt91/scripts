@@ -13,9 +13,9 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:
     print('processing lda...')
 
     # add new columns for seperation
-    infos['new_seperator'] = [infos['sample'][i] + '_' +
-                              str(infos['height'][i]) for i in range(len(infos['sample']))]
-
+    
+    infos['new_seperator'] = [infos['sample'].tolist()[i] + '_' +
+                              str(infos['height'].tolist()[i]) for i in range(len(infos['sample']))]
     # prepare labels
     sample_dict, sample_numbers = hp.sample_to_numbers(infos[seperation_key])
 
