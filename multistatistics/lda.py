@@ -18,9 +18,12 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:
                               str(infos['height'].tolist()[i]) for i in range(len(infos['sample']))]
     # prepare labels
     sample_dict, sample_numbers = hp.sample_to_numbers(infos[seperation_key])
+    
+    
+    
 
     # hat nur geringen Einfluss auf die LDA, aber visuell erkennbar. Güte noch zu evaluieren
-    scalar = MinMaxScaler()
+    scalar = StandardScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
 
@@ -58,8 +61,6 @@ def process_coef(df: pd.DataFrame, properties: dict):
     
     
     
-
-
 
 
 

@@ -1,0 +1,79 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+
+def do_lda(x_train:pd.DataFrame, y_train:pd.Series):
+    print(x_train.columns)
+    lda = LDA(n_components=3)
+    lda.fit(x_train, y_train)
+    x_train_transform = lda.transform(x_train)
+    return lda, x_train_transform
+
+def predict(lda: LDA, x_test:pd.DataFrame, y_test:pd.Series, sample_dict:dict):
+    predictions_int = lda.predict(x_test)
+    predictions_propa = lda.predict_proba(x_test)
+
+    predictions = [get_key_by_value(sample_dict,i) for i in predictions_int]
+
+    for i, n in zip(predictions, y_test):
+        print(f'pred: {i}  true: {n}')
+    return lda.transform(x_test)
+
+
+def prepare_data(file_path: str):
+    print(file_path)
+    df = pd.read_csv(file_path, delimiter=';', decimal=',')
+    df.fillna(0)  # features without values filled with 0.
+    info_cols = ['datetime',
+                 'height',
+                 'number',
+                 'sample',
+                 'name',
+                 'ball',
+                 'rate',
+                 'combustion',
+                 'combustion_bool']
+    infos = df[info_cols]
+    features = df.drop(columns=info_cols)
+    features.index = infos['name']
+    return features, infos
+
+def sample_to_numbers(samlpes: pd.Series):
+        samles_unique = samlpes.unique()
+        sample_dict = {}
+        for sample, i in zip(samles_unique, range(len(samles_unique))):
+            sample_dict[sample] = i
+        numbers = [sample_dict[s] for s in samlpes]
+        return sample_dict, numbers
+
+def sample_test_to_numbers(sample_dict:dict, samples:pd.Series):
+    return [sample_dict[i] for i in samples]
+    
+def get_key_by_value(data: dict, value: int):
+    for key, val in data.items():
+        if val == value:
+            return key
+
+
+if __name__ == '__main__':
+    path_test = "J:\\test_dataset\\results\\results.csv"
+    path_train = "J:\\safe_combustion\\results\\results.csv"
+    features_test, infos_test  = prepare_data(path_test)
+    features_train, infos_train  = prepare_data(path_train)
+    
+    
+    features_test = features_test.T.sort_index().T
+    features_train = features_train.T.sort_index().T
+
+    sample_dict_train, sample_to_numbers_train = sample_to_numbers(infos_train['sample'])
+    sample_to_numbers_test = sample_test_to_numbers(sample_dict_train, infos_test['sample'])
+    lda, train_transform = do_lda(features_train, sample_to_numbers_train)  
+    test_transform  = predict(lda, features_test, infos_test['sample'], sample_dict_train)
+    
+    print(train_transform)
+    
+    
+    
+    print(test_transform)
