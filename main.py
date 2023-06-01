@@ -21,7 +21,7 @@ if __name__ == '__main__':
         os.environ["DATA_PATH"] = root_path
     
         # rea dfiles and create results file
-        scan_folder() 
+        # scan_folder() 
         
         
         # specify the appearance of features
@@ -30,11 +30,11 @@ if __name__ == '__main__':
                        "color":"sample",
                        "none":"height"}
         
-        seperation_key = 'new_seperator'
+        seperation_key = 'sample'
         # seperation_key = 'height' # use this for selecting seperator for LDA
         
-        selector = {'combustion_bool':True} # always pass dict, if no selection use 'none' as key
-        # selector = {'none':True} # always pass dict, if no selection use 'none' as key
+        # selector = {'combustion_bool':True} # always pass dict, if no selection use 'none' as key
+        selector = {'none':True} # always pass dict, if no selection use 'none' as key
         
         do_statistics(seperation_key ,how_to_plot, selector, statistic=True, pca=True, lda=True)# processes statisctics
 

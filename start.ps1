@@ -1,2 +1,7 @@
 venv\scripts\activate
-python main.py -p 'J:\impact_sensitivity\'
+
+
+
+
+python .\multistatistics\lda_test_train.py
+python main.py -p D:\comparison_8_10
