@@ -67,7 +67,7 @@ def plot_components(how_to_plot: dict, x_r: pd.DataFrame, properties: dict, info
     fig.update_layout(legend_title_text=legend_heaer)
     path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
     save_html(fig, path, name)
-    fig.show()
+    # fig.show()
 
 
 def plot_all_laodings(df, plot_properties, colors, method: str):

@@ -29,7 +29,7 @@ def predict(lda: LDA, x_test: pd.DataFrame, y_test: pd.Series, sample_dict: dict
     return lda.transform(x_test)
 
 
-def get_datetime(date_string:str, minutes_to_add:int):
+def get_datetime(date_string: str, minutes_to_add: int):
     input_format = "%d-%m-%Y_%H-%M-%S"
     output_format = "%d-%m-%Y_%H-%M-%S"
     datetime_obj = datetime.strptime(date_string, input_format)
@@ -37,11 +37,13 @@ def get_datetime(date_string:str, minutes_to_add:int):
     new_date_string = datetime_obj.strftime(output_format)
     return new_date_string
 
-def get_number(old_number:int, counter:int):
+
+def get_number(old_number: int, counter: int):
     num = 100*old_number + counter
     return num
 
-def get_name(old_name:str, counter:int):
+
+def get_name(old_name: str, counter: int):
     name = old_name.split('_')[0]
     try:
         number = int(old_name.split('_')[1])
@@ -90,9 +92,9 @@ def load_data(file_path: str):
     return infos, features
 
 
-def generate_data(infos:pd.DataFrame, features:pd.DataFrame, num_new:int):
+def generate_data(infos: pd.DataFrame, features: pd.DataFrame, num_new: int):
     # do PCA
-    pca = PCA(n_components=3) 
+    pca = PCA(n_components=3)
     transformed_data = pca.fit_transform(features)
     df_transformed_data = pd.DataFrame(transformed_data, index=features.index)
 
@@ -101,36 +103,45 @@ def generate_data(infos:pd.DataFrame, features:pd.DataFrame, num_new:int):
     new_data_infos = []
     labels = []
     for class_label in features.index.unique():
+        if class_label == 'TATP':
+            random_max = 15
+        if class_label == 'HMTD':
+            random_max = 10
+        else:
+            random_max = 5
+
         mean = df_transformed_data[df_transformed_data.index == class_label].mean(
         )
         std = df_transformed_data[df_transformed_data.index ==
                                   class_label].std()
         for i in range(num_new):
-            new_measurement = (mean + std * \
-                [randint(0, 10)/10 for i in range(3)]).tolist()
+            new_measurement = (mean + std *
+                               [uniform(1, random_max) for i in range(3)]).tolist()
             new_data.append(new_measurement)
             labels.append(class_label)
             new_info_template = infos[infos['sample'] == class_label].iloc[0]
             for key in new_info_template.index:
                 if key == 'name':
-                    new_info_template['number'] = get_number(new_info_template['number'], i)
+                    new_info_template['number'] = get_number(
+                        new_info_template['number'], i)
                 elif key == 'number':
-                    new_info_template['name'] = get_name(new_info_template['name'], i)
+                    new_info_template['name'] = get_name(
+                        new_info_template['name'], i)
                 elif key == 'datetime':
-                    new_info_template['datetime'] = get_datetime(new_info_template['datetime'], i)
+                    new_info_template['datetime'] = get_datetime(
+                        new_info_template['datetime'], i)
             new_data_infos.append(new_info_template.tolist())
     inverse_transformed_data = pca.inverse_transform(new_data)
     new_df = pd.DataFrame(inverse_transformed_data, columns=features.columns)
     new_df_infos = pd.DataFrame(new_data_infos, columns=infos.columns)
     merged_df = pd.concat([new_df_infos, new_df], axis=1)
-    merged_df.to_csv('fake_results.csv', decimal=',', sep=';')
-
+    merged_df.to_csv('data_test\\results\\results.csv',
+                     decimal=',', sep=';', index=False)
 
 
 if __name__ == '__main__':
     # path_test = "results.csv"
     path_train = "results.csv"
-
 
     infos, features = load_data(path_train)
 

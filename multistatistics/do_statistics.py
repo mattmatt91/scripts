@@ -19,7 +19,7 @@ def do_statistics(seperation_key: str, how_to_plot: dict, selector: dict, statis
     else:
         features, infos = prepare_data(file_path, selector)
         if statistic:  # simple statistics
-            pass # get_statistics(features, infos)
+            get_statistics(features, infos)
         if pca:
             calc_pca(features, infos, properties, how_to_plot)
         if lda:
@@ -42,6 +42,7 @@ def prepare_data(file_path: str, selector: dict):
     infos = df[info_cols]
     features = df.drop(columns=info_cols)
     features.index = infos['name']
+
     if list(selector.keys())[0] != 'none':
         key_select = list(selector.keys())[0]
         val_select = selector[key_select]
