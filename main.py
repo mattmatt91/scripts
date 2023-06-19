@@ -35,14 +35,14 @@ if __name__ == '__main__':
         # always pass dict, if no selection use 'none' as key
         selector = {'none': True}
 
-        do_statistics(seperation_key,
-                      how_to_plot,
-                      selector,
-                      statistic=True,
-                      pca=True,
-                      lda=True)
+        # do_statistics(seperation_key,
+        #               how_to_plot,
+        #               selector,
+        #               statistic=True,
+        #               pca=True,
+        #               lda=True)
 
-        # compare()  # does some plots of sensor signals
+        compare()  # does some plots of sensor signals
         # plot_features()  # plots feauteres with all samples
         print('finished')
 

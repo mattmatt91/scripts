@@ -16,9 +16,9 @@ def plot_statistics(df_mean: pd.DataFrame, df_stabw: pd.DataFrame):
 
 
 def plot_mean(data: pd.DataFrame, param: str):
-    path = join(getenv("DATA_PATH"), 'results', 'plots',  'statistics')
-    sample_colors = hp.read_json('properties', 'properties.json')[
-        "colors_samples"]
+    path = join(getenv("DATA_PATH"), 'results', 'plots',  'statistics', 'means')
+    print()
+    sample_colors = hp.read_json('properties', 'properties.json')["sample"]
     colors = [sample_colors[i] for i in data.index]
     fig = px.bar(data, x=data.index, y="mean",
                  error_y="stabw",
@@ -33,6 +33,7 @@ def plot_features():
                           decimal=',', sep=';', index_col=0)
     df_stabw = pd.read_csv(join(path, 'std.csv'),
                            decimal=',', sep=';', index_col=0)
+
     plot_statistics(df_mean, df_stabw)
 
 

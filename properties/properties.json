@@ -5,38 +5,38 @@
     "n_std": 5,
     "sensors": {
         "VIS1": {
-            "n_stabw": 15,
+            "n_stabw": 20,
             "color": "red",
             "abs": false,
             "smooth": false
         },
         "IR1": {
-            "n_stabw": 15,
+            "n_stabw": 20,
             "color": "blue",
             "abs": false,
             "smooth": false
         },
         "VIS2": {
-            "n_stabw": 15,
-            "color": "orangered",
+            "n_stabw": 20,
+            "color": "darkred",
             "abs": false,
             "smooth": false
         },
         "IR2": {
-            "n_stabw": 15,
+            "n_stabw": 20,
             "color": "royalblue",
             "abs": false,
             "smooth": false
         },
         "VIS3": {
-            "n_stabw": 15,
+            "n_stabw": 20,
             "color": "orangered",
             "abs": false,
             "smooth": false
         },
         "IR3": {
-            "n_stabw": 15,
-            "color": "royalblue",
+            "n_stabw": 20,
+            "color": "cornflowerblue",
             "abs": false,
             "smooth": false
         },
@@ -47,7 +47,7 @@
             "smooth": 200
         },
         "Piezo": {
-            "n_stabw": 5,
+            "n_stabw": 15,
             "color": "green",
             "abs": true,
             "smooth": 20
