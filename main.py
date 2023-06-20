@@ -6,6 +6,18 @@ from plots.plot_feauters import plot_features
 import os
 import sys
 
+# specify the appearance of features
+how_to_plot = {"size": "combustion",
+               "symbol": "height",
+               "color": "sample",
+               "none": "height"}
+
+seperation_key = 'sample'
+# seperation_key = 'height' # use this for selecting seperator for LDA
+
+# selector = {'combustion_bool':True} # always pass dict, if no selection use 'none' as key
+# always pass dict, if no selection use 'none' as key
+selector = {'none': True}
 
 if __name__ == '__main__':
     arg = sys.argv[1]
@@ -20,30 +32,21 @@ if __name__ == '__main__':
         os.environ["DATA_PATH"] = root_path
 
         # readfiles and create results file
-        scan_folder()
+        if 1:
+            scan_folder()
 
-        # specify the appearance of features
-        how_to_plot = {"size": "combustion",
-                       "symbol": "height",
-                       "color": "sample",
-                       "none": "height"}
+        if 0:
+            do_statistics(seperation_key,
+                          how_to_plot,
+                          selector,
+                          statistic=True,
+                          pca=True,
+                          lda=True)
 
-        seperation_key = 'sample'
-        # seperation_key = 'height' # use this for selecting seperator for LDA
-
-        # selector = {'combustion_bool':True} # always pass dict, if no selection use 'none' as key
-        # always pass dict, if no selection use 'none' as key
-        selector = {'none': True}
-
-        # do_statistics(seperation_key,
-        #               how_to_plot,
-        #               selector,
-        #               statistic=True,
-        #               pca=True,
-        #               lda=True)
-
-        compare()  # does some plots of sensor signals
-        plot_features()  # plots feauteres with all samples
+        if 1:
+            compare()  # does some plots of sensor signals
+        if 1:
+            plot_features()  # plots feauteres with all samples
         print('finished')
 
     else:
