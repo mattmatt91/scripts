@@ -3,8 +3,11 @@ import numpy as np
 import json as js
 
 
-def extract_features(data: pd.Series, n_stabw:int, earliest_signal: float) -> dict:
-    threshold = np.std(data[:0.2])*n_stabw
+def extract_features(data: pd.Series, n_stabw:int, earliest_signal: float, debug=False) -> dict:
+    threshold = np.std(data[:0.1])*n_stabw
+    if debug:
+        pass
+        # print(threshold)
     if data.max() >= threshold and data.idxmax()> earliest_signal:
         peak_x = data.idxmax()
         peak_y = data.max()

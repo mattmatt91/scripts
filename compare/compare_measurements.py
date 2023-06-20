@@ -49,7 +49,7 @@ def plot(df: pd.DataFrame, sensor: str, path: str, colors: list):
     )
     path = join(getenv("DATA_PATH"),
                 "results\\plots\\compare")
-    fig.show()
+    # fig.show()
     hp.save_html(fig, path, sensor)
 
 

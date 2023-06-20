@@ -19,8 +19,8 @@ if __name__ == '__main__':
         print("Argument value:", root_path)
         os.environ["DATA_PATH"] = root_path
 
-        # rea dfiles and create results file
-        # scan_folder()
+        # readfiles and create results file
+        scan_folder()
 
         # specify the appearance of features
         how_to_plot = {"size": "combustion",
@@ -43,7 +43,7 @@ if __name__ == '__main__':
         #               lda=True)
 
         compare()  # does some plots of sensor signals
-        # plot_features()  # plots feauteres with all samples
+        plot_features()  # plots feauteres with all samples
         print('finished')
 
     else:

@@ -47,7 +47,7 @@
             "smooth": 200
         },
         "Piezo": {
-            "n_stabw": 15,
+            "n_stabw": 20,
             "color": "green",
             "abs": true,
             "smooth": 20
