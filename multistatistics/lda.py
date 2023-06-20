@@ -23,7 +23,7 @@ def calc_lda(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:
     
 
     # hat nur geringen Einfluss auf die LDA, aber visuell erkennbar. Güte noch zu evaluieren
-    scalar = StandardScaler()
+    scalar = MinMaxScaler()
     scalar.fit(features)
     scaled_data = scalar.transform(features)
 
