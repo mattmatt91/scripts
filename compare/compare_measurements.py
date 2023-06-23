@@ -15,14 +15,15 @@ def compare():
     sensors = [i for i in properties['sensors']]
     # for file, sensor in zip(onlyfiles, sensors):
     #     print(file, sensor)
-
     for file, sensor in zip(onlyfiles, sensors):
         evaluate_sensor(file, sensor, path, properties)
 
 
 
 def evaluate_sensor(file: str, sensor: str, path: str, properties: dict):
+    print(f'file read {file}')
     df = pd.read_csv(file, decimal='.', sep='\t')
+
     df = df.dropna(axis='columns').T
     df.columns = df.iloc[0]
     df.drop(index=df.index[0], axis=0, inplace=True)
@@ -32,7 +33,6 @@ def evaluate_sensor(file: str, sensor: str, path: str, properties: dict):
 
     df = shift_peaks(df)
 
-    names = df.columns
     samples = [i.split('_')[0] for i in df.columns.to_list()]
     colors = []
     for sample in samples:

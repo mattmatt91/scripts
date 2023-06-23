@@ -6,6 +6,12 @@ from plots.plot_feauters import plot_features
 import os
 import sys
 
+
+do_read = False
+do_statistic = False
+do_compare = False
+do_plot_features = True
+
 # specify the appearance of features
 how_to_plot = {"size": "combustion",
                "symbol": "height",
@@ -28,14 +34,14 @@ if __name__ == '__main__':
         sys.exit(1)
 
     if arg == "-p":
-        print("Argument value:", root_path)
+        print("using data:", root_path)
         os.environ["DATA_PATH"] = root_path
 
         # readfiles and create results file
-        if 1:
+        if do_read:
             scan_folder()
 
-        if 0:
+        if do_statistic:
             do_statistics(seperation_key,
                           how_to_plot,
                           selector,
@@ -43,15 +49,12 @@ if __name__ == '__main__':
                           pca=True,
                           lda=True)
 
-        if 1:
+        if do_compare:
             compare()  # does some plots of sensor signals
-        if 1:
-            plot_features()  # plots feauteres with all samples
+        if do_plot_features:
+            plot_features(sep='ball')  # plots feauteres with all samples
         print('finished')
 
     else:
         print("Invalid argument:", arg)
         exit()
-
-
-# new samples missung in sensor plot

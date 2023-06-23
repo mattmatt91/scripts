@@ -6,11 +6,21 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import os
+from sklearn.decomposition import PCA
 
+
+def plot_scree(pca:PCA):
+    explained_variance_ratio = np.cumsum(pca.explained_variance_ratio_)
+    x = np.arange(1, len(explained_variance_ratio) + 1)
+    fig = px.bar(x=x, y=explained_variance_ratio, labels={'x': 'Number of Components', 'y': 'Cumulative Explained Variance'})
+    fig.update_layout(title='Scree Plot')
+    # fig.show()
+    path = join(os.getenv("DATA_PATH"), 'results', 'plots', 'statistics')
+    save_html(fig, path, 'screeplot_PCA')
 
 def plot_heat(data: pd.DataFrame):
     fig = px.imshow(data,
-                    # text_auto=True,
+                    text_auto=True,
                     aspect="auto",
                     color_continuous_scale='tealgrn'
                     )

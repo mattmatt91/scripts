@@ -21,9 +21,15 @@ def do_statistics(seperation_key: str, how_to_plot: dict, selector: dict, statis
         if statistic:  # simple statistics
             get_statistics(features, infos)
         if pca:
-            calc_pca(features, infos, properties, how_to_plot)
+            try:
+                calc_pca(features, infos, properties, how_to_plot)
+            except:
+                print('\nnot able to do lda!!\n')
         if lda:
-            calc_lda(features, infos, properties, how_to_plot, seperation_key)
+            try:
+                calc_lda(features, infos, properties, how_to_plot, seperation_key)
+            except:
+                print('\nnot able to do lda!!\n')
 
 
 def prepare_data(file_path: str, selector: dict):

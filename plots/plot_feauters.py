@@ -5,36 +5,49 @@ from helpers.helpers import Helpers as hp
 import plotly.express as px
 
 
-def plot_statistics(df_mean: pd.DataFrame, df_stabw: pd.DataFrame):
-    params = df_mean.T.index.tolist()
-    # creating dataframe with means and errors
-    for param in params:
-        mean = df_mean[param]
-        stabw = df_stabw[param]
-        df_plot = pd.DataFrame({'mean': mean, 'stabw': stabw})
-        plot_mean(df_plot, param)
+info_cols = ['datetime',
+             'height',
+             'number',
+             'sample',
+             'name',
+             'ball',
+             'rate',
+             'combustion',
+             'combustion_bool']
 
 
-def plot_mean(data: pd.DataFrame, param: str):
-    path = join(getenv("DATA_PATH"), 'results', 'plots',  'statistics', 'means')
-    print()
-    sample_colors = hp.read_json('properties', 'properties.json')["sample"]
-    colors = [sample_colors[i] for i in data.index]
-    fig = px.bar(data, x=data.index, y="mean",
-                 error_y="stabw",
-                 title=param)
-    fig.update_traces(marker_color=colors)
-    hp.save_html(fig, path, param)
+def plot_features(sep: str):
+    path = join(getenv("DATA_PATH"), 'results', 'results.csv')
+    data = pd.read_csv(path, sep=';', decimal=',')
+    classes = list(set(data[sep]))
+    new_data = []
+    for myclass in classes:
+        class_data = data[data[sep] == myclass]
+        class_data.drop(info_cols, axis=1, inplace=True)
+        for feature in class_data.columns:
+            mean = class_data[feature].mean()
+            stabw = class_data[feature].std()
+            new_data.append({'mean': mean,
+                             'stabw': stabw,
+                             'feature': feature,
+                             sep: myclass})
+
+    df = pd.DataFrame(new_data)
+    plot_all_that_stuff(df, sep)
 
 
-def plot_features():
-    path = join(getenv("DATA_PATH"), 'results', 'statistics')
-    df_mean = pd.read_csv(join(path, 'mean.csv'),
-                          decimal=',', sep=';', index_col=0)
-    df_stabw = pd.read_csv(join(path, 'std.csv'),
-                           decimal=',', sep=';', index_col=0)
-
-    plot_statistics(df_mean, df_stabw)
+def plot_all_that_stuff(df: pd.DataFrame, sep: str):
+    for feature in set(df['feature']):
+        sample_colors = hp.read_json('properties', 'properties.json')[sep]
+        colors = [sample_colors[i] for i in [str(n) for n in set(df[sep])]]
+        fig = px.bar(df[df["feature"] == feature], x=sep, y="mean",
+                     error_y="stabw",
+                     title=feature)
+        fig.update_traces(marker_color=colors)
+        path = join(getenv("DATA_PATH"), 'results',
+                    'plots',  'statistics', 'means')
+        hp.save_html(fig, path, feature)
+        # exit()
 
 
 if __name__ == '__main__':

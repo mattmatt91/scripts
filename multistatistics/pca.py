@@ -1,4 +1,4 @@
-from plots.plot_mult_stat import plot_components, plot_loadings
+from plots.plot_mult_stat import plot_components, plot_loadings, plot_scree
 from helpers.helpers import Helpers as hp
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, MaxAbsScaler, RobustScaler
 from sklearn.decomposition import PCA
@@ -40,7 +40,7 @@ def calc_pca(features: pd.DataFrame, infos: dict, properties: dict, how_to_plot:
                     infos,
                     name='PCA')
     process_loadings(components, properties)
-
+    plot_scree(pca)
 
 def create_result(pca: PCA):
     data = {'explained variance ratio':
@@ -69,6 +69,8 @@ def get_true_false_matrix(df:pd.DataFrame):
     features = [x[x.find('_')+1:] for x in df.index.tolist()]
     df['features'] = features
     return df
+
+
 
 
 def convert_df_pd(df):

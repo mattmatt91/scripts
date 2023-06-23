@@ -68,7 +68,7 @@
         "AgN3": "purple",
         "Pb(N3)2": "mediumturquoise"
     },
-    "ballsize": {
+    "ball": {
         "6": "red",
         "8": "green",
         "10": "blue",
