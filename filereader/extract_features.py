@@ -76,6 +76,8 @@ def get_baseline(data: pd.Series, heigth: float, peak_x: float):
                              's', len(data_before_peak))
     x1 = data.index[x1_i]
     x2 = data.index[x2_i]
+    if x2 < x1:
+        x2 = data.index.to_list()[-1]
     y1 = heigth
     y2 = heigth
     width = x2 - x1

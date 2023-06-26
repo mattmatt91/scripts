@@ -7,9 +7,9 @@ import os
 import sys
 
 
-do_read = False
-do_statistic = True  
-do_compare = False    
+do_read = True
+do_statistic = False  
+do_compare = False 
 do_plot_features = False
 
 # specify the appearance of features

@@ -3,7 +3,7 @@ from os.path import join
 from os import getenv
 from helpers.helpers import Helpers as hp
 import plotly.express as px
-
+import numpy as np
 
 info_cols = ['datetime',
              'height',
@@ -25,7 +25,7 @@ def plot_features(sep: str):
         class_data = data[data[sep] == myclass]
         class_data.drop(info_cols, axis=1, inplace=True)
         for feature in class_data.columns:
-            mean = class_data[feature].mean()
+            mean = np.abs(class_data[feature].mean())
             stabw = class_data[feature].std()
             new_data.append({'mean': mean,
                              'stabw': stabw,
