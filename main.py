@@ -8,9 +8,9 @@ import sys
 
 
 do_read = False
-do_statistic = False
-do_compare = False
-do_plot_features = True
+do_statistic = True  
+do_compare = False    
+do_plot_features = False
 
 # specify the appearance of features
 how_to_plot = {"size": "combustion",
@@ -18,12 +18,12 @@ how_to_plot = {"size": "combustion",
                "color": "sample",
                "none": "height"}
 
-seperation_key = 'sample'
-# seperation_key = 'height' # use this for selecting seperator for LDA
+# seperation_key = 'sample'
+seperation_key = 'new_seperator' # use this for selecting seperator for LDA
 
-# selector = {'combustion_bool':True} # always pass dict, if no selection use 'none' as key
 # always pass dict, if no selection use 'none' as key
-selector = {'none': True}
+selector = {'combustion_bool':True} # always pass dict, if no selection use 'none' as key
+# selector = {'none': True}
 
 if __name__ == '__main__':
     arg = sys.argv[1]
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         if do_compare:
             compare()  # does some plots of sensor signals
         if do_plot_features:
-            plot_features(sep='ball')  # plots feauteres with all samples
+            plot_features(sep='sample')  # plots feauteres with all samples
         print('finished')
 
     else:

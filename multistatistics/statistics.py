@@ -12,8 +12,8 @@ def get_statistics(features: dict, infos: dict):
     df_std = pd.DataFrame()
     path = join(os.getenv("DATA_PATH"), 'results', 'statistics')
     for sample in samples:
-        index = infos[infos['sample'] == sample].index.tolist()
-        df_sample = features.iloc[index].describe()
+        index = infos[infos['sample'] == sample]['name'].tolist()
+        df_sample = features.loc[index].describe()
         hp.save_df(df_sample, path, sample)
         statistics_list[sample] = df_sample
         df_mean[sample] = df_sample.T['mean']
