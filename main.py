@@ -7,10 +7,10 @@ import os
 import sys
 
 
-do_read = True
+do_read = False
 do_statistic = False  
 do_compare = False 
-do_plot_features = False
+do_plot_features = True
 
 # specify the appearance of features
 how_to_plot = {"size": "combustion",
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         if do_compare:
             compare()  # does some plots of sensor signals
         if do_plot_features:
-            plot_features(sep='sample')  # plots feauteres with all samples
+            plot_features()  # plots feauteres with all samples
         print('finished')
 
     else:

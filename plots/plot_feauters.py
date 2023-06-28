@@ -4,6 +4,8 @@ from os import getenv
 from helpers.helpers import Helpers as hp
 import plotly.express as px
 import numpy as np
+from matplotlib import pyplot as plt
+import seaborn as sns
 
 info_cols = ['datetime',
              'height',
@@ -16,37 +18,43 @@ info_cols = ['datetime',
              'combustion_bool']
 
 
-def plot_features(sep: str):
+def plot_features():
     path = join(getenv("DATA_PATH"), 'results', 'results.csv')
     data = pd.read_csv(path, sep=';', decimal=',')
-    classes = list(set(data[sep]))
+    # info = data[info_cols]
+    # data.drop(info_cols, inplace=True)
+
     new_data = []
-    for myclass in classes:
-        class_data = data[data[sep] == myclass]
-        class_data.drop(info_cols, axis=1, inplace=True)
-        for feature in class_data.columns:
-            mean = np.abs(class_data[feature].mean())
-            stabw = class_data[feature].std()
-            new_data.append({'mean': mean,
-                             'stabw': stabw,
-                             'feature': feature,
-                             sep: myclass})
-
+    for feature in data:
+        if feature not in info_cols:
+            for height in set(data['height']):
+                for sample in set(data['sample']):
+                    this_data = {}
+                    this_data = data[(data['sample'] == sample)
+                                     & (data['height'] == height)
+                                     & (data['combustion_bool'] == True)]
+                    mean = this_data[feature].mean()
+                    std = this_data[feature].std()
+                    this_data = {'mean': mean, 'feature': feature,
+                                 'height': height, 'sample': sample, 'std': std}
+                    new_data.append(this_data)
     df = pd.DataFrame(new_data)
-    plot_all_that_stuff(df, sep)
+
+    plot_all_that_stuff(df)
 
 
-def plot_all_that_stuff(df: pd.DataFrame, sep: str):
+def plot_all_that_stuff(df: pd.DataFrame):
     for feature in set(df['feature']):
-        sample_colors = hp.read_json('properties', 'properties.json')[sep]
-        colors = [sample_colors[i] for i in [str(n) for n in set(df[sep])]]
-        fig = px.bar(df[df["feature"] == feature], x=sep, y="mean",
-                     error_y="stabw",
-                     title=feature)
-        fig.update_traces(marker_color=colors)
+        sample_colors = hp.read_json('properties', 'properties.json')['sample']
+        # colors = [sample_colors[i] for i in [str(n) for n in set(df[sep])]]
+        fig = px.bar(df[df['feature'] == feature], x="height", y="mean",
+                     color="sample", barmode="group", error_y='std', title=feature)
+        fig.update_xaxes(type='category')
+        fig.update_xaxes(categoryorder='category ascending')
         path = join(getenv("DATA_PATH"), 'results',
                     'plots',  'statistics', 'means')
         hp.save_html(fig, path, feature)
+        # fig.show()
         # exit()
 
 
